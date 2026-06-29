@@ -1,0 +1,29 @@
+# Build and output directories
+**/target/
+**/build/
+**/dist/
+
+# NetBeans local and private settings
+**/nbproject/private/
+**/nbbuild/
+**/.nb-gradle/
+**/.netbeans_automatic_build
+**/nb-configuration.xml
+
+# Custom run configurations (Uncomment to ignore)
+# **/nbactions.xml
+
+# Maven plugin outputs
+dependency-reduced-pom.xml
+
+# NetBeans cache
+.nb-cache/
+.netbeans/
+
+# System files (macOS and Windows)
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+Ehthumbs.db
+Desktop.ini
