@@ -10,7 +10,7 @@
 **/.netbeans_automatic_build
 **/nb-configuration.xml
 
-# Custom run configurations (Uncomment to ignore)
+# Custom run configurations 
 # **/nbactions.xml
 
 # Maven plugin outputs
@@ -20,7 +20,7 @@ dependency-reduced-pom.xml
 .nb-cache/
 .netbeans/
 
-# System files (macOS and Windows)
+# System files
 .DS_Store
 .AppleDouble
 .LSOverride
