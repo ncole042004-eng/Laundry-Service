@@ -29,4 +29,4 @@ Ehthumbs.db
 Desktop.ini
 
 # Ignore all downloaded/compiled JAR files
-*.jar
+*.jar   
