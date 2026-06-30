@@ -8,14 +8,14 @@ package com.mycompany.laundryservice;
  *
  * @author Cral
  */
-public class LaundryServiceForm extends javax.swing.JFrame {
+public class MainJFrame extends javax.swing.JFrame {
 	
-	private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(LaundryServiceForm.class.getName());
+	private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(MainJFrame.class.getName());
 
 	/**
-	 * Creates new form LaundryServiceForm
+	 * Creates new form MainJFrame
 	 */
-	public LaundryServiceForm() {
+	public MainJFrame() {
 		initComponents();
 	}
 
@@ -34,14 +34,15 @@ public class LaundryServiceForm extends javax.swing.JFrame {
                 getContentPane().setLayout(layout);
                 layout.setHorizontalGroup(
                         layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 713, Short.MAX_VALUE)
+                        .addGap(0, 400, Short.MAX_VALUE)
                 );
                 layout.setVerticalGroup(
                         layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 480, Short.MAX_VALUE)
+                        .addGap(0, 300, Short.MAX_VALUE)
                 );
 
                 pack();
+                setLocationRelativeTo(null);
         }// </editor-fold>//GEN-END:initComponents
 
 	/**
@@ -66,7 +67,7 @@ public class LaundryServiceForm extends javax.swing.JFrame {
 		//</editor-fold>
 
 		/* Create and display the form */
-		java.awt.EventQueue.invokeLater(() -> new LaundryServiceForm().setVisible(true));
+		java.awt.EventQueue.invokeLater(() -> new MainJFrame().setVisible(true));
 	}
 
         // Variables declaration - do not modify//GEN-BEGIN:variables
