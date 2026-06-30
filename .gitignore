@@ -27,3 +27,6 @@ dependency-reduced-pom.xml
 Thumbs.db
 Ehthumbs.db
 Desktop.ini
+
+# Ignore all downloaded/compiled JAR files
+*.jar   
