@@ -12,7 +12,7 @@ public class DBConnection {
     private static final String PASSWORD = "";
 
     public Connection createConnection() throws SQLException {
-        return DriverManager.getConnection(URL, USER, PASSWORD);
+        return DriverManager.getConnection(URL, USER, PASSWORD); 
     }
 
     public boolean canConnectToDB() {
