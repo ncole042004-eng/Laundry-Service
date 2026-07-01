@@ -30,3 +30,5 @@ Desktop.ini
 
 # Ignore all downloaded/compiled JAR files
 *.jar
+
+references/

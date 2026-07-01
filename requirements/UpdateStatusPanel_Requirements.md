@@ -18,8 +18,8 @@ As an employee, I want to update an order's status and capture the time it happe
   Acceptance criteria: selecting a new status and clicking Update changes the value in the database for that order_id.
 - **FR-2.** The system shall record `ready_at` the moment status is set to Ready.
   Acceptance criteria: setting status to Ready populates `ready_at` with the current timestamp; it is not overwritten if the status is changed again later.
-- **FR-3.** The system shall record `claimed_at` the moment status is set to Claimed.
-  Acceptance criteria: setting status to Claimed populates `claimed_at` with the current timestamp.
+- **FR-3.** The system shall record `claimed_at` and automatically update `payment_status` to 'Paid' the moment status is set to Claimed.
+  Acceptance criteria: setting status to Claimed populates `claimed_at` with the current timestamp and updates `payment_status` to 'Paid'.
 - **FR-4.** The panel shall load the correct order when navigated to from OrderListPanel.
   Acceptance criteria: selecting a row in OrderListPanel and clicking through opens UpdateStatusPanel pre-loaded with that order's claim number, customer, service, and current status.
 
@@ -46,7 +46,10 @@ As an employee, I want to update an order's status and capture the time it happe
 
 ## 7. Validation Rules
 - A status must be selected that differs from the current status before Update is enabled.
-- `ready_at` is only written the first time status becomes Ready (don't overwrite on later edits, if edits are even allowed backward — flag to the team: can status move backward, e.g. Ready → Processing? Recommend disallowing it unless there's a business reason).
+- Status can only move forward in the workflow (Pending → Processing → Ready → Claimed) or directly to Cancelled. Backward movement is strictly disallowed to preserve the integrity of timestamps. The UI must disable options in `cmbStatus` that represent earlier states.
+- If an order is loaded while its status is already 'Claimed' or 'Cancelled', all inputs should be locked.
+- Setting status to 'Claimed' must simultaneously execute an update to `payment_status = 'Paid'` in the database.
+- `ready_at` is only written the first time status becomes Ready.
 - `claimed_at` is only written the first time status becomes Claimed.
 
 ## 8. Non-Functional Requirements
@@ -62,6 +65,5 @@ As an employee, I want to update an order's status and capture the time it happe
 
 ## 10. Out of Scope
 - Does not create new orders (NewOrderPanel).
-- Does not handle payment status (payment_status is a separate field — confirm with team whether this panel or another owns it; currently unassigned).
 - Does not print or regenerate claim numbers.
 - Does not handle customer notification (SMS/call) — manual process outside the system.

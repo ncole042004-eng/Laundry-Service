@@ -19,10 +19,10 @@ As the **team lead / shop owner**, I want to **view a summary of revenue, employ
 Acceptance criteria: The displayed total matches the manual SUM of `total_amount` for all Orders where `payment_status = 'Paid'` and `order_date` falls within the selected range.
 
 **FR-2.** The system shall display the number of orders processed per employee within the selected date range.
-Acceptance criteria: A table shows each employee's name alongside their order count; the sum of all displayed counts equals the total number of orders in that date range.
+Acceptance criteria: A table shows each employee's name alongside their order count; the sum of all displayed counts equals the total number of orders in that date range. Note: Cancelled orders are included in this count for accountability.
 
-**FR-3.** The system shall display a count of orders grouped by order status (Pending, Processing, Ready, Claimed) within the selected date range.
-Acceptance criteria: The four status counts sum to the total number of orders shown for that date range.
+**FR-3.** The system shall display a count of orders grouped by order status (Pending, Processing, Ready, Claimed, Cancelled) within the selected date range.
+Acceptance criteria: The five status counts sum to the total number of orders shown for that date range.
 
 **FR-4.** The system shall allow the user to filter all reports by a predefined date range selection.
 Acceptance criteria: Changing the date filter (Today / This Week / This Month / All Time) updates all three reports (FR-1, FR-2, FR-3) to reflect only orders within that range.
@@ -37,7 +37,7 @@ Acceptance criteria: Navigating away to another panel, then returning to Reports
 | cmbDateFilter | JComboBox | Options: Today, This Week, This Month, All Time; triggers report reload on selection change |
 | lblTotalRevenue | JLabel | Displays total paid revenue for the selected range, formatted as ₱X,XXX.00 |
 | tblEmployeeOrders | JTable | Lists each employee's name and order count, sorted descending by count |
-| tblOrderStatus | JTable | Shows count per order status: Pending, Processing, Ready, Claimed |
+| tblOrderStatus | JTable | Shows count per order status: Pending, Processing, Ready, Claimed, Cancelled |
 | btnRefresh | JButton | Manually re-runs all queries in addition to the automatic refreshData() call |
 
 **Additional behavior:**
@@ -74,7 +74,7 @@ Note: `price_at_order` is present in the Orders table but is not used by Reports
 - **Consistency:** Follows team naming conventions — `txt`, `btn`, `lbl`, `cmb`, `tbl` prefixes for all components.
 
 ## 9. Dependencies
-- **Hugh (LoginPanel) + Alliyah (NewOrderPanel):** Per-employee order counts depend on `employee_id` being correctly passed via session state and saved to every order. Accuracy of FR-2 depends on these two panels functioning correctly — to confirm before relying on this report in a demo.
+- **Hugh (LoginPanel) + Jairus (NewOrderPanel):** Per-employee order counts depend on `employee_id` being correctly passed via session state and saved to every order. Accuracy of FR-2 depends on these two panels functioning correctly — to confirm before relying on this report in a demo.
 - **Steph (UpdateStatusPanel):** Order status breakdown (FR-3) depends on `order_status` being correctly updated. No code dependency, but report accuracy relies on Steph's panel working.
 - **Lloyd (MainJFrame):** ReportsPanel must be wired into the CardLayout/sidebar the same way as all other panels, with `refreshData()` called on card show — to confirm with Lloyd before integration.
 - No new tables or columns required. No schema flags needed.
@@ -90,6 +90,6 @@ Note: `price_at_order` is present in the Orders table but is not used by Reports
 ## 11. Sign-off Checklist
 - [ ] All sections above reviewed and accurate
 - [ ] Date started and target completion date filled in
-- [ ] Dependencies confirmed with Hugh, Alliyah, Steph, and Lloyd
+- [ ] Dependencies confirmed with Hugh, Jairus, Steph, and Lloyd
 - [ ] No new schema changes required — confirmed against revised ProjectContext
 - [ ] Ready to begin coding ReportsPanel.java

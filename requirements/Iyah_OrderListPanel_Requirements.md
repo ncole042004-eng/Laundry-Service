@@ -6,15 +6,15 @@
 - Assigned member: Iyah
 - Date started: June 30, 2026
 - Target completion date: July 1, 2026
-- Tables this panel touches: Orders (SELECT JOIN, DELETE), Customers (SELECT JOIN, read only), Services (SELECT JOIN, read only), Employees (SELECT JOIN, read only)
+- Tables this panel touches: Orders (SELECT JOIN, UPDATE for cancellation), Customers (SELECT JOIN, read only), Services (SELECT JOIN, read only), Employees (SELECT JOIN, read only)
 
 ## 2. Purpose
 
-Allows the cashier to view all laundry orders in one place, search and filter them, navigate to UpdateStatusPanel to change a specific order's status or payment, and delete an order when necessary. This is also the default home screen shown after login.
+Allows the cashier to view all laundry orders in one place, search and filter them, navigate to UpdateStatusPanel to change a specific order's status or payment, and cancel an order when necessary. This is also the default home screen shown after login.
 
 ## 3. User Story
 
-As a cashier, I want to see all orders in a list so that I can find a specific order quickly, navigate to it for a status or payment update, or delete it if needed.
+As a cashier, I want to see all orders in a list so that I can find a specific order quickly, navigate to it for a status or payment update, or cancel it if needed.
 
 ## 4. Functional Requirements
 
@@ -24,7 +24,7 @@ As a cashier, I want to see all orders in a list so that I can find a specific o
 - FR-4. The system shall allow viewing full order details for a selected row. Acceptance: double-clicking a row or clicking btnViewDetails opens a read-only dialog showing all fields for that order.
 - FR-5. The system shall route a selected order to UpdateStatusPanel when btnUpdateStatus is clicked. Acceptance: selecting a row and clicking btnUpdateStatus calls mainFrame.goToUpdateStatus(orderId) and navigates to UpdateStatusPanel with that order loaded.
 - FR-6. The system shall implement refreshData() to reload all orders from the database whenever the panel is shown. Acceptance: a new order saved in NewOrderPanel appears in the table the next time this panel is opened, without restarting the app.
-- FR-7. The system shall allow deleting a selected order after a confirmation prompt. Acceptance: selecting a row and clicking btnDeleteOrder shows a confirmation dialog ("Are you sure you want to delete this order? This cannot be undone."). Confirming runs a DELETE on the Orders table for that order_id, the table refreshes, and the deleted row is gone. Cancelling does nothing.
+- FR-7. The system shall allow cancelling a selected order after a confirmation prompt. Acceptance: selecting a row and clicking btnCancelOrder shows a confirmation dialog ("Are you sure you want to cancel this order? This cannot be undone."). Confirming runs an UPDATE on the Orders table for that order_id setting `order_status = 'Cancelled'` and `cancelled_at = CURRENT_TIMESTAMP`, the table refreshes, and the row status updates. Cancelling does nothing. `payment_status` remains 'Unpaid'.
 
 ## 5. UI Requirements
 
@@ -40,8 +40,8 @@ As a cashier, I want to see all orders in a list so that I can find a specific o
 | tblOrders       | JTable         | Displays all order records, read-only, single row selection mode                                 |
 | lblTotalOrders  | JLabel         | Shows count of currently displayed rows (e.g., "Total Orders: 25")                               |
 | btnViewDetails  | JButton        | Opens a read-only details dialog for the selected row. Disabled until a row is selected          |
-| btnUpdateStatus | JButton        | Calls mainFrame.goToUpdateStatus(orderId) for the selected row. Disabled until a row is selected |
-| btnDeleteOrder  | JButton        | Opens a confirmation dialog before deleting the selected order. Disabled until a row is selected |
+| btnUpdateStatus | JButton        | Calls mainFrame.goToUpdateStatus(orderId) for the selected row. Disabled if row is 'Claimed' or 'Cancelled'. |
+| btnCancelOrder  | JButton        | Opens a confirmation dialog before cancelling the selected order. Disabled if row is 'Claimed' or 'Cancelled'. |
 
 Empty field handling: txtSearch is optional, empty shows all orders. cboSearchType and cboSortBy always have a default selected value so neither can be empty.
 
@@ -50,14 +50,14 @@ After successful action:
 - After search or sort: table updates immediately, no confirmation dialog needed
 - After clicking btnUpdateStatus: navigates to UpdateStatusPanel, no changes made in this panel
 - After btnRefresh: search input clears and full order list reloads
-- After successful delete: confirmation dialog closes, table refreshes, deleted row is gone
+- After successful cancellation: confirmation dialog closes, table refreshes, status shows as Cancelled
 
 Error messages:
 
 - Database failure: "Unable to connect to the database. Please check your connection and try again." — on any failed DB call
 - No results found: "No orders found matching your search criteria." — when filter returns zero rows
-- No row selected: "Please select an order first." — if btnViewDetails, btnUpdateStatus, or btnDeleteOrder is clicked with no row selected
-- Delete failed: "Failed to delete order. Please try again." — if the DELETE statement throws an exception
+- No row selected: "Please select an order first." — if btnViewDetails, btnUpdateStatus, or btnCancelOrder is clicked with no row selected
+- Cancel failed: "Failed to cancel order. Please try again." — if the UPDATE statement throws an exception
 
 ## 6. Data Requirements (Database Interaction)
 
@@ -67,7 +67,7 @@ Error messages:
 - Filter by Status, SELECT, Orders
 - Sort by Order Date, Order Status, or Total Amount, SELECT, Orders (ORDER BY clause variation)
 - Get full order details for dialog, SELECT JOIN, Orders JOIN Customers JOIN Services JOIN Employees
-- Delete a specific order, DELETE, Orders (by order_id)
+- Cancel a specific order, UPDATE, Orders (by order_id)
 
 Columns read:
 
@@ -76,12 +76,12 @@ Columns read:
 - Services: service_name
 - Employees: name (displayed as "Processed By")
 
-This panel performs no INSERT or UPDATE operations.
+This panel performs no INSERT operations, and only performs UPDATE for order cancellation.
 
 ## 7. Validation Rules
 
-- A row must be selected before btnViewDetails, btnUpdateStatus, or btnDeleteOrder is enabled
-- A confirmation dialog must be acknowledged before any DELETE is executed, cancelling aborts with no change
+- A row must be selected before btnViewDetails, btnUpdateStatus, or btnCancelOrder is enabled
+- A confirmation dialog must be acknowledged before any cancellation UPDATE is executed, cancelling aborts with no change
 - No status or payment changes are made in this panel, all update logic lives in UpdateStatusPanel
 - If the database returns no rows for a search, show the "no results" message rather than an empty table with no explanation
 
@@ -114,10 +114,11 @@ This panel performs no INSERT or UPDATE operations.
 - JTable loads with correct JOIN columns and sorts by most recent order_date by default
 - Search filters work for all three filter types (Customer Name, Claim Number, Status)
 - Sort works for all three sort options
-- btnViewDetails, btnUpdateStatus, and btnDeleteOrder all disabled until a row is selected
+- btnViewDetails, btnUpdateStatus, and btnCancelOrder all disabled until a valid row is selected
+- btnUpdateStatus and btnCancelOrder disabled if the selected row status is 'Claimed' or 'Cancelled'
 - btnUpdateStatus correctly calls mainFrame.goToUpdateStatus(orderId) with the right order_id
-- btnDeleteOrder shows confirmation dialog before executing DELETE, cancelling aborts correctly
-- DELETE removes the correct order and table refreshes immediately after
+- btnCancelOrder shows confirmation dialog before executing UPDATE, cancelling aborts correctly
+- Cancellation updates the correct order and table refreshes immediately after
 - Read-only details dialog shows all order fields correctly
 - refreshData() implemented and reloads correctly when panel is shown
 - All error dialogs tested (no results, no row selected, DB failure)

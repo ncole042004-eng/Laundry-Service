@@ -19,7 +19,7 @@ As a cashier, I want to look up a customer, fill in their order details, and sav
 ## 4. Functional Requirements
 
 * FR-1. The system shall reject any order where the entered weight exceeds 7kg. Acceptance: entering 7.5 into txtWeightKg and clicking btnSave shows a popup ("Weight exceeds maximum capacity of 7kg") and does NOT insert anything into the database.
-* FR-2. The system shall auto-generate a unique claim number for every saved order. Acceptance: each saved order has a claim_number in the format LS-YYMMDD-NNN (e.g. LS-260701-001) that does not repeat across any other order.
+* FR-2. The system shall auto-generate a unique claim number for every saved order. Acceptance: each saved order has a claim_number in the format LS-YYMMDD-NNN (e.g. LS-260701-001) that does not repeat across any other order. Logic: Query `MAX(SUBSTRING(claim_number, -3))` from `Orders` where `DATE(order_date) = CURDATE()`. If none exists, start at 001. If exists, parse to integer, add 1, and pad with zeroes.
 * FR-3. The system shall record which employee created the order. Acceptance: the employee\_id of the currently logged-in user (from mainFrame.getCurrentEmployeeId()) is saved with every new order.
 * FR-4. The system shall display the service's fixed price as the total when a service is selected. Acceptance: selecting a service from cboService reads its fixed\_price and updates lblTotalAmount immediately with proper currency formatting.
 * FR-5. The system shall snapshot the service's fixed price into price\_at\_order at the time of saving. Acceptance: the value written to price\_at\_order in the Orders table matches the fixed\_price from the Services table at the exact moment the order was saved, regardless of any future price changes.
