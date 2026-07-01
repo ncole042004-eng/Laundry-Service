@@ -59,7 +59,8 @@ com.mycompany.laundryservice/
     ├── CustomerPanel.java
     ├── OrderListPanel.java
     ├── UpdateStatusPanel.java
-    └── ReportsPanel.java
+    ├── ReportsPanel.java
+    └── HomePanel.java
 ```
 
 ### The Screen Flow
@@ -67,7 +68,8 @@ com.mycompany.laundryservice/
 ```
 App Starts → LoginPanel
     ↓ (successful login)
-OrderListPanel  ←──────────────────────────────┐
+HomePanel (Dashboard) ←────────────────────────┐
+    ├── [Sidebar: Orders]     → OrderListPanel  │
     ├── [Sidebar: New Order]  → NewOrderPanel   │
     ├── [Sidebar: Customers]  → CustomerPanel   │
     ├── [Sidebar: Reports]    → ReportsPanel    │
