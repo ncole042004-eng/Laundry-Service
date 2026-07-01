@@ -29,107 +29,107 @@ INSERT INTO Orders (claim_number, customer_id, employee_id, service_id, order_da
 VALUES
 
 -- Pending / Unpaid (fresh orders, no timestamps beyond order_date)
-('LS-20260625-001',
+('LS-260625-001',
     (SELECT customer_id FROM Customers WHERE phone = '09171234501'),
     NULL, 1, '2026-06-25 08:00:00', NULL, NULL,
     3.50, 175.0000, 175.0000, 'Unpaid', 'Pending', NULL),
 
-('LS-20260625-002',
+('LS-260625-002',
     (SELECT customer_id FROM Customers WHERE phone = '09281234502'),
     NULL, 1, '2026-06-25 09:30:00', NULL, NULL,
     5.00, 175.0000, 175.0000, 'Unpaid', 'Pending', 'No bleach'),
 
-('LS-20260625-003',
+('LS-260625-003',
     (SELECT customer_id FROM Customers WHERE phone = '09171234507'),
     NULL, 1, '2026-06-25 11:00:00', NULL, NULL,
     6.00, 175.0000, 175.0000, 'Unpaid', 'Pending', NULL),
 
 -- Processing / Unpaid (being washed, no ready_at yet)
-('LS-20260626-001',
+('LS-260626-001',
     (SELECT customer_id FROM Customers WHERE phone = '09391234503'),
     NULL, 1, '2026-06-26 08:15:00', NULL, NULL,
     4.00, 175.0000, 175.0000, 'Unpaid', 'Processing', 'No fabric softener'),
 
-('LS-20260626-002',
+('LS-260626-002',
     (SELECT customer_id FROM Customers WHERE phone = '09171234504'),
     NULL, 1, '2026-06-26 10:00:00', NULL, NULL,
     6.50, 175.0000, 175.0000, 'Unpaid', 'Processing', NULL),
 
-('LS-20260626-003',
+('LS-260626-003',
     (SELECT customer_id FROM Customers WHERE phone = '09281234508'),
     NULL, 1, '2026-06-26 13:00:00', NULL, NULL,
     2.00, 175.0000, 175.0000, 'Unpaid', 'Processing', 'Delicate cycle only'),
 
 -- Ready / Unpaid (done but not yet paid or claimed)
-('LS-20260627-001',
+('LS-260627-001',
     (SELECT customer_id FROM Customers WHERE phone = '09281234505'),
     NULL, 1, '2026-06-27 08:00:00', '2026-06-27 14:00:00', NULL,
     2.50, 175.0000, 175.0000, 'Unpaid', 'Ready', NULL),
 
-('LS-20260627-002',
+('LS-260627-002',
     (SELECT customer_id FROM Customers WHERE phone = '09391234509'),
     NULL, 1, '2026-06-27 09:30:00', '2026-06-27 15:30:00', NULL,
     5.50, 175.0000, 175.0000, 'Unpaid', 'Ready', 'Hang dry, do not tumble'),
 
 -- Ready / Paid (done and paid, waiting for pickup)
-('LS-20260627-003',
+('LS-260627-003',
     (SELECT customer_id FROM Customers WHERE phone = '09391234506'),
     NULL, 1, '2026-06-27 09:00:00', '2026-06-27 15:00:00', NULL,
     7.00, 175.0000, 175.0000, 'Paid', 'Ready', 'Separate whites'),
 
-('LS-20260627-004',
+('LS-260627-004',
     (SELECT customer_id FROM Customers WHERE phone = '09171234510'),
     NULL, 1, '2026-06-27 11:00:00', '2026-06-27 17:00:00', NULL,
     3.00, 175.0000, 175.0000, 'Paid', 'Ready', NULL),
 
 -- Claimed / Unpaid (edge case, picked up before payment recorded)
-('LS-20260628-001',
+('LS-260628-001',
     (SELECT customer_id FROM Customers WHERE phone = '09281234511'),
     NULL, 1, '2026-06-28 07:30:00', '2026-06-28 12:30:00', '2026-06-28 18:00:00',
     4.00, 175.0000, 175.0000, 'Unpaid', 'Claimed', NULL),
 
 -- Claimed / Paid (fully complete orders)
-('LS-20260628-002',
+('LS-260628-002',
     (SELECT customer_id FROM Customers WHERE phone = '09171234501'),
     NULL, 1, '2026-06-28 08:00:00', '2026-06-28 13:00:00', '2026-06-28 17:00:00',
     4.50, 175.0000, 175.0000, 'Paid', 'Claimed', NULL),
 
-('LS-20260628-003',
+('LS-260628-003',
     (SELECT customer_id FROM Customers WHERE phone = '09281234502'),
     NULL, 1, '2026-06-28 09:00:00', '2026-06-28 14:00:00', '2026-06-29 09:00:00',
     6.00, 175.0000, 175.0000, 'Paid', 'Claimed', 'Handle with care'),
 
-('LS-20260629-001',
+('LS-260629-001',
     (SELECT customer_id FROM Customers WHERE phone = '09391234503'),
     NULL, 1, '2026-06-29 08:00:00', '2026-06-29 13:30:00', '2026-06-29 16:00:00',
     3.50, 175.0000, 175.0000, 'Paid', 'Claimed', NULL),
 
-('LS-20260629-002',
+('LS-260629-002',
     (SELECT customer_id FROM Customers WHERE phone = '09391234512'),
     NULL, 1, '2026-06-29 09:00:00', '2026-06-29 14:30:00', '2026-06-30 10:00:00',
     3.00, 175.0000, 175.0000, 'Paid', 'Claimed', NULL),
 
-('LS-20260629-003',
+('LS-260629-003',
     (SELECT customer_id FROM Customers WHERE phone = '09171234504'),
     NULL, 1, '2026-06-29 10:00:00', '2026-06-29 16:00:00', '2026-06-30 11:00:00',
     7.00, 175.0000, 175.0000, 'Paid', 'Claimed', 'No fabric softener'),
 
-('LS-20260630-001',
+('LS-260630-001',
     (SELECT customer_id FROM Customers WHERE phone = '09281234505'),
     NULL, 1, '2026-06-30 07:45:00', '2026-06-30 13:00:00', '2026-06-30 15:30:00',
     5.00, 175.0000, 175.0000, 'Paid', 'Claimed', NULL),
 
-('LS-20260630-002',
+('LS-260630-002',
     (SELECT customer_id FROM Customers WHERE phone = '09171234507'),
     NULL, 1, '2026-06-30 08:30:00', '2026-06-30 14:00:00', '2026-06-30 17:00:00',
     2.50, 175.0000, 175.0000, 'Paid', 'Claimed', 'Separate darks'),
 
-('LS-20260630-003',
+('LS-260630-003',
     (SELECT customer_id FROM Customers WHERE phone = '09281234508'),
     NULL, 1, '2026-06-30 09:15:00', '2026-06-30 15:00:00', '2026-07-01 09:00:00',
     6.50, 175.0000, 175.0000, 'Paid', 'Claimed', NULL),
 
-('LS-20260630-004',
+('LS-260630-004',
     (SELECT customer_id FROM Customers WHERE phone = '09391234509'),
     NULL, 1, '2026-06-30 10:00:00', '2026-06-30 16:00:00', '2026-07-01 10:30:00',
     4.00, 175.0000, 175.0000, 'Paid', 'Claimed', 'Handle with care');
