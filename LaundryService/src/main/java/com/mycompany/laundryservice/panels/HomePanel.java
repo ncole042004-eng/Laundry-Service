@@ -4,6 +4,7 @@
  */
 package com.mycompany.laundryservice.panels;
 
+import com.formdev.flatlaf.FlatLightLaf;
 import javax.swing.JFrame;
 
 /**
@@ -20,6 +21,8 @@ public class HomePanel extends javax.swing.JPanel {
 	}
 
 	public static void main(String[] args) {
+		FlatLightLaf.setup();
+		
 		JFrame frame = new JFrame();
 		frame.add(new HomePanel());
 		frame.pack();
