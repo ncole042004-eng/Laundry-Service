@@ -34,6 +34,13 @@
             <version>RELEASE300</version>
         </dependency>
     </dependencies>
+   <build>
+    <resources>
+        <resource>
+            <directory>../resources</directory>
+        </resource>
+    </resources>
+</build>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>25</maven.compiler.release>
