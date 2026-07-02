@@ -30,7 +30,9 @@ As a manager or cashier, I want to see how much we've earned today and how much 
 | lblTitle | JLabel | Displays "Dashboard" or "Welcome" |
 | pnlStatsWrapper | JPanel | Uses GridLayout (1 row, 5 columns) to hold the stat cards evenly |
 | lblEarningsToday | JLabel | Massive bold text showing today's total revenue |
+| lblEarningsTrend | JLabel | Small text showing % difference vs yesterday (Green if positive, Red if negative) |
 | lblOrdersToday | JLabel | Massive bold text showing count of orders received today |
+| lblOrdersTrend | JLabel | Small text showing % difference vs yesterday (Green if positive, Red if negative) |
 | lblClaimedToday | JLabel | Massive bold text showing count of orders picked up today |
 | lblActiveLaundry | JLabel | Massive bold text showing count of processing backlog |
 | lblReadyPickup | JLabel | Massive bold text showing count of ready backlog |
@@ -47,12 +49,14 @@ Error messages:
 
 All operations on this panel are **SELECT only**.
 
-**The 5 Metric Queries:**
+**The 7 Metric Queries (including trends):**
 1. Earnings Today: `SELECT SUM(total_amount) FROM Orders WHERE DATE(order_date) = CURDATE()`
-2. Orders Received Today: `SELECT COUNT(*) FROM Orders WHERE DATE(order_date) = CURDATE()`
-3. Orders Claimed Today: `SELECT COUNT(*) FROM Orders WHERE DATE(claimed_at) = CURDATE()`
-4. Active Laundry (All-Time Backlog): `SELECT COUNT(*) FROM Orders WHERE order_status IN ('Pending', 'Processing')`
-5. Ready for Pickup (All-Time Backlog): `SELECT COUNT(*) FROM Orders WHERE order_status = 'Ready'`
+2. Earnings Yesterday: `SELECT SUM(total_amount) FROM Orders WHERE DATE(order_date) = CURDATE() - INTERVAL 1 DAY`
+3. Orders Received Today: `SELECT COUNT(*) FROM Orders WHERE DATE(order_date) = CURDATE()`
+4. Orders Received Yesterday: `SELECT COUNT(*) FROM Orders WHERE DATE(order_date) = CURDATE() - INTERVAL 1 DAY`
+5. Orders Claimed Today: `SELECT COUNT(*) FROM Orders WHERE DATE(claimed_at) = CURDATE()`
+6. Active Laundry (All-Time Backlog): `SELECT COUNT(*) FROM Orders WHERE order_status IN ('Pending', 'Processing')`
+7. Ready for Pickup (All-Time Backlog): `SELECT COUNT(*) FROM Orders WHERE order_status = 'Ready'`
 
 **The Recent Orders Query:**
 ```sql
@@ -67,6 +71,7 @@ LIMIT 10
 
 * This panel is read-only. It must never execute `INSERT`, `UPDATE`, or `DELETE` statements.
 * If a metric query returns `NULL` (e.g., Earnings Today when there are 0 orders), the code must handle it and display `₱0.00` instead of crashing.
+* **Trend Calculation Rule:** When calculating "% vs yesterday", if yesterday's value was 0, display "+100%" if today > 0, or "0%" if today is 0. Do not divide by zero. Ensure the foreground color changes dynamically (e.g., Green for >= 0, Red for < 0).
 
 ## 8. Non-Functional Requirements
 
@@ -88,8 +93,9 @@ LIMIT 10
 
 ## 11. Sign-off Checklist
 
-* `[ ]` All 5 metrics query and display correctly.
+* `[ ]` All metrics query and display correctly.
 * `[ ]` Earnings Today handles NULL gracefully (displays 0.00).
+* `[ ]` Trend lines calculate correctly and handle yesterday=0 gracefully without crashing.
 * `[ ]` Backlog metrics (Active, Ready) correctly count older orders, not just today's.
 * `[ ]` Recent Orders table populates correctly and is wrapped in a JScrollPane.
 * `[ ]` Recent Orders table is set to read-only (cells cannot be edited).

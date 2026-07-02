@@ -9,7 +9,7 @@ PANEL REQUIREMENTS FORM, LAUNDRY SERVICE POS
 - Tables this panel touches: None directly, holds shared session state only (currentEmployeeId)
 
 **2. Purpose**
-MainJFrame is the main window that holds every panel and controls which one is showing. It's the integration point that ties all six of the group member's panels into one app.
+MainJFrame is the main window that holds every panel and controls which one is showing. It's the integration point that ties all seven panels (LoginPanel, HomePanel, NewOrderPanel, CustomerPanel, OrderListPanel, UpdateStatusPanel, ReportsPanel) into one app.
 
 **3. User Story**
 As a cashier, I want to move between screens in one window so I don't have to deal with separate floating windows for each task.
@@ -30,14 +30,15 @@ As a cashier, I want to move between screens in one window so I don't have to de
 - sidebarPanel, JPanel, fixed left side panel, hidden until login succeeds
 - btnNavNewOrder, JButton, switches to NEW_ORDER card
 - btnNavCustomers, JButton, switches to CUSTOMER card
-- btnNavOrderList, JButton, switches to ORDER_LIST card, acts as the home screen
+- btnNavHome, JButton, switches to HOME card (Dashboard), acts as the home screen
+- btnNavOrderList, JButton, switches to ORDER_LIST card
 - btnNavReports, JButton, switches to REPORTS card
 - btnLogout, JButton, clears session, hides sidebar, returns to LOGIN card
-- mainContainer, JPanel, CardLayout, holds all six panels
+- mainContainer, JPanel, CardLayout, holds all seven panels
 - lblWelcome (optional), JLabel, shows logged-in employee's name
 
 Empty field handling: not applicable, MainJFrame collects no input itself.
-After successful action: sidebar appears, ORDER_LIST shows as the default landing screen after login.
+After successful action: sidebar appears, HOME (Dashboard) shows as the default landing screen after login.
 Error messages: a database connection failure anywhere in the app should show one shared dialog ("Unable to connect to the database. Please check your connection and try again."), not a raw exception.
 
 **6. Data Requirements**
@@ -58,7 +59,7 @@ MainJFrame runs no SQL directly. Its only data responsibility is holding current
 
 **9. Dependencies**
 
-- Needs all six panels feature-complete enough to compile and instantiate
+- Needs all seven panels feature-complete enough to compile and instantiate
 - Needs each panel's temporary standalone main() method removed before merging
 - Needs every panel to implement refreshData() per the group's refresh rule
 - Needs the Employees table through LoginPanel for currentEmployeeId
