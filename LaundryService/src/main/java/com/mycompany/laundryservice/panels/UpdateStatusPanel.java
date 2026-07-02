@@ -3,7 +3,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
 package com.mycompany.laundryservice.panels;
-
+import javax.swing.JFrame;
+import com.formdev.flatlaf.FlatLightLaf;
 /**
  *
  * @author Cral
@@ -16,7 +17,20 @@ public class UpdateStatusPanel extends javax.swing.JPanel {
 	public UpdateStatusPanel() {
 		initComponents();
 	}
-
+            
+        public static void main(String[] args) {
+		FlatLightLaf.setup();
+                
+                JFrame frame = new JFrame();
+		frame.add(new HomePanel());
+		frame.pack();
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setVisible(true);
+	}
+                
+                
+                
+                     
 	/**
 	 * This method is called from within the constructor to initialize the
 	 * form. WARNING: Do NOT modify this code. The content of this method is
@@ -33,10 +47,11 @@ public class UpdateStatusPanel extends javax.swing.JPanel {
         lblClaimNumber = new javax.swing.JLabel();
         lblOrderDetails = new javax.swing.JLabel();
         cmbStatus = new javax.swing.JComboBox<>();
+        lblStatusCaption = new javax.swing.JLabel();
         pnlFooter = new javax.swing.JPanel();
-        lblStatus = new javax.swing.JLabel();
         btnCancel = new javax.swing.JButton();
         btnUpdate = new javax.swing.JButton();
+        lblStatus = new javax.swing.JLabel();
 
         lblTitle.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         lblTitle.setText("Update Order Status");
@@ -73,6 +88,8 @@ public class UpdateStatusPanel extends javax.swing.JPanel {
         cmbStatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Pending", "Processing", "Ready", "Claimed" }));
         cmbStatus.addActionListener(this::cmbStatusActionPerformed);
 
+        lblStatusCaption.setText("Status:");
+
         javax.swing.GroupLayout pnlContentLayout = new javax.swing.GroupLayout(pnlContent);
         pnlContent.setLayout(pnlContentLayout);
         pnlContentLayout.setHorizontalGroup(
@@ -80,10 +97,11 @@ public class UpdateStatusPanel extends javax.swing.JPanel {
             .addGroup(pnlContentLayout.createSequentialGroup()
                 .addGap(14, 14, 14)
                 .addGroup(pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblStatusCaption)
                     .addComponent(lblClaimNumber, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cmbStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblOrderDetails, javax.swing.GroupLayout.PREFERRED_SIZE, 332, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(17, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         pnlContentLayout.setVerticalGroup(
             pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -92,18 +110,20 @@ public class UpdateStatusPanel extends javax.swing.JPanel {
                 .addComponent(lblClaimNumber, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(lblOrderDetails, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(24, 24, 24)
-                .addComponent(cmbStatus, javax.swing.GroupLayout.DEFAULT_SIZE, 44, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblStatusCaption)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(cmbStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(14, 14, 14))
         );
 
         pnlFooter.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
-        lblStatus.setText("Select a new status to proceed:");
-
         btnCancel.setText("Cancel");
         btnCancel.setMinimumSize(new java.awt.Dimension(120, 35));
+        btnCancel.addActionListener(this::btnCancelActionPerformed);
 
+        btnUpdate.setBackground(new java.awt.Color(51, 204, 255));
         btnUpdate.setText("Update");
         btnUpdate.setMinimumSize(new java.awt.Dimension(120, 35));
         btnUpdate.addActionListener(this::btnUpdateActionPerformed);
@@ -113,13 +133,13 @@ public class UpdateStatusPanel extends javax.swing.JPanel {
         pnlFooterLayout.setHorizontalGroup(
             pnlFooterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlFooterLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(198, Short.MAX_VALUE)
                 .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(24, 24, 24))
             .addGroup(pnlFooterLayout.createSequentialGroup()
-                .addGap(14, 14, 14)
+                .addGap(23, 23, 23)
                 .addComponent(lblStatus)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -129,7 +149,7 @@ public class UpdateStatusPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(lblStatus)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(pnlFooterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(pnlFooterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(25, Short.MAX_VALUE))
@@ -145,16 +165,16 @@ public class UpdateStatusPanel extends javax.swing.JPanel {
                     .addComponent(pnlContent, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(pnlFooter, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(pnlHeader, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(10, Short.MAX_VALUE))
+                .addContainerGap(22, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(20, 20, 20)
                 .addComponent(pnlHeader, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addGap(24, 24, 24)
                 .addComponent(pnlContent, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(pnlFooter, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18))
         );
@@ -168,6 +188,10 @@ public class UpdateStatusPanel extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_btnUpdateActionPerformed
 
+    private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
+     
+    }//GEN-LAST:event_btnCancelActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancel;
@@ -177,6 +201,7 @@ public class UpdateStatusPanel extends javax.swing.JPanel {
     private javax.swing.JLabel lblClaimNumber;
     private javax.swing.JLabel lblOrderDetails;
     private javax.swing.JLabel lblStatus;
+    private javax.swing.JLabel lblStatusCaption;
     private javax.swing.JLabel lblTitle;
     private javax.swing.JPanel pnlContent;
     private javax.swing.JPanel pnlFooter;
