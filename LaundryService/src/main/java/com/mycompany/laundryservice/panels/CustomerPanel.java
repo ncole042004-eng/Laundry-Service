@@ -4,6 +4,8 @@
  */
 package com.mycompany.laundryservice.panels;
 
+import javax.swing.JFrame;
+
 /**
  *
  * @author Cral
@@ -17,6 +19,13 @@ public class CustomerPanel extends javax.swing.JPanel {
 		initComponents();
 	}
 
+        public static void main(String[] args) {
+		JFrame frame = new JFrame();
+                frame.add(new CustomerPanel());
+		frame.pack();
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setVisible(true);
+	}
 	/**
 	 * This method is called from within the constructor to initialize the
 	 * form. WARNING: Do NOT modify this code. The content of this method is
