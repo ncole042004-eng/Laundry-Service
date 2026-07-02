@@ -17,15 +17,13 @@ public class DBConnection {
      *
      * Always use try-with-resources when calling this method:
      * try (Connection conn = DBConnection.getConnection()) { ... }
+	 * @return 
+	 * @throws java.sql.SQLException
      */
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(URL, USER, PASSWORD);
     }
 
-    /**
-     * Quick check to verify the database is reachable.
-     * Returns true if a connection can be opened, false otherwise.
-     */
     public static boolean canConnectToDB() {
         try (Connection conn = getConnection()) {
             return true;
