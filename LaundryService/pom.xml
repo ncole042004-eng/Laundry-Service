@@ -45,10 +45,20 @@
             <version>RELEASE300</version>
         </dependency>
     </dependencies>
+<<<<<<< HEAD
     
+=======
+   <build>
+    <resources>
+        <resource>
+            <directory>../resources</directory>
+        </resource>
+    </resources>
+</build>
+>>>>>>> 49e3871c30248940ae62ae428572203cc404b1cd
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>25</maven.compiler.release>
-        <exec.mainClass>com.mycompany.laundryservice.LaundryService</exec.mainClass>
+        <exec.mainClass>com.mycompany.laundryservice.MainJFrame</exec.mainClass>
     </properties>
 </project>
