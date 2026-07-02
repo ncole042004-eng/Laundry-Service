@@ -23,6 +23,7 @@
 		<artifactId>flatlaf</artifactId>
 		<version>3.7.1</version>
 	</dependency>
+<<<<<<< HEAD
 	<dependency>
 		<groupId>org.mindrot</groupId>
 		<artifactId>jbcrypt</artifactId>
@@ -32,6 +33,12 @@
             <groupId>org.netbeans.external</groupId>
             <artifactId>AbsoluteLayout</artifactId>
             <version>RELEASE300</version>
+=======
+        <dependency>
+            <groupId>unknown.binary</groupId>
+            <artifactId>AbsoluteLayout</artifactId>
+            <version>SNAPSHOT</version>
+>>>>>>> 69500bb (Add)
         </dependency>
     </dependencies>
     <properties>
