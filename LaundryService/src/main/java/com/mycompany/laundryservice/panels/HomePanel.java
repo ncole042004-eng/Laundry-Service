@@ -53,7 +53,7 @@ public class HomePanel extends javax.swing.JPanel {
                 jTable1 = new javax.swing.JTable();
                 jLabel7 = new javax.swing.JLabel();
 
-                setBackground(new java.awt.Color(255, 255, 255));
+                setBackground(new java.awt.Color(249, 249, 249));
 
                 pnlHeader.setBackground(new java.awt.Color(51, 204, 255));
                 pnlHeader.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
@@ -96,7 +96,7 @@ public class HomePanel extends javax.swing.JPanel {
                 jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
                 jLabel5.setText("Earned Today");
 
-                jPanel1.setBackground(new java.awt.Color(51, 204, 255));
+                jPanel1.setBackground(new java.awt.Color(43, 89, 195));
                 jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
 
                 javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -113,6 +113,7 @@ public class HomePanel extends javax.swing.JPanel {
                 jLabel6.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
                 jLabel6.setText("Claimed Today");
 
+                jTable1.setBackground(new java.awt.Color(249, 249, 249));
                 jTable1.setModel(new javax.swing.table.DefaultTableModel(
                         new Object [][] {
                                 {null, null, null, null, null, null, null, null, null},
@@ -158,7 +159,7 @@ public class HomePanel extends javax.swing.JPanel {
                                                                         .addComponent(jLabel2)))
                                                         .addGroup(layout.createSequentialGroup()
                                                                 .addComponent(jLabel7)
-                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 665, Short.MAX_VALUE)
+                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 733, Short.MAX_VALUE)
                                                                 .addComponent(jButton1)))
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                                 .addComponent(jButton2)
@@ -185,16 +186,15 @@ public class HomePanel extends javax.swing.JPanel {
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addGroup(layout.createSequentialGroup()
                                                 .addGap(60, 60, 60)
-                                                .addComponent(jLabel7)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
-                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                                .addComponent(jLabel7))
+                                        .addGroup(layout.createSequentialGroup()
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                                         .addComponent(jButton1)
-                                                        .addComponent(jButton2))
-                                                .addGap(15, 15, 15)))
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 258, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                                        .addComponent(jButton2))))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 457, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(37, Short.MAX_VALUE))
                         .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 );
         }// </editor-fold>//GEN-END:initComponents
