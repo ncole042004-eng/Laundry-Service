@@ -132,6 +132,32 @@ public class MyPanel extends javax.swing.JPanel {
 
 ---
 
+### Follow-Up: "Does 'set no size' mean I can design my panel however I want?"
+
+**Yes — that assumption is exactly correct.**
+
+When you design your panel in the NetBeans GUI Builder, you are designing it like a **fluid layout**, not a fixed picture frame. The actual pixel dimensions of the canvas you see in the designer during development do not matter — they are just a preview workspace. When your panel is loaded into `MainJFrame`'s `CardLayout`, it is **stretched or shrunk to fill whatever space is available** on the user's actual screen.
+
+This means you can lay out your form fields, tables, buttons, and labels in any arrangement that fits your panel's purpose. `MainJFrame` will size the whole panel to fill the screen for you automatically. You design for your content; `MainJFrame` handles the frame.
+
+### The one thing that bridges your design to the real screen
+
+Your only responsibility regarding sizing is making sure your components **behave correctly** when the panel stretches:
+
+- **Things that should grow** (tables, text areas, scroll panes) → anchor them to the panel edges in the GUI Builder so they stretch.
+- **Things that should stay fixed** (buttons, labels, titles) → do NOT anchor them. They stay at their designed size.
+
+If you do those two things correctly, your layout will look correct at any screen resolution.
+
+### Typography still matters
+
+Following the font sizing conventions from `UI_Requirements_and_Regulations.md` Section 5 (Panel title: Bold 18pt, field labels: 13pt, table content: 12pt) is what ensures **visual consistency** across all panels, regardless of what each panel's content is. Your panel may look completely different from another teammate's panel — but if both follow the same font and spacing conventions, the app will feel cohesive.
+
+### In short:
+> Design your panel for your content. `MainJFrame` handles the frame. You handle the contents. As long as your stretchable components are anchored and your fixed components are not, your layout will work on any screen.
+
+---
+
 ## Section B — "How do I make elements resize like HomePanel?" <a name="b"></a>
 
 There are two techniques depending on which layout manager your panel uses.
