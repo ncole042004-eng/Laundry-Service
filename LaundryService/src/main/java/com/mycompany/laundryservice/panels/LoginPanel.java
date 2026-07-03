@@ -5,8 +5,13 @@ import com.formdev.flatlaf.FlatLightLaf;
 import com.mycompany.laundryservice.MainJFrame;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Image;
+import java.awt.image.BaseMultiResolutionImage;
 import java.io.File;
+import java.net.URL;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 public class LoginPanel extends javax.swing.JPanel {
     
     private MainJFrame mainFrame;
@@ -21,6 +26,8 @@ public LoginPanel() {
 public LoginPanel(MainJFrame mainFrame) {
     this.mainFrame = mainFrame;
     initComponents();
+        JLabel lblLogo = null;
+    setMultiResolutionIcon(lblLogo, "Laundry-Service/res/iconLogo.png");
     txtUsername.putClientProperty("JTextField.placeholderText", "Username");
 txtPassword.putClientProperty("JTextField.placeholderText", "********");
     txtUsername.setText("Username");
@@ -111,6 +118,24 @@ txtPassword.setBorder(null);
 
     pnlLogo.setLayout(new java.awt.BorderLayout());
     pnlLogo.add(new ImagePanel("/iconLogo.png"), java.awt.BorderLayout.CENTER);
+}
+private void setMultiResolutionIcon(JLabel label, String path) {
+
+    URL url = getClass().getResource(path);
+
+    if (url == null) {
+        throw new IllegalArgumentException("Image not found: " + path);
+    }
+
+    Image baseImage = new ImageIcon(url).getImage();
+
+    Image multiImage = new BaseMultiResolutionImage(
+            baseImage,
+            baseImage,
+            baseImage
+    );
+
+    label.setIcon(new ImageIcon(multiImage));
 }
      public void refreshData() {
         // Re-query the database and reload your table/components here
@@ -243,7 +268,7 @@ txtPassword.setBorder(null);
         );
         pnlLeftLayout.setVerticalGroup(
             pnlLeftLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 760, Short.MAX_VALUE)
+            .addGap(0, 803, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -261,9 +286,9 @@ txtPassword.setBorder(null);
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 760, Short.MAX_VALUE)
-                    .addComponent(pnlLeft, javax.swing.GroupLayout.DEFAULT_SIZE, 760, Short.MAX_VALUE))
-                .addGap(0, 0, 0))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 803, Short.MAX_VALUE)
+                    .addComponent(pnlLeft, javax.swing.GroupLayout.DEFAULT_SIZE, 803, Short.MAX_VALUE))
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
