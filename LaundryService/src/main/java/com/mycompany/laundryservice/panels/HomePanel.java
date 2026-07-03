@@ -40,22 +40,55 @@ public class HomePanel extends javax.swing.JPanel {
         private void initComponents() {
 
                 jPanel1 = new javax.swing.JPanel();
+                companyTitle = new javax.swing.JLabel();
+                companyLocation = new javax.swing.JLabel();
+                homePageTitle = new javax.swing.JLabel();
+                homeSectionTitle = new javax.swing.JLabel();
 
                 setBackground(new java.awt.Color(249, 249, 249));
 
                 jPanel1.setBackground(new java.awt.Color(43, 89, 195));
                 jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
 
+                companyTitle.setFont(new java.awt.Font("Playfair Display", 0, 18)); // NOI18N
+                companyTitle.setForeground(new java.awt.Color(255, 255, 255));
+                companyTitle.setText("Laundry Service");
+
+                companyLocation.setFont(new java.awt.Font("Inter 18pt Medium", 0, 9)); // NOI18N
+                companyLocation.setForeground(new java.awt.Color(255, 255, 255));
+                companyLocation.setText("Ligao City, Albay");
+
                 javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
                 jPanel1.setLayout(jPanel1Layout);
                 jPanel1Layout.setHorizontalGroup(
                         jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 211, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                                .addGap(36, 36, 36)
+                                                .addComponent(companyTitle))
+                                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                                .addGap(67, 67, 67)
+                                                .addComponent(companyLocation)))
+                                .addContainerGap(37, Short.MAX_VALUE))
                 );
                 jPanel1Layout.setVerticalGroup(
                         jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 766, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(123, 123, 123)
+                                .addComponent(companyTitle)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(companyLocation)
+                                .addContainerGap(600, Short.MAX_VALUE))
                 );
+
+                homePageTitle.setFont(new java.awt.Font("Inter 28pt", 0, 22)); // NOI18N
+                homePageTitle.setForeground(new java.awt.Color(28, 28, 28));
+                homePageTitle.setText("Operations Overview");
+
+                homeSectionTitle.setFont(new java.awt.Font("Inter 18pt", 0, 11)); // NOI18N
+                homeSectionTitle.setForeground(new java.awt.Color(67, 70, 105));
+                homeSectionTitle.setText("Today's Overview and recent activity");
 
                 javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
                 this.setLayout(layout);
@@ -63,15 +96,29 @@ public class HomePanel extends javax.swing.JPanel {
                         layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
                                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 1067, Short.MAX_VALUE))
+                                .addGap(26, 26, 26)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(homePageTitle)
+                                        .addComponent(homeSectionTitle))
+                                .addGap(0, 824, Short.MAX_VALUE))
                 );
                 layout.setVerticalGroup(
                         layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createSequentialGroup()
+                                .addGap(101, 101, 101)
+                                .addComponent(homePageTitle)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(homeSectionTitle)
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 );
         }// </editor-fold>//GEN-END:initComponents
 	
         // Variables declaration - do not modify//GEN-BEGIN:variables
+        private javax.swing.JLabel companyLocation;
+        private javax.swing.JLabel companyTitle;
+        private javax.swing.JLabel homePageTitle;
+        private javax.swing.JLabel homeSectionTitle;
         private javax.swing.JPanel jPanel1;
         // End of variables declaration//GEN-END:variables
 }
