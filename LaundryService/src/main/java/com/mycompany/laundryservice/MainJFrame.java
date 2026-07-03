@@ -4,6 +4,9 @@
  */
 package com.mycompany.laundryservice;
 
+import java.awt.FontFormatException;
+import java.io.IOException;
+
 /**
  *
  * @author Cral
@@ -79,9 +82,8 @@ public class MainJFrame extends javax.swing.JFrame {
 			if (isPlayfair != null)
 				ge.registerFont(java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, isPlayfair));
 
-		} catch (Exception e) {
+		} catch (FontFormatException | IOException e) {
 			System.err.println("Warning: Failed to load custom fonts");
-			e.printStackTrace();
 		}
 
 		/* Create and display the form */
