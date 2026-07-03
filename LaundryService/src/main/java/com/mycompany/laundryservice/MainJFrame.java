@@ -8,7 +8,6 @@ package com.mycompany.laundryservice;
  *
  * @author Cral
  */
-import com.formdev.flatlaf.FlatLightLaf;
 
 public class MainJFrame extends javax.swing.JFrame {
 	
@@ -51,23 +50,39 @@ public class MainJFrame extends javax.swing.JFrame {
 	 * @param args the command line arguments
 	 */
 	public static void main(String args[]) {
-		/* Set the Nimbus look and feel */
-                 FlatLightLaf.setup();
-		//<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-		/* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-		 */
+                com.formdev.flatlaf.FlatLightLaf.setup();
+
 		try {
-			for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-				if ("Nimbus".equals(info.getName())) {
-					javax.swing.UIManager.setLookAndFeel(info.getClassName());
-					break;
-				}
-			}
-		} catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
-			logger.log(java.util.logging.Level.SEVERE, null, ex);
+			java.awt.GraphicsEnvironment ge = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment();
+
+			java.io.InputStream isReg = MainJFrame.class.getResourceAsStream("/fonts/Inter_18pt-Regular.ttf");
+			if (isReg != null)
+				ge.registerFont(java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, isReg));
+
+			java.io.InputStream isMedium = MainJFrame.class.getResourceAsStream("/font/Inter_18pt-Medium.ttf");
+			if (isMedium != null)
+				ge.registerFont(java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, isMedium));
+
+			java.io.InputStream isSemiBold = MainJFrame.class.getResourceAsStream("/font/Inter_18pt-SemiBold.ttf");
+			if (isSemiBold != null) 
+				ge.registerFont(java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, isSemiBold));
+
+			java.io.InputStream isBold = MainJFrame.class.getResourceAsStream("/fonts/Inter_18pt-Bold.ttf");
+			if (isBold != null)
+				ge.registerFont(java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, isBold));
+
+			java.io.InputStream is28Bold = MainJFrame.class.getResourceAsStream("/fonts/Inter_28pt-Bold.ttf");
+			if (is28Bold != null)
+				ge.registerFont(java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, is28Bold));
+
+			java.io.InputStream isPlayfair = MainJFrame.class.getResourceAsStream("/fonts/PlayfairDisplay-Bold.ttf");
+			if (isPlayfair != null)
+				ge.registerFont(java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, isPlayfair));
+
+		} catch (Exception e) {
+			System.err.println("Warning: Failed to load custom fonts");
+			e.printStackTrace();
 		}
-		//</editor-fold>
 
 		/* Create and display the form */
 		java.awt.EventQueue.invokeLater(() -> new MainJFrame().setVisible(true));
