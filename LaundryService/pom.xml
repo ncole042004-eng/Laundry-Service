@@ -51,4 +51,11 @@
         <maven.compiler.release>25</maven.compiler.release>
         <exec.mainClass>com.mycompany.laundryservice.MainJFrame</exec.mainClass>
     </properties>
+    <build>
+    <resources>
+        <resource>
+            <directory>../res</directory>
+        </resource>
+    </resources>
+    </build>
 </project>
