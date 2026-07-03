@@ -1,7 +1,10 @@
 package com.mycompany.laundryservice.panels;
 
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.image.BaseMultiResolutionImage;
+import java.net.URL;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
@@ -9,8 +12,38 @@ public class ImagePanel extends JPanel {
 
     private Image image;
 
+    /**
+     * Creates an ImagePanel that displays a multi-resolution image.
+     *
+     * @param path Resource path of the image (e.g. "/images/background.png")
+     */
     public ImagePanel(String path) {
-        image = new ImageIcon(getClass().getResource(path)).getImage();
+
+        URL url = getClass().getResource(path);
+
+        if (url == null) {
+            throw new IllegalArgumentException("Image not found: " + path);
+        }
+
+        Image baseImage = new ImageIcon(url).getImage();
+
+        /*
+         * Multi-Resolution Image
+         * Currently uses the same image for all resolution variants.
+         * Higher-resolution images can be added later.
+         */
+        image = new BaseMultiResolutionImage(
+                baseImage,
+                baseImage,
+                baseImage
+        );
+
+        setOpaque(false);
+    }
+
+    @Override
+    public Dimension getPreferredSize() {
+        return new Dimension(224, 224);
     }
 
     @Override
@@ -25,7 +58,8 @@ public class ImagePanel extends JPanel {
 
         double scale = Math.max(
                 (double) panelW / imgW,
-                (double) panelH / imgH);
+                (double) panelH / imgH
+        );
 
         int newW = (int) (imgW * scale);
         int newH = (int) (imgH * scale);
