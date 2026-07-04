@@ -27,11 +27,26 @@ public class SidebarPanel extends javax.swing.JPanel {
         // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
         private void initComponents() {
 
+                sidebarTitle = new javax.swing.JLabel();
+                sidebarAddress = new javax.swing.JLabel();
+
                 setBackground(new java.awt.Color(43, 89, 195));
-                setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.LINE_AXIS));
+                setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.Y_AXIS));
+
+                sidebarTitle.setBackground(new java.awt.Color(255, 255, 255));
+                sidebarTitle.setFont(new java.awt.Font("Playfair Display", 0, 18)); // NOI18N
+                sidebarTitle.setForeground(new java.awt.Color(255, 255, 255));
+                sidebarTitle.setText("Laundry Service");
+                add(sidebarTitle);
+
+                sidebarAddress.setForeground(new java.awt.Color(255, 255, 255));
+                sidebarAddress.setText("Ligao City, Albay");
+                add(sidebarAddress);
         }// </editor-fold>//GEN-END:initComponents
 
 
         // Variables declaration - do not modify//GEN-BEGIN:variables
+        private javax.swing.JLabel sidebarAddress;
+        private javax.swing.JLabel sidebarTitle;
         // End of variables declaration//GEN-END:variables
 }
