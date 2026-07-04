@@ -22,8 +22,9 @@ public class MainJFrame extends javax.swing.JFrame {
 	public MainJFrame() {
 		initComponents();
 		setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH);
-
 		sidebarPanel1.setMainFrame(this);
+
+		showCard("homePanel1");
 	}
 
 	public void showCard(String cardName) {
