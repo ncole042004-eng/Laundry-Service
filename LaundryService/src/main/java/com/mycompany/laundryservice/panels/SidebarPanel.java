@@ -222,7 +222,7 @@ public class SidebarPanel extends javax.swing.JPanel {
 
         private void navOrderListbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_navOrderListbtnActionPerformed
 		updateActiveButton(navOrderListbtn);
-//		mainFrame.showCard("");
+//		mainFrame.showCard("orderListPanel1");
         }//GEN-LAST:event_navOrderListbtnActionPerformed
 
         private void navUpdateStatusbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_navUpdateStatusbtnActionPerformed
