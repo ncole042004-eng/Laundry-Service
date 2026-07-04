@@ -154,7 +154,7 @@ public class SidebarPanel extends javax.swing.JPanel {
                 filler4 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 30), new java.awt.Dimension(0, 30), new java.awt.Dimension(32767, 30));
 
                 setBackground(new java.awt.Color(43, 89, 195));
-                setPreferredSize(new java.awt.Dimension(220, 0));
+                setPreferredSize(new java.awt.Dimension(240, 0));
                 setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.Y_AXIS));
 
                 sidebarTitle.setBackground(new java.awt.Color(255, 255, 255));
@@ -168,31 +168,38 @@ public class SidebarPanel extends javax.swing.JPanel {
                 add(sidebarAddress);
                 add(filler1);
 
+                navHomebtn.setFont(new java.awt.Font("Inter 18pt SemiBold", 0, 11)); // NOI18N
                 navHomebtn.setText("Home");
                 navHomebtn.addActionListener(this::navHomebtnActionPerformed);
                 add(navHomebtn);
 
+                navNewOrderbtn.setFont(new java.awt.Font("Inter 18pt SemiBold", 0, 11)); // NOI18N
                 navNewOrderbtn.setText("New Order");
                 navNewOrderbtn.addActionListener(this::navNewOrderbtnActionPerformed);
                 add(navNewOrderbtn);
 
+                navCustomersbtn.setFont(new java.awt.Font("Inter 18pt SemiBold", 0, 11)); // NOI18N
                 navCustomersbtn.setText("Customers");
                 navCustomersbtn.addActionListener(this::navCustomersbtnActionPerformed);
                 add(navCustomersbtn);
 
+                navOrderListbtn.setFont(new java.awt.Font("Inter 18pt SemiBold", 0, 11)); // NOI18N
                 navOrderListbtn.setText("Order List");
                 navOrderListbtn.addActionListener(this::navOrderListbtnActionPerformed);
                 add(navOrderListbtn);
 
+                navUpdateStatusbtn.setFont(new java.awt.Font("Inter 18pt SemiBold", 0, 11)); // NOI18N
                 navUpdateStatusbtn.setText("Update Status");
                 navUpdateStatusbtn.addActionListener(this::navUpdateStatusbtnActionPerformed);
                 add(navUpdateStatusbtn);
 
+                navReportsbtn.setFont(new java.awt.Font("Inter 18pt SemiBold", 0, 11)); // NOI18N
                 navReportsbtn.setText("Reports");
                 navReportsbtn.addActionListener(this::navReportsbtnActionPerformed);
                 add(navReportsbtn);
                 add(filler2);
 
+                navLogoutbtn.setFont(new java.awt.Font("Inter 18pt SemiBold", 0, 11)); // NOI18N
                 navLogoutbtn.setText("Logout");
                 add(navLogoutbtn);
                 add(filler4);

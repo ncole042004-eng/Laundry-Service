@@ -38,6 +38,7 @@ public class MainJFrame extends javax.swing.JFrame {
                 sidebarPanel1 = new com.mycompany.laundryservice.panels.SidebarPanel();
 
                 setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+                setBackground(new java.awt.Color(249, 249, 249));
                 getContentPane().add(sidebarPanel1, java.awt.BorderLayout.LINE_START);
 
                 pack();
