@@ -4,6 +4,7 @@
  */
 package com.mycompany.laundryservice;
 
+import com.mycompany.laundryservice.panels.SidebarPanel;
 import java.awt.FontFormatException;
 import java.io.IOException;
 
@@ -11,9 +12,8 @@ import java.io.IOException;
  *
  * @author Cral
  */
-
 public class MainJFrame extends javax.swing.JFrame {
-	
+
 	private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(MainJFrame.class.getName());
 
 	/**
@@ -21,6 +21,9 @@ public class MainJFrame extends javax.swing.JFrame {
 	 */
 	public MainJFrame() {
 		initComponents();
+		setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH);
+
+		sidebarPanel1.setMainFrame(this);
 	}
 
 	/**
@@ -32,18 +35,10 @@ public class MainJFrame extends javax.swing.JFrame {
         // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
         private void initComponents() {
 
-                setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+                sidebarPanel1 = new com.mycompany.laundryservice.panels.SidebarPanel();
 
-                javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-                getContentPane().setLayout(layout);
-                layout.setHorizontalGroup(
-                        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 752, Short.MAX_VALUE)
-                );
-                layout.setVerticalGroup(
-                        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 536, Short.MAX_VALUE)
-                );
+                setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+                getContentPane().add(sidebarPanel1, java.awt.BorderLayout.LINE_START);
 
                 pack();
                 setLocationRelativeTo(null);
@@ -52,35 +47,68 @@ public class MainJFrame extends javax.swing.JFrame {
 	/**
 	 * @param args the command line arguments
 	 */
+	private static void ensureSingleInstance() {
+		try {
+			try (java.net.Socket clientSocket = new java.net.Socket("127.0.0.1", 12345)) {
+				java.io.PrintWriter out = new java.io.PrintWriter(clientSocket.getOutputStream(), true);
+				out.println("SHUTDOWN");
+				Thread.sleep(500); 
+			}
+		} catch (Exception e) {
+		}
+
+		new Thread(() -> {
+			try (java.net.ServerSocket serverSocket = new java.net.ServerSocket(12345)) {
+				while (true) {
+					try (java.net.Socket socket = serverSocket.accept(); java.io.BufferedReader in = new java.io.BufferedReader(new java.io.InputStreamReader(socket.getInputStream()))) {
+
+						if ("SHUTDOWN".equals(in.readLine())) {
+							System.exit(0);
+						}
+					}
+				}
+			} catch (Exception ex) {
+			}
+		}).start();
+	}
+
 	public static void main(String args[]) {
-                com.formdev.flatlaf.FlatLightLaf.setup();
+		ensureSingleInstance();
+
+		com.formdev.flatlaf.FlatLightLaf.setup();
 
 		try {
 			java.awt.GraphicsEnvironment ge = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment();
 
 			java.io.InputStream isReg = MainJFrame.class.getResourceAsStream("/fonts/Inter_18pt-Regular.ttf");
-			if (isReg != null)
+			if (isReg != null) {
 				ge.registerFont(java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, isReg));
+			}
 
 			java.io.InputStream isMedium = MainJFrame.class.getResourceAsStream("/font/Inter_18pt-Medium.ttf");
-			if (isMedium != null)
+			if (isMedium != null) {
 				ge.registerFont(java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, isMedium));
+			}
 
 			java.io.InputStream isSemiBold = MainJFrame.class.getResourceAsStream("/font/Inter_18pt-SemiBold.ttf");
-			if (isSemiBold != null) 
+			if (isSemiBold != null) {
 				ge.registerFont(java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, isSemiBold));
+			}
 
 			java.io.InputStream isBold = MainJFrame.class.getResourceAsStream("/fonts/Inter_18pt-Bold.ttf");
-			if (isBold != null)
+			if (isBold != null) {
 				ge.registerFont(java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, isBold));
+			}
 
 			java.io.InputStream is28Bold = MainJFrame.class.getResourceAsStream("/fonts/Inter_28pt-Bold.ttf");
-			if (is28Bold != null)
+			if (is28Bold != null) {
 				ge.registerFont(java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, is28Bold));
+			}
 
 			java.io.InputStream isPlayfair = MainJFrame.class.getResourceAsStream("/fonts/PlayfairDisplay-Bold.ttf");
-			if (isPlayfair != null)
+			if (isPlayfair != null) {
 				ge.registerFont(java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, isPlayfair));
+			}
 
 		} catch (FontFormatException | IOException e) {
 			System.err.println("Warning: Failed to load custom fonts");
@@ -91,5 +119,6 @@ public class MainJFrame extends javax.swing.JFrame {
 	}
 
         // Variables declaration - do not modify//GEN-BEGIN:variables
+        private com.mycompany.laundryservice.panels.SidebarPanel sidebarPanel1;
         // End of variables declaration//GEN-END:variables
 }

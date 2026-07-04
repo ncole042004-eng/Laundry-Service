@@ -4,7 +4,6 @@ package com.mycompany.laundryservice.panels;
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
-
 /**
  *
  * @author Cral
@@ -14,8 +13,95 @@ public class SidebarPanel extends javax.swing.JPanel {
 	/**
 	 * Creates new form SidebarPanel
 	 */
+	private com.mycompany.laundryservice.MainJFrame mainFrame;
+
+	public void setMainFrame(com.mycompany.laundryservice.MainJFrame frame) {
+		this.mainFrame = frame;
+	}
+
 	public SidebarPanel() {
 		initComponents();
+
+		ImagePanel logoPanel = new ImagePanel("/iconLogo.png");
+
+		logoPanel.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
+
+		logoPanel.setPreferredSize(new java.awt.Dimension(96, 96));
+		logoPanel.setMaximumSize(new java.awt.Dimension(96, 96));
+		logoPanel.setMinimumSize(new java.awt.Dimension(96, 96));
+
+		add(javax.swing.Box.createVerticalStrut(30), 0);
+
+		add(logoPanel, 1);
+
+		sidebarTitle.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, 30));
+		sidebarAddress.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, 20));
+
+		sidebarTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+		sidebarAddress.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
+		sidebarTitle.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
+		sidebarAddress.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
+
+//		sidebarTitle.setBorder(javax.swing.BorderFactory.createEmptyBorder(24, 0, 0, 0));
+	}
+
+	public static javax.swing.JButton createNavButton(String text, boolean active, String iconFilename) {
+		javax.swing.JButton button = new javax.swing.JButton(text);
+
+		String style = active
+			? "arc: 8; hoverBackground: #3bd0fd; pressedBackground: #3bd0fd;"
+			: "arc: 8; hoverBackground: #ffffff1a; pressedBackground: #ffffff33;";
+		button.putClientProperty("FlatLaf.style", style);
+
+		if (active) {
+			button.setBackground(new java.awt.Color(0x3bd0fd));
+			button.setForeground(new java.awt.Color(0x00566c));
+		} else {
+			button.setBackground(new java.awt.Color(0x2b59c3));
+			button.setForeground(new java.awt.Color(255, 255, 255, 204));
+		}
+
+		com.formdev.flatlaf.extras.FlatSVGIcon icon = new com.formdev.flatlaf.extras.FlatSVGIcon("icons/" + iconFilename, 20, 20);
+		if (active) {
+			icon.setColorFilter(new com.formdev.flatlaf.extras.FlatSVGIcon.ColorFilter(c -> new java.awt.Color(0x00566c)));
+		} else {
+			icon.setColorFilter(new com.formdev.flatlaf.extras.FlatSVGIcon.ColorFilter(c -> new java.awt.Color(0xFFFFFF)));
+		}
+		button.setIcon(icon);
+		button.setIconTextGap(8);
+
+		button.setBorder(javax.swing.BorderFactory.createEmptyBorder(12, 24, 12, 24));
+		button.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+		button.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, 48));
+		button.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
+		button.setFocusable(false);
+
+		return button;
+	}
+
+	private void updateActiveButton(javax.swing.JButton clicked) {
+		com.formdev.flatlaf.extras.FlatSVGIcon.ColorFilter whiteFilter
+			= new com.formdev.flatlaf.extras.FlatSVGIcon.ColorFilter(c -> new java.awt.Color(0xFFFFFF));
+		com.formdev.flatlaf.extras.FlatSVGIcon.ColorFilter darkBlueFilter
+			= new com.formdev.flatlaf.extras.FlatSVGIcon.ColorFilter(c -> new java.awt.Color(0x00566c));
+
+		javax.swing.JButton[] allButtons = {
+			navHomebtn, navNewOrderbtn, navCustomersbtn,
+			navOrderListbtn, navUpdateStatusbtn, navReportsbtn, navLogoutbtn
+		};
+
+		for (javax.swing.JButton btn : allButtons) {
+			btn.putClientProperty("FlatLaf.style", "arc: 8; hoverBackground: #ffffff1a; pressedBackground: #ffffff33;");
+			btn.setBackground(new java.awt.Color(0x2b59c3));
+			btn.setForeground(new java.awt.Color(255, 255, 255, 204));
+			((com.formdev.flatlaf.extras.FlatSVGIcon) btn.getIcon()).setColorFilter(whiteFilter);
+		}
+
+		clicked.putClientProperty("FlatLaf.style", "arc: 8; hoverBackground: #3bd0fd; pressedBackground: #3bd0fd;");
+		clicked.setBackground(new java.awt.Color(0x3bd0fd));
+		clicked.setForeground(new java.awt.Color(0x00566c)); 
+		((com.formdev.flatlaf.extras.FlatSVGIcon) clicked.getIcon()).setColorFilter(darkBlueFilter);
 	}
 
 	/**
@@ -29,8 +115,46 @@ public class SidebarPanel extends javax.swing.JPanel {
 
                 sidebarTitle = new javax.swing.JLabel();
                 sidebarAddress = new javax.swing.JLabel();
+                filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 24), new java.awt.Dimension(0, 24), new java.awt.Dimension(32767, 24));
+                navHomebtn =
+                createNavButton
+                ("Home", true, "home.svg")
+                ;
+                navNewOrderbtn =
+                createNavButton
+                ("New Order", false, "add_box.svg"
+                )
+                ;
+                navCustomersbtn =
+                createNavButton
+                ("Customers", false, "group.svg"
+                )
+                ;
+                navOrderListbtn =
+                createNavButton
+                ("Order List", false, "list_alt.svg"
+                )
+                ;
+                navUpdateStatusbtn =
+                createNavButton
+                ("Update Status", false, "published_with_changes.svg"
+                )
+                ;
+                navReportsbtn =
+                createNavButton
+                ("Reports", false, "bar_chart.svg"
+                )
+                ;
+                filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
+                navLogoutbtn =
+                createNavButton
+                ("Logout", false, "logout.svg"
+                )
+                ;
+                filler4 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 30), new java.awt.Dimension(0, 30), new java.awt.Dimension(32767, 30));
 
                 setBackground(new java.awt.Color(43, 89, 195));
+                setPreferredSize(new java.awt.Dimension(220, 0));
                 setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.Y_AXIS));
 
                 sidebarTitle.setBackground(new java.awt.Color(255, 255, 255));
@@ -42,10 +166,75 @@ public class SidebarPanel extends javax.swing.JPanel {
                 sidebarAddress.setForeground(new java.awt.Color(255, 255, 255));
                 sidebarAddress.setText("Ligao City, Albay");
                 add(sidebarAddress);
+                add(filler1);
+
+                navHomebtn.setText("Home");
+                navHomebtn.addActionListener(this::navHomebtnActionPerformed);
+                add(navHomebtn);
+
+                navNewOrderbtn.setText("New Order");
+                navNewOrderbtn.addActionListener(this::navNewOrderbtnActionPerformed);
+                add(navNewOrderbtn);
+
+                navCustomersbtn.setText("Customers");
+                navCustomersbtn.addActionListener(this::navCustomersbtnActionPerformed);
+                add(navCustomersbtn);
+
+                navOrderListbtn.setText("Order List");
+                navOrderListbtn.addActionListener(this::navOrderListbtnActionPerformed);
+                add(navOrderListbtn);
+
+                navUpdateStatusbtn.setText("Update Status");
+                navUpdateStatusbtn.addActionListener(this::navUpdateStatusbtnActionPerformed);
+                add(navUpdateStatusbtn);
+
+                navReportsbtn.setText("Reports");
+                navReportsbtn.addActionListener(this::navReportsbtnActionPerformed);
+                add(navReportsbtn);
+                add(filler2);
+
+                navLogoutbtn.setText("Logout");
+                add(navLogoutbtn);
+                add(filler4);
         }// </editor-fold>//GEN-END:initComponents
+
+        private void navHomebtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_navHomebtnActionPerformed
+		updateActiveButton(navHomebtn);
+//		mainFrame.showCard("Home");
+        }//GEN-LAST:event_navHomebtnActionPerformed
+
+        private void navNewOrderbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_navNewOrderbtnActionPerformed
+		updateActiveButton(navNewOrderbtn);
+        }//GEN-LAST:event_navNewOrderbtnActionPerformed
+
+        private void navCustomersbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_navCustomersbtnActionPerformed
+		updateActiveButton(navCustomersbtn);
+        }//GEN-LAST:event_navCustomersbtnActionPerformed
+
+        private void navOrderListbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_navOrderListbtnActionPerformed
+		updateActiveButton(navOrderListbtn);
+        }//GEN-LAST:event_navOrderListbtnActionPerformed
+
+        private void navUpdateStatusbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_navUpdateStatusbtnActionPerformed
+		updateActiveButton(navUpdateStatusbtn);
+        }//GEN-LAST:event_navUpdateStatusbtnActionPerformed
+
+        private void navReportsbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_navReportsbtnActionPerformed
+		updateActiveButton(navReportsbtn);
+        }//GEN-LAST:event_navReportsbtnActionPerformed
 
 
         // Variables declaration - do not modify//GEN-BEGIN:variables
+        private javax.swing.Box.Filler filler1;
+        private javax.swing.Box.Filler filler2;
+        private javax.swing.Box.Filler filler4;
+        private javax.swing.JButton navCustomersbtn;
+        private javax.swing.JButton navHomebtn;
+        private javax.swing.JButton navLogoutbtn;
+        private javax.swing.JButton navNewOrderbtn;
+        private javax.swing.JButton navOrderListbtn;
+        private javax.swing.JButton navReportsbtn;
+        private javax.swing.JButton navUpdateStatusbtn;
         private javax.swing.JLabel sidebarAddress;
         private javax.swing.JLabel sidebarTitle;
         // End of variables declaration//GEN-END:variables

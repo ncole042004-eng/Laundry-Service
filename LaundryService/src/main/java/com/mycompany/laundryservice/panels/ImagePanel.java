@@ -42,13 +42,13 @@ public class ImagePanel extends JPanel {
     }
 
     @Override
-    public Dimension getPreferredSize() {
-        return new Dimension(224, 224);
-    }
-
-    @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+
+	java.awt.Graphics2D g2 = (java.awt.Graphics2D) g;
+
+	g2.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION, java.awt.RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+	g2.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING, java.awt.RenderingHints.VALUE_ANTIALIAS_ON);
 
         int panelW = getWidth();
         int panelH = getHeight();

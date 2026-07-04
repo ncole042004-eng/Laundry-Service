@@ -50,12 +50,6 @@
 			<artifactId>flatlaf-extras</artifactId>
 			<version>3.7.1</version>
 		</dependency>
-
-		<dependency>
-			<groupId>com.github.weisj</groupId>
-			<artifactId>jsvg</artifactId>
-			<version>1.6.0</version>
-		</dependency>
 	</dependencies>
 
 	<properties>
@@ -66,7 +60,7 @@
 	<build>
 		<resources>
 			<resource>
-				<directory>../res</directory>
+				<directory>src/main/resources</directory>
 			</resource>
 		</resources>
 	</build>
