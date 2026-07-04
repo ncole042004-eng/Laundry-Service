@@ -32,3 +32,6 @@ Desktop.ini
 *.jar
 
 references/
+
+hs_err_pid*.log
+replay_pid*.log

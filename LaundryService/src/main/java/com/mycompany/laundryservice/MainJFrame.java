@@ -86,12 +86,12 @@ public class MainJFrame extends javax.swing.JFrame {
 				ge.registerFont(java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, isReg));
 			}
 
-			java.io.InputStream isMedium = MainJFrame.class.getResourceAsStream("/font/Inter_18pt-Medium.ttf");
+			java.io.InputStream isMedium = MainJFrame.class.getResourceAsStream("/fonts/Inter_18pt-Medium.ttf");
 			if (isMedium != null) {
 				ge.registerFont(java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, isMedium));
 			}
 
-			java.io.InputStream isSemiBold = MainJFrame.class.getResourceAsStream("/font/Inter_18pt-SemiBold.ttf");
+			java.io.InputStream isSemiBold = MainJFrame.class.getResourceAsStream("/fonts/Inter_18pt-SemiBold.ttf");
 			if (isSemiBold != null) {
 				ge.registerFont(java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, isSemiBold));
 			}

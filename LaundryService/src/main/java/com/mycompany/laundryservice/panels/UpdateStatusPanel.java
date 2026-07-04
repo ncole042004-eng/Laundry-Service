@@ -24,7 +24,7 @@ public class UpdateStatusPanel extends javax.swing.JPanel {
         FlatLightLaf.setup();
 
         JFrame frame = new JFrame();
-        frame.add(new HomePanel());
+        frame.add(new UpdateStatusPanel());
         frame.pack();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
