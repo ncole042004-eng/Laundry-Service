@@ -1,4 +1,3 @@
-
 package com.mycompany.laundryservice.panels;
 
 import com.formdev.flatlaf.FlatLightLaf;
@@ -12,134 +11,107 @@ import java.net.URL;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+
 public class LoginPanel extends javax.swing.JPanel {
-    
-    private MainJFrame mainFrame;
 
-public LoginPanel() {
-    this(null);
-}
-/**
+	private MainJFrame mainFrame;
+
+	public LoginPanel() {
+		this(null);
+	}
+
+	/**
 	 * Creates new form LoginPanel
-     * @param mainFrame
+	 *
+	 * @param mainFrame
 	 */
-public LoginPanel(MainJFrame mainFrame) {
-    this.mainFrame = mainFrame;
-    initComponents();
-        JLabel lblLogo = null;
-    setMultiResolutionIcon(lblLogo, "Laundry-Service/res/iconLogo.png");
-    txtUsername.putClientProperty("JTextField.placeholderText", "Username");
-txtPassword.putClientProperty("JTextField.placeholderText", "********");
-    txtUsername.setText("Username");
+	public LoginPanel(MainJFrame mainFrame) {
+		this.mainFrame = mainFrame;
+		initComponents();
+		txtUsername.putClientProperty("JTextField.placeholderText", "Username");
+		txtPassword.putClientProperty("JTextField.placeholderText", "********");
+		txtUsername.setText("Username");
 // remove text ng textfield
-txtUsername.addFocusListener(new java.awt.event.FocusAdapter() {
-    @Override
-    public void focusGained(java.awt.event.FocusEvent evt) {
-        if (txtUsername.getText().equals("Username")) {
-            txtUsername.setText("");
-        }
-    }
+		txtUsername.addFocusListener(new java.awt.event.FocusAdapter() {
+			@Override
+			public void focusGained(java.awt.event.FocusEvent evt) {
+				if (txtUsername.getText().equals("Username")) {
+					txtUsername.setText("");
+				}
+			}
 
-    @Override
-    public void focusLost(java.awt.event.FocusEvent evt) {
-        if (txtUsername.getText().isEmpty()) {
-            txtUsername.setText("Username");
-        }
-    }
-});
+			@Override
+			public void focusLost(java.awt.event.FocusEvent evt) {
+				if (txtUsername.getText().isEmpty()) {
+					txtUsername.setText("Username");
+				}
+			}
+		});
 //remove text ng password
-txtPassword.setText("Password");
-txtPassword.setEchoChar((char) 0); // Show placeholder text
+		txtPassword.setText("Password");
+		txtPassword.setEchoChar((char) 0); // Show placeholder text
 
-txtPassword.addFocusListener(new java.awt.event.FocusAdapter() {
-    @Override
-    public void focusGained(java.awt.event.FocusEvent evt) {
-        if (String.valueOf(txtPassword.getPassword()).equals("Password")) {
-            txtPassword.setText("");
-            txtPassword.setEchoChar('•'); // or '*' if you prefer
-        }
-    }
+		txtPassword.addFocusListener(new java.awt.event.FocusAdapter() {
+			@Override
+			public void focusGained(java.awt.event.FocusEvent evt) {
+				if (String.valueOf(txtPassword.getPassword()).equals("Password")) {
+					txtPassword.setText("");
+					txtPassword.setEchoChar('•'); // or '*' if you prefer
+				}
+			}
 
-    @Override
-    public void focusLost(java.awt.event.FocusEvent evt) {
-        if (txtPassword.getPassword().length == 0) {
-            txtPassword.setEchoChar((char) 0);
-            txtPassword.setText("Password");
-        }
-    }
-});
+			@Override
+			public void focusLost(java.awt.event.FocusEvent evt) {
+				if (txtPassword.getPassword().length == 0) {
+					txtPassword.setEchoChar((char) 0);
+					txtPassword.setText("Password");
+				}
+			}
+		});
 
-    txtUsername.setOpaque(false);
-txtUsername.setBackground(new Color(0, 0, 0, 0));
-txtUsername.setBorder(null);
+		txtUsername.setOpaque(false);
+		txtUsername.setBackground(new Color(0, 0, 0, 0));
+		txtUsername.setBorder(null);
 
-txtPassword.setOpaque(false);
-txtPassword.setBackground(new Color(0, 0, 0, 0));
-txtPassword.setBorder(null);
-    try {
-    Font titleFont = Font.createFont(
-            Font.TRUETYPE_FONT,
-            new File("../res/fonts/Inter_28pt-Bold.ttf"))
-            .deriveFont(22f);
+		txtPassword.setOpaque(false);
+		txtPassword.setBackground(new Color(0, 0, 0, 0));
+		txtPassword.setBorder(null);
+		setLayout(new java.awt.GridLayout(1, 2));
 
-    Font regularFont = Font.createFont(
-            Font.TRUETYPE_FONT,
-            new File("../res/fonts/Inter_18pt-Regular.ttf"))
-            .deriveFont(12f);
+		add(pnlLeft);
+		add(jPanel2);
 
-    Font mediumFont = Font.createFont(
-            Font.TRUETYPE_FONT,
-            new File("../res/fonts/Inter_18pt-Medium.ttf"))
-            .deriveFont(12f);
+		pnlLeft.setLayout(new java.awt.BorderLayout());
+		pnlLeft.add(new ImagePanel("/loginImage.png"), java.awt.BorderLayout.CENTER);
 
-    Font semiBoldFont = Font.createFont(
-            Font.TRUETYPE_FONT,
-            new File("../res/fonts/Inter_18pt-SemiBold.ttf"))
-            .deriveFont(13f);
+		pnlLogo.setLayout(new java.awt.BorderLayout());
+		pnlLogo.add(new ImagePanel("/iconLogo.png"), java.awt.BorderLayout.CENTER);
+	}
 
-    // Apply fonts
-    LAUNDRYSERVICEPOS.setFont(titleFont);
-    employeelogin.setFont(regularFont);
-    jLabel1.setFont(regularFont);      // "Enter your login information..."
-    txtUsername.setFont(mediumFont);
-    txtPassword.setFont(mediumFont);
-    btnLogin.setFont(semiBoldFont);
+	public void refreshData() {
+		// Re-query the database and reload your table/components here
+	}
 
-} catch (Exception e) {
-    e.printStackTrace();
-}
-    setLayout(new java.awt.GridLayout(1, 2));
+	public static void main(String[] args) {
+		com.formdev.flatlaf.FlatLightLaf.setup();
 
-    add(pnlLeft);
-    add(jPanel2);
-    
-    pnlLeft.setLayout(new java.awt.BorderLayout());
-    pnlLeft.add(new ImagePanel("/loginImage.png"), java.awt.BorderLayout.CENTER);
-
-    pnlLogo.setLayout(new java.awt.BorderLayout());
-    pnlLogo.add(new ImagePanel("/iconLogo.png"), java.awt.BorderLayout.CENTER);
-}
-private void setMultiResolutionIcon(JLabel label, String path) {
-
-    URL url = getClass().getResource(path);
-
-    if (url == null) {
-        throw new IllegalArgumentException("Image not found: " + path);
-    }
-
-    Image baseImage = new ImageIcon(url).getImage();
-
-    Image multiImage = new BaseMultiResolutionImage(
-            baseImage,
-            baseImage,
-            baseImage
-    );
-
-    label.setIcon(new ImageIcon(multiImage));
-}
-     public void refreshData() {
-        // Re-query the database and reload your table/components here
-    }
+		try {
+			java.awt.GraphicsEnvironment ge = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment();
+			ge.registerFont(java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, LoginPanel.class.getResourceAsStream("/fonts/Inter_18pt-Regular.ttf")));
+			ge.registerFont(java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, LoginPanel.class.getResourceAsStream("/fonts/Inter_18pt-Medium.ttf")));
+			ge.registerFont(java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, LoginPanel.class.getResourceAsStream("/fonts/Inter_18pt-SemiBold.ttf")));
+			ge.registerFont(java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, LoginPanel.class.getResourceAsStream("/fonts/Inter_28pt-Bold.ttf")));
+			ge.registerFont(java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, LoginPanel.class.getResourceAsStream("/fonts/PlayfairDisplay-Bold.ttf")));
+		} catch (Exception e) {
+			System.err.println("Warning: Failed to load custom fonts for test");
+		}
+		javax.swing.JFrame testFrame = new javax.swing.JFrame("Login Preview");
+		testFrame.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
+		testFrame.setContentPane(new LoginPanel());
+		testFrame.setSize(1280, 760);
+		testFrame.setLocationRelativeTo(null);
+		testFrame.setVisible(true);
+	}
 
 	/**
 	 * This method is called from within the constructor to initialize the
@@ -293,20 +265,8 @@ private void setMultiResolutionIcon(JLabel label, String path) {
     }// </editor-fold>//GEN-END:initComponents
 
     private void txtUsernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtUsernameActionPerformed
-        // TODO add your handling code here:
+	    // TODO add your handling code here:
     }//GEN-LAST:event_txtUsernameActionPerformed
-	public static void main(String[] args) {
-    FlatLightLaf.setup();
-    JFrame testFrame = new JFrame("Login Preview");
-    testFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-    testFrame.setContentPane(new LoginPanel());
-
-    testFrame.setSize(1280, 760);
-    testFrame.setLocationRelativeTo(null);
-
-    testFrame.setVisible(true);
-}
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel LAUNDRYSERVICEPOS;
