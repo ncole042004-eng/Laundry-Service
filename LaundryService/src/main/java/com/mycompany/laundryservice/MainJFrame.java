@@ -55,11 +55,12 @@ public class MainJFrame extends javax.swing.JFrame {
                 lblProfileRole = new javax.swing.JLabel();
                 lblProfileName = new javax.swing.JLabel();
                 pnlContent = new javax.swing.JPanel();
-                homePanel1 = new com.mycompany.laundryservice.panels.HomePanel();
                 newOrderPanel1 = new com.mycompany.laundryservice.panels.NewOrderPanel();
                 customerPanel1 = new com.mycompany.laundryservice.panels.CustomerPanel();
                 updateStatusPanel1 = new com.mycompany.laundryservice.panels.UpdateStatusPanel();
                 reportsPanel1 = new com.mycompany.laundryservice.panels.ReportsPanel();
+                homePanel1 = new com.mycompany.laundryservice.panels.HomePanel();
+                orderListPanel1 = new com.mycompany.laundryservice.panels.OrderListPanel();
 
                 setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
                 setBackground(new java.awt.Color(249, 249, 249));
@@ -115,11 +116,12 @@ public class MainJFrame extends javax.swing.JFrame {
                 pnlMainRight.add(topbarHeader, java.awt.BorderLayout.PAGE_START);
 
                 pnlContent.setLayout(new java.awt.CardLayout());
-                pnlContent.add(homePanel1, "homePanel1");
                 pnlContent.add(newOrderPanel1, "newOrderPanel1");
                 pnlContent.add(customerPanel1, "customerPanel1");
                 pnlContent.add(updateStatusPanel1, "updateStatusPanel1");
                 pnlContent.add(reportsPanel1, "reportsPanel1");
+                pnlContent.add(homePanel1, "homePanel1");
+                pnlContent.add(orderListPanel1, "orderListPanel1");
 
                 pnlMainRight.add(pnlContent, java.awt.BorderLayout.CENTER);
 
@@ -222,6 +224,7 @@ public class MainJFrame extends javax.swing.JFrame {
         private javax.swing.JLabel lblProfileRole;
         private javax.swing.JLabel lblStatus;
         private com.mycompany.laundryservice.panels.NewOrderPanel newOrderPanel1;
+        private com.mycompany.laundryservice.panels.OrderListPanel orderListPanel1;
         private javax.swing.JPanel pnlContent;
         private javax.swing.JPanel pnlMainRight;
         private com.mycompany.laundryservice.panels.ReportsPanel reportsPanel1;

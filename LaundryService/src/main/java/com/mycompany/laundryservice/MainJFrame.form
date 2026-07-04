@@ -191,13 +191,6 @@
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.DesignCardLayout"/>
           <SubComponents>
-            <Component class="com.mycompany.laundryservice.panels.HomePanel" name="homePanel1">
-              <Constraints>
-                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignCardLayout" value="org.netbeans.modules.form.compat2.layouts.DesignCardLayout$CardConstraintsDescription">
-                  <CardConstraints cardName="homePanel1"/>
-                </Constraint>
-              </Constraints>
-            </Component>
             <Component class="com.mycompany.laundryservice.panels.NewOrderPanel" name="newOrderPanel1">
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignCardLayout" value="org.netbeans.modules.form.compat2.layouts.DesignCardLayout$CardConstraintsDescription">
@@ -223,6 +216,20 @@
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignCardLayout" value="org.netbeans.modules.form.compat2.layouts.DesignCardLayout$CardConstraintsDescription">
                   <CardConstraints cardName="reportsPanel1"/>
+                </Constraint>
+              </Constraints>
+            </Component>
+            <Component class="com.mycompany.laundryservice.panels.HomePanel" name="homePanel1">
+              <Constraints>
+                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignCardLayout" value="org.netbeans.modules.form.compat2.layouts.DesignCardLayout$CardConstraintsDescription">
+                  <CardConstraints cardName="homePanel1"/>
+                </Constraint>
+              </Constraints>
+            </Component>
+            <Component class="com.mycompany.laundryservice.panels.OrderListPanel" name="orderListPanel1">
+              <Constraints>
+                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignCardLayout" value="org.netbeans.modules.form.compat2.layouts.DesignCardLayout$CardConstraintsDescription">
+                  <CardConstraints cardName="orderListPanel1"/>
                 </Constraint>
               </Constraints>
             </Component>
