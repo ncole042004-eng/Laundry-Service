@@ -21,16 +21,6 @@ public class HomePanel extends javax.swing.JPanel {
 
 	}
 
-	public static void main(String[] args) {
-		FlatLightLaf.setup();
-
-		JFrame frame = new JFrame();
-		frame.add(new HomePanel());
-		frame.pack();
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setVisible(true);
-	}
-
 	/**
 	 * This method is called from within the constructor to initialize the
 	 * form. WARNING: Do NOT modify this code. The content of this method is

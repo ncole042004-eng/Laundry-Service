@@ -207,27 +207,32 @@ public class SidebarPanel extends javax.swing.JPanel {
 
         private void navHomebtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_navHomebtnActionPerformed
 		updateActiveButton(navHomebtn);
-//		mainFrame.showCard("Home");
+		mainFrame.showCard("homePanel1");
         }//GEN-LAST:event_navHomebtnActionPerformed
 
         private void navNewOrderbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_navNewOrderbtnActionPerformed
 		updateActiveButton(navNewOrderbtn);
+		mainFrame.showCard("newOrderPanel1");
         }//GEN-LAST:event_navNewOrderbtnActionPerformed
 
         private void navCustomersbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_navCustomersbtnActionPerformed
 		updateActiveButton(navCustomersbtn);
+		mainFrame.showCard("customerPanel1");
         }//GEN-LAST:event_navCustomersbtnActionPerformed
 
         private void navOrderListbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_navOrderListbtnActionPerformed
 		updateActiveButton(navOrderListbtn);
+//		mainFrame.showCard("");
         }//GEN-LAST:event_navOrderListbtnActionPerformed
 
         private void navUpdateStatusbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_navUpdateStatusbtnActionPerformed
 		updateActiveButton(navUpdateStatusbtn);
+		mainFrame.showCard("updateStatusPanel1");
         }//GEN-LAST:event_navUpdateStatusbtnActionPerformed
 
         private void navReportsbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_navReportsbtnActionPerformed
 		updateActiveButton(navReportsbtn);
+		mainFrame.showCard("reportsPanel1");
         }//GEN-LAST:event_navReportsbtnActionPerformed
 
 

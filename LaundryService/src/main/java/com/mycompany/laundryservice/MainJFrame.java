@@ -26,6 +26,11 @@ public class MainJFrame extends javax.swing.JFrame {
 		sidebarPanel1.setMainFrame(this);
 	}
 
+	public void showCard(String cardName) {
+		java.awt.CardLayout c1 = (java.awt.CardLayout) pnlContent.getLayout();
+		c1.show(pnlContent, cardName);
+	}
+
 	/**
 	 * This method is called from within the constructor to initialize the
 	 * form. WARNING: Do NOT modify this code. The content of this method is
@@ -49,6 +54,12 @@ public class MainJFrame extends javax.swing.JFrame {
                 topbarProfileText = new javax.swing.JPanel();
                 lblProfileRole = new javax.swing.JLabel();
                 lblProfileName = new javax.swing.JLabel();
+                pnlContent = new javax.swing.JPanel();
+                homePanel1 = new com.mycompany.laundryservice.panels.HomePanel();
+                newOrderPanel1 = new com.mycompany.laundryservice.panels.NewOrderPanel();
+                customerPanel1 = new com.mycompany.laundryservice.panels.CustomerPanel();
+                updateStatusPanel1 = new com.mycompany.laundryservice.panels.UpdateStatusPanel();
+                reportsPanel1 = new com.mycompany.laundryservice.panels.ReportsPanel();
 
                 setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
                 setBackground(new java.awt.Color(249, 249, 249));
@@ -102,6 +113,15 @@ public class MainJFrame extends javax.swing.JFrame {
                 topbarHeader.add(topbarHeaderRight, java.awt.BorderLayout.LINE_END);
 
                 pnlMainRight.add(topbarHeader, java.awt.BorderLayout.PAGE_START);
+
+                pnlContent.setLayout(new java.awt.CardLayout());
+                pnlContent.add(homePanel1, "homePanel1");
+                pnlContent.add(newOrderPanel1, "newOrderPanel1");
+                pnlContent.add(customerPanel1, "customerPanel1");
+                pnlContent.add(updateStatusPanel1, "updateStatusPanel1");
+                pnlContent.add(reportsPanel1, "reportsPanel1");
+
+                pnlMainRight.add(pnlContent, java.awt.BorderLayout.CENTER);
 
                 getContentPane().add(pnlMainRight, java.awt.BorderLayout.CENTER);
 
@@ -192,6 +212,8 @@ public class MainJFrame extends javax.swing.JFrame {
 	}
 
         // Variables declaration - do not modify//GEN-BEGIN:variables
+        private com.mycompany.laundryservice.panels.CustomerPanel customerPanel1;
+        private com.mycompany.laundryservice.panels.HomePanel homePanel1;
         private javax.swing.JSeparator jSeparator1;
         private javax.swing.JLabel lblHeaderIcon;
         private javax.swing.JLabel lblHeaderTitle;
@@ -199,11 +221,15 @@ public class MainJFrame extends javax.swing.JFrame {
         private javax.swing.JLabel lblProfileName;
         private javax.swing.JLabel lblProfileRole;
         private javax.swing.JLabel lblStatus;
+        private com.mycompany.laundryservice.panels.NewOrderPanel newOrderPanel1;
+        private javax.swing.JPanel pnlContent;
         private javax.swing.JPanel pnlMainRight;
+        private com.mycompany.laundryservice.panels.ReportsPanel reportsPanel1;
         private com.mycompany.laundryservice.panels.SidebarPanel sidebarPanel1;
         private javax.swing.JPanel topbarHeader;
         private javax.swing.JPanel topbarHeaderLeft;
         private javax.swing.JPanel topbarHeaderRight;
         private javax.swing.JPanel topbarProfileText;
+        private com.mycompany.laundryservice.panels.UpdateStatusPanel updateStatusPanel1;
         // End of variables declaration//GEN-END:variables
 }
