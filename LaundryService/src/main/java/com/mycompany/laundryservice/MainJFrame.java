@@ -36,10 +36,74 @@ public class MainJFrame extends javax.swing.JFrame {
         private void initComponents() {
 
                 sidebarPanel1 = new com.mycompany.laundryservice.panels.SidebarPanel();
+                pnlMainRight = new javax.swing.JPanel();
+                topbarHeader = new javax.swing.JPanel();
+                topbarHeaderLeft = new javax.swing.JPanel();
+                lblHeaderIcon = MainJFrame.createHeaderIcon("local_laundry_service.svg", 24, 0x2655bd)
+                ;
+                lblHeaderTitle = new javax.swing.JLabel();
+                jSeparator1 = new javax.swing.JSeparator();
+                lblStatus = new javax.swing.JLabel();
+                topbarHeaderRight = new javax.swing.JPanel();
+                lblProfileIcon = MainJFrame.createHeaderIcon("account_circle.svg", 30, 0x2655bd);
+                topbarProfileText = new javax.swing.JPanel();
+                lblProfileRole = new javax.swing.JLabel();
+                lblProfileName = new javax.swing.JLabel();
 
                 setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
                 setBackground(new java.awt.Color(249, 249, 249));
                 getContentPane().add(sidebarPanel1, java.awt.BorderLayout.LINE_START);
+
+                pnlMainRight.setBackground(new java.awt.Color(249, 249, 249));
+                pnlMainRight.setLayout(new java.awt.BorderLayout());
+
+                topbarHeader.setBackground(new java.awt.Color(255, 255, 255));
+                topbarHeader.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(195, 198, 215)));
+                topbarHeader.setPreferredSize(new java.awt.Dimension(0, 64));
+                topbarHeader.setLayout(new java.awt.BorderLayout());
+
+                topbarHeaderLeft.setBackground(new java.awt.Color(255, 255, 255));
+                topbarHeaderLeft.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 16, 17));
+                topbarHeaderLeft.add(lblHeaderIcon);
+
+                lblHeaderTitle.setFont(new java.awt.Font("Inter 18pt", 1, 18)); // NOI18N
+                lblHeaderTitle.setText("Laundry Service Management");
+                topbarHeaderLeft.add(lblHeaderTitle);
+
+                jSeparator1.setForeground(new java.awt.Color(195, 198, 215));
+                jSeparator1.setOrientation(javax.swing.SwingConstants.VERTICAL);
+                jSeparator1.setPreferredSize(new java.awt.Dimension(1, 24));
+                topbarHeaderLeft.add(jSeparator1);
+
+                lblStatus.setFont(new java.awt.Font("Inter 18pt Medium", 0, 12)); // NOI18N
+                lblStatus.setForeground(new java.awt.Color(67, 70, 84));
+                lblStatus.setText("<html><span style=\"color:#2e7d32;\">&#9679;</span> System Operational</html>");
+                topbarHeaderLeft.add(lblStatus);
+
+                topbarHeader.add(topbarHeaderLeft, java.awt.BorderLayout.LINE_START);
+
+                topbarHeaderRight.setBackground(new java.awt.Color(255, 255, 255));
+                topbarHeaderRight.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 16, 15));
+                topbarHeaderRight.add(lblProfileIcon);
+
+                topbarProfileText.setBackground(new java.awt.Color(255, 255, 255));
+                topbarProfileText.setLayout(new javax.swing.BoxLayout(topbarProfileText, javax.swing.BoxLayout.Y_AXIS));
+
+                lblProfileRole.setFont(new java.awt.Font("Inter 18pt SemiBold", 0, 14)); // NOI18N
+                lblProfileRole.setText("Jane Doe");
+                topbarProfileText.add(lblProfileRole);
+
+                lblProfileName.setFont(new java.awt.Font("Inter 18pt", 0, 12)); // NOI18N
+                lblProfileName.setText("Admin");
+                topbarProfileText.add(lblProfileName);
+
+                topbarHeaderRight.add(topbarProfileText);
+
+                topbarHeader.add(topbarHeaderRight, java.awt.BorderLayout.LINE_END);
+
+                pnlMainRight.add(topbarHeader, java.awt.BorderLayout.PAGE_START);
+
+                getContentPane().add(pnlMainRight, java.awt.BorderLayout.CENTER);
 
                 pack();
                 setLocationRelativeTo(null);
@@ -71,6 +135,14 @@ public class MainJFrame extends javax.swing.JFrame {
 			} catch (Exception ex) {
 			}
 		}).start();
+	}
+
+	public static javax.swing.JLabel createHeaderIcon(String iconName, int size, int colorHex) {
+		javax.swing.JLabel label = new javax.swing.JLabel();
+		com.formdev.flatlaf.extras.FlatSVGIcon icon = new com.formdev.flatlaf.extras.FlatSVGIcon("icons/" + iconName, size, size);
+		icon.setColorFilter(new com.formdev.flatlaf.extras.FlatSVGIcon.ColorFilter(c -> new java.awt.Color(colorHex)));
+		label.setIcon(icon);
+		return label;
 	}
 
 	public static void main(String args[]) {
@@ -120,6 +192,18 @@ public class MainJFrame extends javax.swing.JFrame {
 	}
 
         // Variables declaration - do not modify//GEN-BEGIN:variables
+        private javax.swing.JSeparator jSeparator1;
+        private javax.swing.JLabel lblHeaderIcon;
+        private javax.swing.JLabel lblHeaderTitle;
+        private javax.swing.JLabel lblProfileIcon;
+        private javax.swing.JLabel lblProfileName;
+        private javax.swing.JLabel lblProfileRole;
+        private javax.swing.JLabel lblStatus;
+        private javax.swing.JPanel pnlMainRight;
         private com.mycompany.laundryservice.panels.SidebarPanel sidebarPanel1;
+        private javax.swing.JPanel topbarHeader;
+        private javax.swing.JPanel topbarHeaderLeft;
+        private javax.swing.JPanel topbarHeaderRight;
+        private javax.swing.JPanel topbarProfileText;
         // End of variables declaration//GEN-END:variables
 }
