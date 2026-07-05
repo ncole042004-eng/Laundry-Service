@@ -53,8 +53,8 @@ public class MainJFrame extends javax.swing.JFrame {
                 topbarHeaderRight = new javax.swing.JPanel();
                 lblProfileIcon = MainJFrame.createHeaderIcon("account_circle.svg", 30, 0x2655bd);
                 topbarProfileText = new javax.swing.JPanel();
-                lblProfileRole = new javax.swing.JLabel();
                 lblProfileName = new javax.swing.JLabel();
+                lblProfileRole = new javax.swing.JLabel();
                 pnlContent = new javax.swing.JPanel();
                 newOrderPanel1 = new com.mycompany.laundryservice.panels.NewOrderPanel();
                 customerPanel1 = new com.mycompany.laundryservice.panels.CustomerPanel();
@@ -82,7 +82,7 @@ public class MainJFrame extends javax.swing.JFrame {
                 topbarHeaderLeft.add(lblHeaderIcon);
 
                 lblHeaderTitle.setFont(new java.awt.Font("Inter 18pt", 1, 18)); // NOI18N
-                lblHeaderTitle.setForeground(new java.awt.Color(43, 89, 195));
+                lblHeaderTitle.setForeground(new java.awt.Color(38, 85, 189));
                 lblHeaderTitle.setText("Laundry Service Management");
                 topbarHeaderLeft.add(lblHeaderTitle);
 
@@ -105,13 +105,13 @@ public class MainJFrame extends javax.swing.JFrame {
                 topbarProfileText.setBackground(new java.awt.Color(255, 255, 255));
                 topbarProfileText.setLayout(new javax.swing.BoxLayout(topbarProfileText, javax.swing.BoxLayout.Y_AXIS));
 
-                lblProfileRole.setFont(new java.awt.Font("Inter 18pt SemiBold", 0, 14)); // NOI18N
-                lblProfileRole.setText("Jane Doe");
-                topbarProfileText.add(lblProfileRole);
-
-                lblProfileName.setFont(new java.awt.Font("Inter 18pt", 0, 12)); // NOI18N
-                lblProfileName.setText("Admin");
+                lblProfileName.setFont(new java.awt.Font("Inter 18pt SemiBold", 0, 14)); // NOI18N
+                lblProfileName.setText("Jane Doe");
                 topbarProfileText.add(lblProfileName);
+
+                lblProfileRole.setFont(new java.awt.Font("Inter 18pt", 0, 12)); // NOI18N
+                lblProfileRole.setText("Admin");
+                topbarProfileText.add(lblProfileRole);
 
                 topbarHeaderRight.add(topbarProfileText);
 
