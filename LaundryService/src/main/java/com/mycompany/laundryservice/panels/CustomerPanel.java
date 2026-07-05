@@ -24,8 +24,19 @@ public class CustomerPanel extends javax.swing.JPanel {
                 txtPhone.putClientProperty("JTextField.placeholderText", "+63 900 000 0000");
                 txtAddress.putClientProperty("JTextField.placeholderText", "Street, Barangay, City");
                 txtSearch.putClientProperty("JTextField.placeholderText", "Search by name, ID, or phone number...");
+                btnSave.setIcon(loadIcon("save.svg", 18, 0xFFFFFF));
+                btnUpdate.setIcon(loadIcon("edit.svg", 18, 0xFFFFFF));
+                btnDeactivate.setIcon(loadIcon("person_off.svg", 18, 0xFFFFFF));
+                btnFilter.setIcon(loadIcon("filter_list.svg", 18, 0x434654));
+                lblRegisterHeader.setIcon(loadIcon("person_add.svg", 20, 0x33CCF9));
+                txtSearch.putClientProperty("JTextField.leadingIcon", loadIcon("search.svg", 16, 0x434654));
         }
-
+        private javax.swing.Icon loadIcon(String iconName, int size, int colorHex) {
+            com.formdev.flatlaf.extras.FlatSVGIcon icon =
+            new com.formdev.flatlaf.extras.FlatSVGIcon("icons/" + iconName, size, size);
+            icon.setColorFilter(new com.formdev.flatlaf.extras.FlatSVGIcon.ColorFilter(c -> new Color(colorHex)));
+        return icon;
+}
 	/**
 	 * This method is called from within the constructor to initialize the
 	 * form. WARNING: Do NOT modify this code. The content of this method is
