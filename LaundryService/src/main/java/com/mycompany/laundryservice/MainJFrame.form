@@ -90,6 +90,9 @@
               </Layout>
               <SubComponents>
                 <Component class="javax.swing.JLabel" name="lblHeaderIcon">
+                  <Properties>
+                    <Property name="iconTextGap" type="int" value="2"/>
+                  </Properties>
                   <AuxValues>
                     <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="MainJFrame.createHeaderIcon(&quot;local_laundry_service.svg&quot;, 24, 0x2655bd)&#xd;&#xa;"/>
                   </AuxValues>
@@ -98,6 +101,9 @@
                   <Properties>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Inter 18pt" size="18" style="1"/>
+                    </Property>
+                    <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                      <Color blue="c3" green="59" red="2b" type="rgb"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="Laundry Service Management"/>
                   </Properties>
@@ -191,6 +197,13 @@
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.DesignCardLayout"/>
           <SubComponents>
+            <Component class="com.mycompany.laundryservice.panels.HomePanel" name="homePanel1">
+              <Constraints>
+                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignCardLayout" value="org.netbeans.modules.form.compat2.layouts.DesignCardLayout$CardConstraintsDescription">
+                  <CardConstraints cardName="homePanel1"/>
+                </Constraint>
+              </Constraints>
+            </Component>
             <Component class="com.mycompany.laundryservice.panels.NewOrderPanel" name="newOrderPanel1">
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignCardLayout" value="org.netbeans.modules.form.compat2.layouts.DesignCardLayout$CardConstraintsDescription">
@@ -216,13 +229,6 @@
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignCardLayout" value="org.netbeans.modules.form.compat2.layouts.DesignCardLayout$CardConstraintsDescription">
                   <CardConstraints cardName="reportsPanel1"/>
-                </Constraint>
-              </Constraints>
-            </Component>
-            <Component class="com.mycompany.laundryservice.panels.HomePanel" name="homePanel1">
-              <Constraints>
-                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignCardLayout" value="org.netbeans.modules.form.compat2.layouts.DesignCardLayout$CardConstraintsDescription">
-                  <CardConstraints cardName="homePanel1"/>
                 </Constraint>
               </Constraints>
             </Component>

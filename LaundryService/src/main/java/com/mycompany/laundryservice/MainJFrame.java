@@ -56,11 +56,11 @@ public class MainJFrame extends javax.swing.JFrame {
                 lblProfileRole = new javax.swing.JLabel();
                 lblProfileName = new javax.swing.JLabel();
                 pnlContent = new javax.swing.JPanel();
+                homePanel1 = new com.mycompany.laundryservice.panels.HomePanel();
                 newOrderPanel1 = new com.mycompany.laundryservice.panels.NewOrderPanel();
                 customerPanel1 = new com.mycompany.laundryservice.panels.CustomerPanel();
                 updateStatusPanel1 = new com.mycompany.laundryservice.panels.UpdateStatusPanel();
                 reportsPanel1 = new com.mycompany.laundryservice.panels.ReportsPanel();
-                homePanel1 = new com.mycompany.laundryservice.panels.HomePanel();
                 orderListPanel1 = new com.mycompany.laundryservice.panels.OrderListPanel();
 
                 setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -77,9 +77,12 @@ public class MainJFrame extends javax.swing.JFrame {
 
                 topbarHeaderLeft.setBackground(new java.awt.Color(255, 255, 255));
                 topbarHeaderLeft.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 16, 17));
+
+                lblHeaderIcon.setIconTextGap(2);
                 topbarHeaderLeft.add(lblHeaderIcon);
 
                 lblHeaderTitle.setFont(new java.awt.Font("Inter 18pt", 1, 18)); // NOI18N
+                lblHeaderTitle.setForeground(new java.awt.Color(43, 89, 195));
                 lblHeaderTitle.setText("Laundry Service Management");
                 topbarHeaderLeft.add(lblHeaderTitle);
 
@@ -117,11 +120,11 @@ public class MainJFrame extends javax.swing.JFrame {
                 pnlMainRight.add(topbarHeader, java.awt.BorderLayout.PAGE_START);
 
                 pnlContent.setLayout(new java.awt.CardLayout());
+                pnlContent.add(homePanel1, "homePanel1");
                 pnlContent.add(newOrderPanel1, "newOrderPanel1");
                 pnlContent.add(customerPanel1, "customerPanel1");
                 pnlContent.add(updateStatusPanel1, "updateStatusPanel1");
                 pnlContent.add(reportsPanel1, "reportsPanel1");
-                pnlContent.add(homePanel1, "homePanel1");
                 pnlContent.add(orderListPanel1, "orderListPanel1");
 
                 pnlMainRight.add(pnlContent, java.awt.BorderLayout.CENTER);
