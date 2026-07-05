@@ -30,43 +30,62 @@ public class HomePanel extends javax.swing.JPanel {
         // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
         private void initComponents() {
 
-                homePageTitle = new javax.swing.JLabel();
-                homeSectionTitle = new javax.swing.JLabel();
+                pnlHeader = new javax.swing.JPanel();
+                pnlBody = new javax.swing.JPanel();
+                pnlMetrics = new javax.swing.JPanel();
+                pnlTable = new javax.swing.JPanel();
 
                 setBackground(new java.awt.Color(249, 249, 249));
+                setLayout(new java.awt.BorderLayout());
 
-                homePageTitle.setFont(new java.awt.Font("Inter 28pt", 0, 22)); // NOI18N
-                homePageTitle.setForeground(new java.awt.Color(28, 28, 28));
-                homePageTitle.setText("Operations Overview");
-
-                homeSectionTitle.setFont(new java.awt.Font("Inter 18pt", 0, 11)); // NOI18N
-                homeSectionTitle.setForeground(new java.awt.Color(67, 70, 105));
-                homeSectionTitle.setText("Today's Overview and recent activity");
-
-                javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-                this.setLayout(layout);
-                layout.setHorizontalGroup(
-                        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                                .addGap(14, 14, 14)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(homePageTitle)
-                                        .addComponent(homeSectionTitle))
-                                .addContainerGap(770, Short.MAX_VALUE))
+                javax.swing.GroupLayout pnlHeaderLayout = new javax.swing.GroupLayout(pnlHeader);
+                pnlHeader.setLayout(pnlHeaderLayout);
+                pnlHeaderLayout.setHorizontalGroup(
+                        pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 1003, Short.MAX_VALUE)
                 );
-                layout.setVerticalGroup(
-                        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                                .addGap(24, 24, 24)
-                                .addComponent(homePageTitle)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(homeSectionTitle)
-                                .addContainerGap(590, Short.MAX_VALUE))
+                pnlHeaderLayout.setVerticalGroup(
+                        pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 100, Short.MAX_VALUE)
                 );
+
+                add(pnlHeader, java.awt.BorderLayout.NORTH);
+
+                pnlBody.setLayout(new java.awt.BorderLayout());
+
+                javax.swing.GroupLayout pnlMetricsLayout = new javax.swing.GroupLayout(pnlMetrics);
+                pnlMetrics.setLayout(pnlMetricsLayout);
+                pnlMetricsLayout.setHorizontalGroup(
+                        pnlMetricsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 1003, Short.MAX_VALUE)
+                );
+                pnlMetricsLayout.setVerticalGroup(
+                        pnlMetricsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 100, Short.MAX_VALUE)
+                );
+
+                pnlBody.add(pnlMetrics, java.awt.BorderLayout.NORTH);
+
+                javax.swing.GroupLayout pnlTableLayout = new javax.swing.GroupLayout(pnlTable);
+                pnlTable.setLayout(pnlTableLayout);
+                pnlTableLayout.setHorizontalGroup(
+                        pnlTableLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 1003, Short.MAX_VALUE)
+                );
+                pnlTableLayout.setVerticalGroup(
+                        pnlTableLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 462, Short.MAX_VALUE)
+                );
+
+                pnlBody.add(pnlTable, java.awt.BorderLayout.CENTER);
+
+                add(pnlBody, java.awt.BorderLayout.CENTER);
         }// </editor-fold>//GEN-END:initComponents
 
         // Variables declaration - do not modify//GEN-BEGIN:variables
-        private javax.swing.JLabel homePageTitle;
-        private javax.swing.JLabel homeSectionTitle;
+        private javax.swing.JPanel pnlBody;
+        private javax.swing.JPanel pnlHeader;
+        private javax.swing.JPanel pnlMetrics;
+        private javax.swing.JPanel pnlTable;
         // End of variables declaration//GEN-END:variables
 }
