@@ -36,16 +36,32 @@ public class HomePanel extends javax.swing.JPanel {
 
 		pnlMetrics.setBackground(new Color(249, 249, 249));
 
+		double earningsToday = getEarningsToday();
+		double earningsYesterday = getEarningsYesterday();
+		boolean earningsUp = earningsToday >= earningsYesterday;
+
 		pnlMetrics.add(createStatCard("payments.svg", 0x2655bd, "Earnings Today",
-			"\u20b1" + String.format("%,.2f", getEarningsToday()), null, 0));
+			"\u20b1" + String.format("%,.2f", earningsToday),
+			formatTrend(earningsToday, earningsYesterday),
+			earningsUp ? TREND_UP_COLOR : TREND_DOWN_COLOR,
+			earningsUp));
+
+		int ordersToday = getOrdersToday();
+		int ordersYesterday = getOrdersYesterday();
+		boolean ordersUp = ordersToday >= ordersYesterday;
+
 		pnlMetrics.add(createStatCard("shopping_basket.svg", 0x2655bd, "Orders Today",
-			String.valueOf(getOrdersToday()), null, 0));
+			String.valueOf(ordersToday),
+			formatTrend(ordersToday, ordersYesterday),
+			ordersUp ? TREND_UP_COLOR : TREND_DOWN_COLOR,
+			ordersUp));
+
 		pnlMetrics.add(createStatCard("check_circle.svg", 0x006781, "Claimed Today",
-			String.valueOf(getClaimedToday()), null, 0));
+			String.valueOf(getClaimedToday()), null, 0, true));
 		pnlMetrics.add(createStatCard("local_laundry_service.svg", 0x2a58c0, "Active Laundry",
-			String.valueOf(getActiveLaundryCount()), null, 0));
+			String.valueOf(getActiveLaundryCount()), null, 0, true));
 		pnlMetrics.add(createStatCard("inventory_2.svg", 0x2e7d32, "Ready for Pickup",
-			String.valueOf(getReadyForPickupCount()), null, 0));
+			String.valueOf(getReadyForPickupCount()), null, 0, true));
 
 		tblRecentOrders.setShowVerticalLines(false);
 		tblRecentOrders.setShowHorizontalLines(true);
@@ -92,12 +108,10 @@ public class HomePanel extends javax.swing.JPanel {
 		loadRecentOrdersTable();
 	}
 
-
-
 	private void startClock() {
 		javax.swing.Timer clockTimer = new javax.swing.Timer(1000, evt -> {
 			java.time.LocalDateTime now = java.time.LocalDateTime.now();
-			lblCurrentTime.setText(now.format(java.time.format.DateTimeFormatter.ofPattern("hh:mm a")));
+			lblCurrentTime.setText(now.format(java.time.format.DateTimeFormatter.ofPattern("h:mm:ss a")));
 			lblCurrentDate.setText(now.format(java.time.format.DateTimeFormatter.ofPattern("EEEE, MMMM d, yyyy")));
 		});
 
@@ -107,7 +121,7 @@ public class HomePanel extends javax.swing.JPanel {
 	}
 
 	private JPanel createStatCard(String iconName, int iconColor, String label,
-		String value, String trendText, int trendColor) {
+		String value, String trendText, int trendColor, boolean trendUp) {
 		JPanel card = new JPanel();
 		card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
 		card.setBackground(new Color(249, 249, 249));
@@ -138,6 +152,12 @@ public class HomePanel extends javax.swing.JPanel {
 		bottomRow.add(lblValue);
 
 		if (trendText != null) {
+			FlatSVGIcon trendIcon = new FlatSVGIcon(
+				trendUp ? "icons/trending_up.svg" : "icons/trending_down.svg", 14, 14);
+			trendIcon.setColorFilter(new FlatSVGIcon.ColorFilter(c -> new Color(trendColor)));
+			JLabel lblTrendIcon = new JLabel(trendIcon);
+			bottomRow.add(lblTrendIcon);
+
 			JLabel lblTrend = new JLabel(trendText);
 			lblTrend.setFont(new Font("Inter 18pt", Font.PLAIN, 12));
 			lblTrend.setForeground(new Color(trendColor));
@@ -193,6 +213,39 @@ public class HomePanel extends javax.swing.JPanel {
 			System.err.println("Failed to load count: " + e.getMessage());
 		}
 		return 0;
+	}
+
+	private double getEarningsYesterday() {
+		String sql = "SELECT COALESCE(SUM(total_amount), 0) AS total FROM Orders "
+			+ "WHERE DATE(order_date) = CURDATE() - INTERVAL 1 DAY";
+		try (Connection conn = DBConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
+
+			if (rs.next()) {
+				return rs.getDouble("total");
+			}
+		} catch (SQLException e) {
+			System.err.println("Failed to load yesterday's earnings: " + e.getMessage());
+		}
+		return 0;
+	}
+
+	private int getOrdersYesterday() {
+		return getCountWhere("DATE(order_date) = CURDATE() - INTERVAL 1 DAY");
+	}
+
+	private static final int TREND_UP_COLOR = 0x2e7d32;   // green
+	private static final int TREND_DOWN_COLOR = 0xba1a1a; // red
+
+	private String formatTrend(double current, double previous) {
+		if (previous == 0) {
+			return null;
+		}
+		double change = ((current - previous) / previous) * 100;
+		if (change == 0) {
+			return null;
+		}
+		String sign = change >= 0 ? "+" : "";
+		return sign + String.format("%.0f", change) + "%";
 	}
 
 	private List<Order> getRecentOrders() {

@@ -41,7 +41,7 @@ public class MainJFrame extends javax.swing.JFrame {
 		c1.show(pnlContent, cardName);
 		sidebarPanel1.setActiveCard(cardName);
 
-		boolean showButton = (!cardName.equals(AppConstants.CARD_NEW_ORDER) || !cardName.equals(AppConstants.CARD_ORDER_LIST) || !cardName.equals(AppConstants.CARD_REPORTS));
+		boolean showButton = (!cardName.equals(AppConstants.CARD_NEW_ORDER) && !cardName.equals(AppConstants.CARD_ORDER_LIST) && !cardName.equals(AppConstants.CARD_REPORTS));
 		setFloatingButtonVisible(showButton);
 	}
 
@@ -66,7 +66,7 @@ public class MainJFrame extends javax.swing.JFrame {
 		if (floatingBtn == null) {
 			return;
 		}
-		int x = getWidth() - floatingBtn.getWidth() - 32;
+		int x = getWidth() - floatingBtn.getWidth() - 39;
 		int y = getHeight() - floatingBtn.getHeight() - 52; // 52 accounts for taskbar/border
 		floatingBtn.setLocation(x, y);
 	}
@@ -131,9 +131,11 @@ public class MainJFrame extends javax.swing.JFrame {
                 lblHeaderTitle.setText("Laundry Service Management");
                 topbarHeaderLeft.add(lblHeaderTitle);
 
+                jSeparator1.setBackground(new java.awt.Color(195, 198, 215));
                 jSeparator1.setForeground(new java.awt.Color(195, 198, 215));
                 jSeparator1.setOrientation(javax.swing.SwingConstants.VERTICAL);
-                jSeparator1.setPreferredSize(new java.awt.Dimension(1, 24));
+                jSeparator1.setOpaque(true);
+                jSeparator1.setPreferredSize(new java.awt.Dimension(2, 20));
                 topbarHeaderLeft.add(jSeparator1);
 
                 lblStatus.setFont(new java.awt.Font("Inter 18pt Medium", 0, 12)); // NOI18N
