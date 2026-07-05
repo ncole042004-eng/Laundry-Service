@@ -21,7 +21,7 @@
     <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="3"/>
     <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
     <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
-    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,3,-128,0,0,4,-24"/>
+    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,3,114,0,0,5,8"/>
   </AuxValues>
 
   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
@@ -90,6 +90,9 @@
               </Layout>
               <SubComponents>
                 <Component class="javax.swing.JLabel" name="lblHeaderIcon">
+                  <Properties>
+                    <Property name="iconTextGap" type="int" value="2"/>
+                  </Properties>
                   <AuxValues>
                     <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="MainJFrame.createHeaderIcon(&quot;local_laundry_service.svg&quot;, 24, 0x2655bd)&#xd;&#xa;"/>
                   </AuxValues>
@@ -98,6 +101,9 @@
                   <Properties>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Inter 18pt" size="18" style="1"/>
+                    </Property>
+                    <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                      <Color blue="bd" green="55" red="26" type="rgb"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="Laundry Service Management"/>
                   </Properties>
@@ -160,7 +166,7 @@
                     <Property name="axis" type="int" value="1"/>
                   </Layout>
                   <SubComponents>
-                    <Component class="javax.swing.JLabel" name="lblProfileRole">
+                    <Component class="javax.swing.JLabel" name="lblProfileName">
                       <Properties>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Inter 18pt SemiBold" size="14" style="0"/>
@@ -168,7 +174,7 @@
                         <Property name="text" type="java.lang.String" value="Jane Doe"/>
                       </Properties>
                     </Component>
-                    <Component class="javax.swing.JLabel" name="lblProfileName">
+                    <Component class="javax.swing.JLabel" name="lblProfileRole">
                       <Properties>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Inter 18pt" size="12" style="0"/>
@@ -219,17 +225,17 @@
                 </Constraint>
               </Constraints>
             </Component>
-            <Component class="com.mycompany.laundryservice.panels.HomePanel" name="homePanel1">
-              <Constraints>
-                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignCardLayout" value="org.netbeans.modules.form.compat2.layouts.DesignCardLayout$CardConstraintsDescription">
-                  <CardConstraints cardName="homePanel1"/>
-                </Constraint>
-              </Constraints>
-            </Component>
             <Component class="com.mycompany.laundryservice.panels.OrderListPanel" name="orderListPanel1">
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignCardLayout" value="org.netbeans.modules.form.compat2.layouts.DesignCardLayout$CardConstraintsDescription">
                   <CardConstraints cardName="orderListPanel1"/>
+                </Constraint>
+              </Constraints>
+            </Component>
+            <Component class="com.mycompany.laundryservice.panels.HomePanel" name="homePanel1">
+              <Constraints>
+                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignCardLayout" value="org.netbeans.modules.form.compat2.layouts.DesignCardLayout$CardConstraintsDescription">
+                  <CardConstraints cardName="homePanel1"/>
                 </Constraint>
               </Constraints>
             </Component>

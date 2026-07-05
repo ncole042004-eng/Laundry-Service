@@ -4,8 +4,9 @@
  */
 package com.mycompany.laundryservice.panels;
 
-import com.formdev.flatlaf.FlatLightLaf;
-import javax.swing.JFrame;
+import javax.swing.*;
+import java.awt.*;
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 
 /**
  *
@@ -19,6 +20,79 @@ public class HomePanel extends javax.swing.JPanel {
 	public HomePanel() {
 		initComponents();
 
+		pnlMetrics.setLayout(new GridLayout(1, 5, 20, 0));
+		pnlMetrics.setBackground(new Color(249, 249, 249));
+
+		pnlMetrics.add(createStatCard("payments.svg", 0x2655bd, "Earnings Today", "\u20b11,245.00", "\u2197 +12%", 0x2e7d32));
+		pnlMetrics.add(createStatCard("shopping_basket.svg", 0x2655bd, "Orders Today", "42", "\u2197 +5%", 0x2e7d32));
+		pnlMetrics.add(createStatCard("check_circle.svg", 0x006781, "Claimed Today", "28", null, 0));
+		pnlMetrics.add(createStatCard("local_laundry_service.svg", 0x2a58c0, "Active Laundry", "15", null, 0));
+		pnlMetrics.add(createStatCard("inventory_2.svg", 0x2e7d32, "Ready for Pickup", "18", null, 0));
+
+		tblRecentOrders.setShowVerticalLines(false);
+		tblRecentOrders.setShowHorizontalLines(true);
+		tblRecentOrders.setGridColor(new Color(0xc3, 0xc6, 0xd7));
+		tblRecentOrders.setRowHeight(48);
+
+		tblRecentOrders.getColumnModel().getColumn(3).setCellRenderer(new ChipCellRenderer()); // Status
+		tblRecentOrders.getColumnModel().getColumn(4).setCellRenderer(new ChipCellRenderer()); // Payment
+
+		startClock();
+	}
+
+	private void startClock() {
+		javax.swing.Timer clockTimer = new javax.swing.Timer(1000, evt -> {
+			java.time.LocalDateTime now = java.time.LocalDateTime.now();
+			lblCurrentTime.setText(now.format(java.time.format.DateTimeFormatter.ofPattern("hh:mm a")));
+			lblCurrentDate.setText(now.format(java.time.format.DateTimeFormatter.ofPattern("EEEE, MMMM d, yyyy")));
+		});
+
+		clockTimer.setInitialDelay(0);
+
+		clockTimer.start();
+	}
+
+	private JPanel createStatCard(String iconName, int iconColor, String label,
+		String value, String trendText, int trendColor) {
+		JPanel card = new JPanel();
+		card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
+		card.setBackground(new Color(249, 249, 249));
+		card.setOpaque(true);
+
+		JPanel topRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 6, 0));
+		topRow.setBackground(new Color(249, 249, 249));
+		topRow.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+		JLabel lblLabel = new JLabel(label);
+		lblLabel.setFont(new Font("Inter 18pt", Font.PLAIN, 14));
+		lblLabel.setForeground(new Color(0x43, 0x46, 0x54));
+
+		FlatSVGIcon icon = new FlatSVGIcon("icons/" + iconName, 18, 18);
+		icon.setColorFilter(new FlatSVGIcon.ColorFilter(c -> new Color(iconColor)));
+		JLabel lblIcon = new JLabel(icon);
+
+		topRow.add(lblLabel);
+		topRow.add(lblIcon);
+
+		JPanel bottomRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 4));
+		bottomRow.setBackground(new Color(249, 249, 249));
+		bottomRow.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+		JLabel lblValue = new JLabel(value);
+		lblValue.setFont(new Font("Inter 18pt", Font.BOLD, 24));
+		lblValue.setForeground(new Color(0x1a, 0x1c, 0x1c));
+		bottomRow.add(lblValue);
+
+		if (trendText != null) {
+			JLabel lblTrend = new JLabel(trendText);
+			lblTrend.setFont(new Font("Inter 18pt", Font.PLAIN, 12));
+			lblTrend.setForeground(new Color(trendColor));
+			bottomRow.add(lblTrend);
+		}
+
+		card.add(topRow);
+		card.add(bottomRow);
+		return card;
 	}
 
 	/**
@@ -30,43 +104,121 @@ public class HomePanel extends javax.swing.JPanel {
         // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
         private void initComponents() {
 
-                homePageTitle = new javax.swing.JLabel();
-                homeSectionTitle = new javax.swing.JLabel();
+                pnlHeader = new javax.swing.JPanel();
+                pnlHeaderLeft = new javax.swing.JPanel();
+                lblPageTitle = new javax.swing.JLabel();
+                lblPageSubtitle = new javax.swing.JLabel();
+                pnlHeaderRight = new javax.swing.JPanel();
+                lblCurrentTime = new javax.swing.JLabel();
+                lblCurrentDate = new javax.swing.JLabel();
+                pnlBody = new javax.swing.JPanel();
+                pnlMetrics = new javax.swing.JPanel();
+                pnlTable = new javax.swing.JPanel();
+                pnlTableHeader = new javax.swing.JPanel();
+                lblRecentOrders = new javax.swing.JLabel();
+                jScrollPane1 = new javax.swing.JScrollPane();
+                tblRecentOrders = new javax.swing.JTable();
 
                 setBackground(new java.awt.Color(249, 249, 249));
+                setLayout(new java.awt.BorderLayout());
 
-                homePageTitle.setFont(new java.awt.Font("Inter 28pt", 0, 22)); // NOI18N
-                homePageTitle.setForeground(new java.awt.Color(28, 28, 28));
-                homePageTitle.setText("Operations Overview");
+                pnlHeader.setBackground(new java.awt.Color(249, 249, 249));
+                pnlHeader.setBorder(javax.swing.BorderFactory.createEmptyBorder(24, 24, 24, 24));
+                pnlHeader.setLayout(new java.awt.BorderLayout());
 
-                homeSectionTitle.setFont(new java.awt.Font("Inter 18pt", 0, 11)); // NOI18N
-                homeSectionTitle.setForeground(new java.awt.Color(67, 70, 105));
-                homeSectionTitle.setText("Today's Overview and recent activity");
+                pnlHeaderLeft.setBackground(new java.awt.Color(249, 249, 249));
+                pnlHeaderLeft.setPreferredSize(new java.awt.Dimension(400, 100));
+                pnlHeaderLeft.setLayout(new javax.swing.BoxLayout(pnlHeaderLeft, javax.swing.BoxLayout.Y_AXIS));
 
-                javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-                this.setLayout(layout);
-                layout.setHorizontalGroup(
-                        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                                .addGap(14, 14, 14)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(homePageTitle)
-                                        .addComponent(homeSectionTitle))
-                                .addContainerGap(770, Short.MAX_VALUE))
-                );
-                layout.setVerticalGroup(
-                        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                                .addGap(24, 24, 24)
-                                .addComponent(homePageTitle)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(homeSectionTitle)
-                                .addContainerGap(590, Short.MAX_VALUE))
-                );
+                lblPageTitle.setFont(new java.awt.Font("Inter 18pt", 1, 28)); // NOI18N
+                lblPageTitle.setForeground(new java.awt.Color(26, 28, 28));
+                lblPageTitle.setText("Operations Overview");
+                pnlHeaderLeft.add(lblPageTitle);
+
+                lblPageSubtitle.setFont(new java.awt.Font("Inter 18pt", 0, 14)); // NOI18N
+                lblPageSubtitle.setForeground(new java.awt.Color(67, 70, 84));
+                lblPageSubtitle.setText("Today's overview and recent activity");
+                pnlHeaderLeft.add(lblPageSubtitle);
+
+                pnlHeader.add(pnlHeaderLeft, java.awt.BorderLayout.WEST);
+
+                pnlHeaderRight.setBackground(new java.awt.Color(249, 249, 249));
+                pnlHeaderRight.setPreferredSize(new java.awt.Dimension(400, 100));
+                pnlHeaderRight.setLayout(new javax.swing.BoxLayout(pnlHeaderRight, javax.swing.BoxLayout.Y_AXIS));
+
+                lblCurrentTime.setFont(new java.awt.Font("Inter 18pt", 1, 20)); // NOI18N
+                lblCurrentTime.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+                lblCurrentTime.setText("10:45 AM");
+                lblCurrentTime.setAlignmentX(1.0F);
+                lblCurrentTime.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+                pnlHeaderRight.add(lblCurrentTime);
+
+                lblCurrentDate.setFont(new java.awt.Font("Inter 18pt", 0, 14)); // NOI18N
+                lblCurrentDate.setForeground(new java.awt.Color(67, 70, 84));
+                lblCurrentDate.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+                lblCurrentDate.setText("Thursday, July 2, 2026");
+                lblCurrentDate.setAlignmentX(1.0F);
+                lblCurrentDate.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+                pnlHeaderRight.add(lblCurrentDate);
+
+                pnlHeader.add(pnlHeaderRight, java.awt.BorderLayout.EAST);
+
+                add(pnlHeader, java.awt.BorderLayout.PAGE_START);
+
+                pnlBody.setLayout(new java.awt.BorderLayout());
+
+                pnlMetrics.setLayout(new java.awt.GridLayout(1, 5, 20, 0));
+                pnlBody.add(pnlMetrics, java.awt.BorderLayout.NORTH);
+
+                pnlTable.setBackground(new java.awt.Color(249, 249, 249));
+                pnlTable.setLayout(new java.awt.BorderLayout());
+
+                pnlTableHeader.setBackground(new java.awt.Color(249, 249, 249));
+                pnlTableHeader.setPreferredSize(new java.awt.Dimension(100, 100));
+                pnlTableHeader.setLayout(new java.awt.BorderLayout());
+
+                lblRecentOrders.setFont(new java.awt.Font("Inter 18pt", 1, 20)); // NOI18N
+                lblRecentOrders.setText("Recent Orders");
+                pnlTableHeader.add(lblRecentOrders, java.awt.BorderLayout.LINE_START);
+
+                pnlTable.add(pnlTableHeader, java.awt.BorderLayout.PAGE_START);
+
+                jScrollPane1.setBackground(new java.awt.Color(249, 249, 249));
+
+                tblRecentOrders.setModel(new javax.swing.table.DefaultTableModel(
+                        new Object [][] {
+                                {null, null, null, null, null, null, null, null},
+                                {null, null, null, null, null, null, null, null},
+                                {null, null, null, null, null, null, null, null},
+                                {null, null, null, null, null, null, null, null}
+                        },
+                        new String [] {
+                                "Claim Number", "Customer", "Phone Number", "Weight (kg)", "Status", "Payment", "Notes", "Total Amount"
+                        }
+                ));
+                jScrollPane1.setViewportView(tblRecentOrders);
+
+                pnlTable.add(jScrollPane1, java.awt.BorderLayout.CENTER);
+
+                pnlBody.add(pnlTable, java.awt.BorderLayout.CENTER);
+
+                add(pnlBody, java.awt.BorderLayout.CENTER);
         }// </editor-fold>//GEN-END:initComponents
 
         // Variables declaration - do not modify//GEN-BEGIN:variables
-        private javax.swing.JLabel homePageTitle;
-        private javax.swing.JLabel homeSectionTitle;
+        private javax.swing.JScrollPane jScrollPane1;
+        private javax.swing.JLabel lblCurrentDate;
+        private javax.swing.JLabel lblCurrentTime;
+        private javax.swing.JLabel lblPageSubtitle;
+        private javax.swing.JLabel lblPageTitle;
+        private javax.swing.JLabel lblRecentOrders;
+        private javax.swing.JPanel pnlBody;
+        private javax.swing.JPanel pnlHeader;
+        private javax.swing.JPanel pnlHeaderLeft;
+        private javax.swing.JPanel pnlHeaderRight;
+        private javax.swing.JPanel pnlMetrics;
+        private javax.swing.JPanel pnlTable;
+        private javax.swing.JPanel pnlTableHeader;
+        private javax.swing.JTable tblRecentOrders;
         // End of variables declaration//GEN-END:variables
 }
