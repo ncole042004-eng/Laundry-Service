@@ -412,16 +412,20 @@ public class HomePanel extends javax.swing.JPanel {
                 pnlTable.setLayout(new java.awt.BorderLayout());
 
                 pnlTableHeader.setBackground(new java.awt.Color(249, 249, 249));
-                pnlTableHeader.setPreferredSize(new java.awt.Dimension(100, 100));
+                pnlTableHeader.setPreferredSize(new java.awt.Dimension(100, 65));
                 pnlTableHeader.setLayout(new java.awt.BorderLayout());
 
                 lblRecentOrders.setFont(new java.awt.Font("Inter 18pt", 1, 20)); // NOI18N
                 lblRecentOrders.setText("Recent Orders");
+                lblRecentOrders.setPreferredSize(new java.awt.Dimension(200, 12));
                 pnlTableHeader.add(lblRecentOrders, java.awt.BorderLayout.LINE_START);
 
                 lblViewAll.setFont(new java.awt.Font("Inter 18pt", 1, 14)); // NOI18N
                 lblViewAll.setForeground(new java.awt.Color(38, 85, 189));
+                lblViewAll.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
                 lblViewAll.setText("View All");
+                lblViewAll.setAlignmentX(1.0F);
+                lblViewAll.setPreferredSize(new java.awt.Dimension(100, 12));
                 pnlTableHeader.add(lblViewAll, java.awt.BorderLayout.LINE_END);
 
                 pnlTable.add(pnlTableHeader, java.awt.BorderLayout.PAGE_START);
