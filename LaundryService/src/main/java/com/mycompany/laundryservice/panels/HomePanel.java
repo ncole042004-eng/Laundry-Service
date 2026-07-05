@@ -20,7 +20,6 @@ public class HomePanel extends javax.swing.JPanel {
 	public HomePanel() {
 		initComponents();
 
-		pnlMetrics.setLayout(new GridLayout(1, 5, 20, 0));
 		pnlMetrics.setBackground(new Color(249, 249, 249));
 
 		pnlMetrics.add(createStatCard("payments.svg", 0x2655bd, "Earnings Today", "\u20b11,245.00", "\u2197 +12%", 0x2e7d32));
@@ -34,8 +33,8 @@ public class HomePanel extends javax.swing.JPanel {
 		tblRecentOrders.setGridColor(new Color(0xc3, 0xc6, 0xd7));
 		tblRecentOrders.setRowHeight(48);
 
-		tblRecentOrders.getColumnModel().getColumn(3).setCellRenderer(new ChipCellRenderer()); // Status
-		tblRecentOrders.getColumnModel().getColumn(4).setCellRenderer(new ChipCellRenderer()); // Payment
+		tblRecentOrders.getColumnModel().getColumn(4).setCellRenderer(new ChipCellRenderer()); // Status
+		tblRecentOrders.getColumnModel().getColumn(5).setCellRenderer(new ChipCellRenderer()); // Payment
 
 		startClock();
 	}
@@ -124,6 +123,7 @@ public class HomePanel extends javax.swing.JPanel {
 
                 pnlHeader.setBackground(new java.awt.Color(249, 249, 249));
                 pnlHeader.setBorder(javax.swing.BorderFactory.createEmptyBorder(24, 24, 24, 24));
+                pnlHeader.setPreferredSize(new java.awt.Dimension(1003, 100));
                 pnlHeader.setLayout(new java.awt.BorderLayout());
 
                 pnlHeaderLeft.setBackground(new java.awt.Color(249, 249, 249));
@@ -165,8 +165,12 @@ public class HomePanel extends javax.swing.JPanel {
 
                 add(pnlHeader, java.awt.BorderLayout.PAGE_START);
 
+                pnlBody.setBackground(new java.awt.Color(249, 249, 249));
+                pnlBody.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 24, 24, 24));
                 pnlBody.setLayout(new java.awt.BorderLayout());
 
+                pnlMetrics.setBackground(new java.awt.Color(249, 249, 249));
+                pnlMetrics.setPreferredSize(new java.awt.Dimension(1188, 65));
                 pnlMetrics.setLayout(new java.awt.GridLayout(1, 5, 20, 0));
                 pnlBody.add(pnlMetrics, java.awt.BorderLayout.NORTH);
 
