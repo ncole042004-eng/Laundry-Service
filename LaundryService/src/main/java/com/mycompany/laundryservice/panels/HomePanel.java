@@ -431,7 +431,10 @@ public class HomePanel extends javax.swing.JPanel {
                 pnlTable.add(pnlTableHeader, java.awt.BorderLayout.PAGE_START);
 
                 jScrollPane1.setBackground(new java.awt.Color(249, 249, 249));
+                jScrollPane1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
 
+                tblRecentOrders.setBackground(new java.awt.Color(249, 249, 249));
+                tblRecentOrders.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
                 tblRecentOrders.setModel(new javax.swing.table.DefaultTableModel(
                         new Object [][] {
                                 {null, null, null, null, null, null, null, null},
