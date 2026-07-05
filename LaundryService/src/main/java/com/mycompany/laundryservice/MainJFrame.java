@@ -175,7 +175,8 @@ public class MainJFrame extends javax.swing.JFrame {
 		ensureSingleInstance();
 
 		com.formdev.flatlaf.FlatLightLaf.setup();
-
+                javax.swing.UIManager.put("Button.arc", 16);
+                javax.swing.UIManager.put("Component.arc", 16);
 		try {
 			java.awt.GraphicsEnvironment ge = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment();
 
