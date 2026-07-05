@@ -100,8 +100,26 @@ public class SidebarPanel extends javax.swing.JPanel {
 
 		clicked.putClientProperty("FlatLaf.style", "arc: 8; hoverBackground: #3bd0fd; pressedBackground: #3bd0fd;");
 		clicked.setBackground(new java.awt.Color(0x3bd0fd));
-		clicked.setForeground(new java.awt.Color(0x00566c)); 
+		clicked.setForeground(new java.awt.Color(0x00566c));
 		((com.formdev.flatlaf.extras.FlatSVGIcon) clicked.getIcon()).setColorFilter(darkBlueFilter);
+	}
+
+	public void setActiveCard(String cardName) {
+		switch (cardName) {
+			case com.mycompany.laundryservice.AppConstants.CARD_HOME ->
+				updateActiveButton(navHomebtn);
+			case com.mycompany.laundryservice.AppConstants.CARD_NEW_ORDER ->
+				updateActiveButton(navNewOrderbtn);
+			case com.mycompany.laundryservice.AppConstants.CARD_CUSTOMERS ->
+				updateActiveButton(navCustomersbtn);
+			case com.mycompany.laundryservice.AppConstants.CARD_ORDER_LIST ->
+				updateActiveButton(navOrderListbtn);
+			case com.mycompany.laundryservice.AppConstants.CARD_UPDATE_STATUS ->
+				updateActiveButton(navUpdateStatusbtn);
+			case com.mycompany.laundryservice.AppConstants.CARD_REPORTS ->
+				updateActiveButton(navReportsbtn);
+			default -> {}
+		}
 	}
 
 	/**
@@ -206,33 +224,27 @@ public class SidebarPanel extends javax.swing.JPanel {
         }// </editor-fold>//GEN-END:initComponents
 
         private void navHomebtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_navHomebtnActionPerformed
-		updateActiveButton(navHomebtn);
-		mainFrame.showCard("homePanel1");
+		mainFrame.showCard(com.mycompany.laundryservice.AppConstants.CARD_HOME);
         }//GEN-LAST:event_navHomebtnActionPerformed
 
         private void navNewOrderbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_navNewOrderbtnActionPerformed
-		updateActiveButton(navNewOrderbtn);
-		mainFrame.showCard("newOrderPanel1");
+		mainFrame.showCard(com.mycompany.laundryservice.AppConstants.CARD_NEW_ORDER);
         }//GEN-LAST:event_navNewOrderbtnActionPerformed
 
         private void navCustomersbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_navCustomersbtnActionPerformed
-		updateActiveButton(navCustomersbtn);
-		mainFrame.showCard("customerPanel1");
+		mainFrame.showCard(com.mycompany.laundryservice.AppConstants.CARD_CUSTOMERS);
         }//GEN-LAST:event_navCustomersbtnActionPerformed
 
         private void navOrderListbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_navOrderListbtnActionPerformed
-		updateActiveButton(navOrderListbtn);
-		mainFrame.showCard("orderListPanel1");
+		mainFrame.showCard(com.mycompany.laundryservice.AppConstants.CARD_ORDER_LIST);
         }//GEN-LAST:event_navOrderListbtnActionPerformed
 
         private void navUpdateStatusbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_navUpdateStatusbtnActionPerformed
-		updateActiveButton(navUpdateStatusbtn);
-		mainFrame.showCard("updateStatusPanel1");
+		mainFrame.showCard(com.mycompany.laundryservice.AppConstants.CARD_UPDATE_STATUS);
         }//GEN-LAST:event_navUpdateStatusbtnActionPerformed
 
         private void navReportsbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_navReportsbtnActionPerformed
-		updateActiveButton(navReportsbtn);
-		mainFrame.showCard("reportsPanel1");
+		mainFrame.showCard(com.mycompany.laundryservice.AppConstants.CARD_REPORTS);
         }//GEN-LAST:event_navReportsbtnActionPerformed
 
 

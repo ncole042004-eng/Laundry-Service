@@ -7,6 +7,18 @@ package com.mycompany.laundryservice.panels;
 import javax.swing.*;
 import java.awt.*;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
+import com.mycompany.laundryservice.MainJFrame;
+import com.mycompany.laundryservice.AppConstants;
+import com.mycompany.laundryservice.database.DBConnection;
+import com.mycompany.laundryservice.model.Customer;
+import com.mycompany.laundryservice.model.Order;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.ArrayList;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -17,16 +29,23 @@ public class HomePanel extends javax.swing.JPanel {
 	/**
 	 * Creates new form HomePanel
 	 */
+	private MainJFrame mainFrame;
+
 	public HomePanel() {
 		initComponents();
 
 		pnlMetrics.setBackground(new Color(249, 249, 249));
 
-		pnlMetrics.add(createStatCard("payments.svg", 0x2655bd, "Earnings Today", "\u20b11,245.00", "\u2197 +12%", 0x2e7d32));
-		pnlMetrics.add(createStatCard("shopping_basket.svg", 0x2655bd, "Orders Today", "42", "\u2197 +5%", 0x2e7d32));
-		pnlMetrics.add(createStatCard("check_circle.svg", 0x006781, "Claimed Today", "28", null, 0));
-		pnlMetrics.add(createStatCard("local_laundry_service.svg", 0x2a58c0, "Active Laundry", "15", null, 0));
-		pnlMetrics.add(createStatCard("inventory_2.svg", 0x2e7d32, "Ready for Pickup", "18", null, 0));
+		pnlMetrics.add(createStatCard("payments.svg", 0x2655bd, "Earnings Today",
+			"\u20b1" + String.format("%,.2f", getEarningsToday()), null, 0));
+		pnlMetrics.add(createStatCard("shopping_basket.svg", 0x2655bd, "Orders Today",
+			String.valueOf(getOrdersToday()), null, 0));
+		pnlMetrics.add(createStatCard("check_circle.svg", 0x006781, "Claimed Today",
+			String.valueOf(getClaimedToday()), null, 0));
+		pnlMetrics.add(createStatCard("local_laundry_service.svg", 0x2a58c0, "Active Laundry",
+			String.valueOf(getActiveLaundryCount()), null, 0));
+		pnlMetrics.add(createStatCard("inventory_2.svg", 0x2e7d32, "Ready for Pickup",
+			String.valueOf(getReadyForPickupCount()), null, 0));
 
 		tblRecentOrders.setShowVerticalLines(false);
 		tblRecentOrders.setShowHorizontalLines(true);
@@ -36,8 +55,44 @@ public class HomePanel extends javax.swing.JPanel {
 		tblRecentOrders.getColumnModel().getColumn(4).setCellRenderer(new ChipCellRenderer()); // Status
 		tblRecentOrders.getColumnModel().getColumn(5).setCellRenderer(new ChipCellRenderer()); // Payment
 
+		lblViewAll.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		lblViewAll.addMouseListener(new java.awt.event.MouseAdapter() {
+			@Override
+			public void mouseClicked(java.awt.event.MouseEvent evt) {
+				mainFrame.showCard(AppConstants.CARD_ORDER_LIST);
+			}
+		});
+
 		startClock();
+
+		tblRecentOrders.getTableHeader().setFont(new Font("Inter 18pt", Font.BOLD, 14));
+		tblRecentOrders.setFont(new Font("Inter 18pt", Font.PLAIN, 14));
+
+		javax.swing.table.DefaultTableCellRenderer claimRenderer = new javax.swing.table.DefaultTableCellRenderer() {
+			@Override
+			public java.awt.Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+				super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+				setFont(new Font("Inter 18pt", Font.BOLD, 14));
+				setForeground(new Color(0x2655bd));
+				setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
+				return this;
+			}
+		};
+		tblRecentOrders.getColumnModel().getColumn(0).setCellRenderer(claimRenderer);
+
+		javax.swing.table.DefaultTableCellRenderer centerRenderer = new javax.swing.table.DefaultTableCellRenderer();
+		centerRenderer.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
+		tblRecentOrders.getColumnModel().getColumn(1).setCellRenderer(centerRenderer);
+		tblRecentOrders.getColumnModel().getColumn(2).setCellRenderer(centerRenderer);
+		tblRecentOrders.getColumnModel().getColumn(3).setCellRenderer(centerRenderer);
+		tblRecentOrders.getColumnModel().getColumn(7).setCellRenderer(centerRenderer);
+
+		loadRecentOrdersTable();
 	}
+
+
 
 	private void startClock() {
 		javax.swing.Timer clockTimer = new javax.swing.Timer(1000, evt -> {
@@ -94,6 +149,131 @@ public class HomePanel extends javax.swing.JPanel {
 		return card;
 	}
 
+	public void setMainFrame(MainJFrame frame) {
+		this.mainFrame = frame;
+	}
+
+	private double getEarningsToday() {
+		String sql = "SELECT COALESCE(SUM(total_amount), 0) AS total FROM Orders WHERE DATE(order_date) = CURDATE()";
+		try (Connection conn = DBConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
+
+			if (rs.next()) {
+				return rs.getDouble("total");
+			}
+		} catch (SQLException e) {
+			System.err.println("Failed to load earnings: " + e.getMessage());
+		}
+		return 0;
+	}
+
+	private int getOrdersToday() {
+		return getCountWhere("DATE(order_date) = CURDATE()");
+	}
+
+	private int getClaimedToday() {
+		return getCountWhere("order_status = 'Claimed' AND DATE(claimed_at) = CURDATE()");
+	}
+
+	private int getActiveLaundryCount() {
+		return getCountWhere("order_status = 'Processing'");
+	}
+
+	private int getReadyForPickupCount() {
+		return getCountWhere("order_status = 'Ready'");
+	}
+
+	private int getCountWhere(String whereClause) {
+		String sql = "SELECT COUNT(*) AS total FROM Orders WHERE " + whereClause;
+		try (Connection conn = DBConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
+
+			if (rs.next()) {
+				return rs.getInt("total");
+			}
+		} catch (SQLException e) {
+			System.err.println("Failed to load count: " + e.getMessage());
+		}
+		return 0;
+	}
+
+	private List<Order> getRecentOrders() {
+		List<Order> orders = new ArrayList<>();
+		String sql = "SELECT order_id, claim_number, customer_id, employee_id, service_id, "
+			+ "order_date, ready_at, claimed_at, weight_kg, price_at_order, total_amount, "
+			+ "payment_status, order_status, notes "
+			+ "FROM Orders ORDER BY order_date DESC LIMIT 10";
+
+		try (Connection conn = DBConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
+
+			while (rs.next()) {
+				java.sql.Timestamp readyTs = rs.getTimestamp("ready_at");
+				java.sql.Timestamp claimedTs = rs.getTimestamp("claimed_at");
+
+				orders.add(new Order(
+					rs.getInt("order_id"),
+					rs.getString("claim_number"),
+					rs.getInt("customer_id"),
+					rs.getInt("employee_id"),
+					rs.getInt("service_id"),
+					rs.getTimestamp("order_date").toLocalDateTime(),
+					readyTs != null ? readyTs.toLocalDateTime() : null,
+					claimedTs != null ? claimedTs.toLocalDateTime() : null,
+					rs.getDouble("weight_kg"),
+					rs.getDouble("price_at_order"),
+					rs.getDouble("total_amount"),
+					rs.getString("payment_status"),
+					rs.getString("order_status"),
+					rs.getString("notes")
+				));
+			}
+		} catch (SQLException e) {
+			System.err.println("Failed to load recent orders: " + e.getMessage());
+		}
+		return orders;
+	}
+
+	private void loadRecentOrdersTable() {
+		DefaultTableModel model = (DefaultTableModel) tblRecentOrders.getModel();
+		model.setRowCount(0); // clear existing rows before reloading
+
+		for (Order order : getRecentOrders()) {
+			Customer customer = findCustomerById(order.getCustomerId()); // write this the same way as findCustomerByPhone, but WHERE customer_id = ?
+
+			model.addRow(new Object[]{
+				order.getClaimNumber(),
+				customer != null ? customer.getName() : "Unknown",
+				customer != null ? customer.getPhone() : "",
+				order.getWeightKg(),
+				order.getOrderStatus(),
+				order.getPaymentStatus(),
+				order.getNotes(),
+				"\u20b1" + String.format("%,.2f", order.getTotalAmount())
+			});
+		}
+	}
+
+	private Customer findCustomerById(int id) {
+		String sql = "SELECT * FROM Customers WHERE customer_id = ?";
+		try (java.sql.Connection conn = DBConnection.getConnection(); java.sql.PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+			stmt.setInt(1, id);
+			try (java.sql.ResultSet rs = stmt.executeQuery()) {
+				if (rs.next()) {
+					return new Customer(
+						rs.getInt("customer_id"),
+						rs.getString("name"),
+						rs.getString("phone"),
+						rs.getString("address"),
+						rs.getInt("is_active") == 1
+					);
+
+				}
+			}
+		} catch (java.sql.SQLException e) {
+			System.err.println("Failed to find customer: " + e.getMessage());
+		}
+		return null;
+	}
+
 	/**
 	 * This method is called from within the constructor to initialize the
 	 * form. WARNING: Do NOT modify this code. The content of this method is
@@ -115,6 +295,7 @@ public class HomePanel extends javax.swing.JPanel {
                 pnlTable = new javax.swing.JPanel();
                 pnlTableHeader = new javax.swing.JPanel();
                 lblRecentOrders = new javax.swing.JLabel();
+                lblViewAll = new javax.swing.JLabel();
                 jScrollPane1 = new javax.swing.JScrollPane();
                 tblRecentOrders = new javax.swing.JTable();
 
@@ -185,6 +366,11 @@ public class HomePanel extends javax.swing.JPanel {
                 lblRecentOrders.setText("Recent Orders");
                 pnlTableHeader.add(lblRecentOrders, java.awt.BorderLayout.LINE_START);
 
+                lblViewAll.setFont(new java.awt.Font("Inter 18pt", 1, 14)); // NOI18N
+                lblViewAll.setForeground(new java.awt.Color(38, 85, 189));
+                lblViewAll.setText("View All");
+                pnlTableHeader.add(lblViewAll, java.awt.BorderLayout.LINE_END);
+
                 pnlTable.add(pnlTableHeader, java.awt.BorderLayout.PAGE_START);
 
                 jScrollPane1.setBackground(new java.awt.Color(249, 249, 249));
@@ -216,6 +402,7 @@ public class HomePanel extends javax.swing.JPanel {
         private javax.swing.JLabel lblPageSubtitle;
         private javax.swing.JLabel lblPageTitle;
         private javax.swing.JLabel lblRecentOrders;
+        private javax.swing.JLabel lblViewAll;
         private javax.swing.JPanel pnlBody;
         private javax.swing.JPanel pnlHeader;
         private javax.swing.JPanel pnlHeaderLeft;

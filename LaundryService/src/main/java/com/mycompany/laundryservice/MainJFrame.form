@@ -233,6 +233,9 @@
               </Constraints>
             </Component>
             <Component class="com.mycompany.laundryservice.panels.HomePanel" name="homePanel1">
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="homePanel1.setMainFrame(this);"/>
+              </AuxValues>
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignCardLayout" value="org.netbeans.modules.form.compat2.layouts.DesignCardLayout$CardConstraintsDescription">
                   <CardConstraints cardName="homePanel1"/>
