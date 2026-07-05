@@ -1,7 +1,6 @@
 -- Removes all seed data inserted by seed_happy.sql and seed_full.sql
 -- Safe to run regardless of which seed file was used
 -- Does NOT touch the schema, the Services table, or any real data
--- Employees are not touched since they were not seeded via SQL
 
 USE laundry_service_db;
 
@@ -40,4 +39,16 @@ WHERE phone IN (
     '09171234510',
     '09281234511',
     '09391234512'
+);
+
+-- Delete seed employees (safe to delete after orders are gone, FK is SET NULL)
+DELETE FROM Employees
+WHERE username IN (
+    'Cral',
+    'Yochie',
+    'Imeaa',
+    'Iyah',
+    'Nics',
+    'Rodzkie',
+    'Jai'
 );
