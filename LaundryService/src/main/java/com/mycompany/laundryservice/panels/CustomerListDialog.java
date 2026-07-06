@@ -13,6 +13,8 @@ import java.sql.SQLException;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.RowFilter;
+import javax.swing.RowSorter;
+import javax.swing.SortOrder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
@@ -22,27 +24,55 @@ import javax.swing.table.TableRowSorter;
  * @author jairus
  */
 public class CustomerListDialog extends javax.swing.JDialog {
+
     private int selectedCustomerId = -1;
     private String selectedCustomerName = "";
     private String selectedPhoneNumber = "";
     private boolean customerSelected = false;
     private DefaultTableModel tableModel;
     private TableRowSorter<DefaultTableModel> sorter;
+
     /**
      * Creates new form CustomerListDialog
+     *
      * @param parent
      * @param modal
      */
-     public CustomerListDialog(java.awt.Frame parent, boolean modal) {
+    public CustomerListDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         initializeDialog();
     }
+
     private void initializeDialog() {
         // Set up table model - using scrCustomer (matches generated code)
         tableModel = (DefaultTableModel) scrCustomer.getModel();
         sorter = new TableRowSorter<>(tableModel);
         scrCustomer.setRowSorter(sorter);
+
+        // ====== SORT ONLY CUSTOMER ID IN ASCENDING ORDER ======
+        // Enable sorting only on Customer ID (Column 0)
+        sorter.setSortable(0, true);   // Enable Customer ID
+        sorter.setSortable(1, false);  // Disable Customer Name
+        sorter.setSortable(2, false);  // Disable Address
+        sorter.setSortable(3, false);  // Disable Phone Number
+
+        // Set Customer ID (Column 0) as the default sort in ascending order
+        sorter.setSortKeys(java.util.Arrays.asList(
+            new RowSorter.SortKey(0, SortOrder.ASCENDING)
+        ));
+
+        // Fix: Sort Customer ID as numbers (not text)
+        sorter.setComparator(0, (o1, o2) -> {
+            try {
+                int id1 = Integer.parseInt(o1.toString());
+                int id2 = Integer.parseInt(o2.toString());
+                return Integer.compare(id1, id2);
+            } catch (NumberFormatException e) {
+                return o1.toString().compareTo(o2.toString());
+            }
+        });
+        // ====== END ======
 
         // Set dialog properties
         setTitle("Select Customer");
@@ -76,8 +106,8 @@ public class CustomerListDialog extends javax.swing.JDialog {
                 tableModel.addRow(new Object[]{
                     rs.getInt("customer_id"),
                     rs.getString("name"),
-                    rs.getString("phone"),
-                    rs.getString("address") != null ? rs.getString("address") : ""
+                    rs.getString("address") != null ? rs.getString("address") : "",
+                    rs.getString("phone")
                 });
             }
 
@@ -88,6 +118,7 @@ public class CustomerListDialog extends javax.swing.JDialog {
                 "Unable to load customers. Please check database connection.",
                 "Database Error",
                 JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
         }
     }
 
@@ -100,9 +131,14 @@ public class CustomerListDialog extends javax.swing.JDialog {
             return;
         }
 
-        // Search in all columns
         try {
-            sorter.setRowFilter(RowFilter.regexFilter("(?i)" + searchText, 0, 1, 2, 3));
+            // Try to search as number for ID column
+            try {
+                int id = Integer.parseInt(searchText);
+                sorter.setRowFilter(RowFilter.numberFilter(RowFilter.ComparisonType.EQUAL, id, 0));
+            } catch (NumberFormatException e) {
+                sorter.setRowFilter(RowFilter.regexFilter("(?i)" + searchText, 1, 2, 3));
+            }
         } catch (Exception e) {
             sorter.setRowFilter(null);
         }
@@ -121,15 +157,14 @@ public class CustomerListDialog extends javax.swing.JDialog {
             return;
         }
 
-        // Convert view row to model row (because of sorting/filtering)
         int modelRow = scrCustomer.convertRowIndexToModel(selectedRow);
 
         selectedCustomerId = (int) tableModel.getValueAt(modelRow, 0);
         selectedCustomerName = (String) tableModel.getValueAt(modelRow, 1);
-        selectedPhoneNumber = (String) tableModel.getValueAt(modelRow, 2);
-        customerSelected = true;
+        selectedPhoneNumber = (String) tableModel.getValueAt(modelRow, 3);
 
-        dispose(); // Close dialog
+        customerSelected = true;
+        dispose();
     }
 
     // Getters
@@ -155,7 +190,7 @@ public class CustomerListDialog extends javax.swing.JDialog {
         FlatLightLaf.setup();
 
         JFrame frame = new JFrame();
-        frame.add(new CustomerListDialog(null, true));  // FIXED: Opens itself
+        frame.add(new CustomerListDialog(null, true));
         frame.pack();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
@@ -214,7 +249,6 @@ public class CustomerListDialog extends javax.swing.JDialog {
         jLabel2.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         jLabel2.setText("Search: ");
 
-        txtSearch.setText("Search here");
         txtSearch.addActionListener(this::txtSearchActionPerformed);
 
         btnSearch.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
