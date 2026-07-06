@@ -1,4 +1,4 @@
-/*
+    /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
@@ -25,11 +25,56 @@ public class MainJFrame extends javax.swing.JFrame {
 		sidebarPanel1.setMainFrame(this);
 
 		showCard("homePanel1");
+
+		initFloatingButton();
+		addComponentListener(new java.awt.event.ComponentAdapter() {
+			@Override
+			public void componentResized(java.awt.event.ComponentEvent e) {
+				repositionFloatingButton();
+			}
+		});
+		repositionFloatingButton();
 	}
 
 	public void showCard(String cardName) {
 		java.awt.CardLayout c1 = (java.awt.CardLayout) pnlContent.getLayout();
 		c1.show(pnlContent, cardName);
+		sidebarPanel1.setActiveCard(cardName);
+
+		boolean showButton = (!cardName.equals(AppConstants.CARD_NEW_ORDER) && !cardName.equals(AppConstants.CARD_ORDER_LIST) && !cardName.equals(AppConstants.CARD_REPORTS));
+		setFloatingButtonVisible(showButton);
+	}
+
+	private javax.swing.JButton floatingBtn;
+
+	public void initFloatingButton() {
+		floatingBtn = new javax.swing.JButton("+ New Quick Order");
+		floatingBtn.setFont(new java.awt.Font("Inter 18pt", java.awt.Font.BOLD, 14));
+		floatingBtn.setBackground(new java.awt.Color(51, 204, 249));
+		floatingBtn.setForeground(new java.awt.Color(0, 31, 41));
+		floatingBtn.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
+		floatingBtn.putClientProperty("JButton.buttonType", "roundRect");
+		floatingBtn.setFocusPainted(false);
+		floatingBtn.setSize(180, 44);
+
+		floatingBtn.addActionListener(evt -> showCard(AppConstants.CARD_NEW_ORDER));
+
+		getLayeredPane().add(floatingBtn, javax.swing.JLayeredPane.POPUP_LAYER);
+	}
+
+	private void repositionFloatingButton() {
+		if (floatingBtn == null) {
+			return;
+		}
+		int x = getWidth() - floatingBtn.getWidth() - 39;
+		int y = getHeight() - floatingBtn.getHeight() - 52; // 52 accounts for taskbar/border
+		floatingBtn.setLocation(x, y);
+	}
+
+	public void setFloatingButtonVisible(boolean visible) {
+		if (floatingBtn != null) {
+			floatingBtn.setVisible(visible);
+		}
 	}
 
 	/**
@@ -53,15 +98,15 @@ public class MainJFrame extends javax.swing.JFrame {
                 topbarHeaderRight = new javax.swing.JPanel();
                 lblProfileIcon = MainJFrame.createHeaderIcon("account_circle.svg", 30, 0x2655bd);
                 topbarProfileText = new javax.swing.JPanel();
-                lblProfileRole = new javax.swing.JLabel();
                 lblProfileName = new javax.swing.JLabel();
+                lblProfileRole = new javax.swing.JLabel();
                 pnlContent = new javax.swing.JPanel();
                 newOrderPanel1 = new com.mycompany.laundryservice.panels.NewOrderPanel();
                 customerPanel1 = new com.mycompany.laundryservice.panels.CustomerPanel();
                 updateStatusPanel1 = new com.mycompany.laundryservice.panels.UpdateStatusPanel();
                 reportsPanel1 = new com.mycompany.laundryservice.panels.ReportsPanel();
-                homePanel1 = new com.mycompany.laundryservice.panels.HomePanel();
                 orderListPanel1 = new com.mycompany.laundryservice.panels.OrderListPanel();
+                homePanel1 = new com.mycompany.laundryservice.panels.HomePanel();
 
                 setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
                 setBackground(new java.awt.Color(249, 249, 249));
@@ -77,15 +122,20 @@ public class MainJFrame extends javax.swing.JFrame {
 
                 topbarHeaderLeft.setBackground(new java.awt.Color(255, 255, 255));
                 topbarHeaderLeft.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 16, 17));
+
+                lblHeaderIcon.setIconTextGap(2);
                 topbarHeaderLeft.add(lblHeaderIcon);
 
                 lblHeaderTitle.setFont(new java.awt.Font("Inter 18pt", 1, 18)); // NOI18N
+                lblHeaderTitle.setForeground(new java.awt.Color(38, 85, 189));
                 lblHeaderTitle.setText("Laundry Service Management");
                 topbarHeaderLeft.add(lblHeaderTitle);
 
+                jSeparator1.setBackground(new java.awt.Color(195, 198, 215));
                 jSeparator1.setForeground(new java.awt.Color(195, 198, 215));
                 jSeparator1.setOrientation(javax.swing.SwingConstants.VERTICAL);
-                jSeparator1.setPreferredSize(new java.awt.Dimension(1, 24));
+                jSeparator1.setOpaque(true);
+                jSeparator1.setPreferredSize(new java.awt.Dimension(2, 20));
                 topbarHeaderLeft.add(jSeparator1);
 
                 lblStatus.setFont(new java.awt.Font("Inter 18pt Medium", 0, 12)); // NOI18N
@@ -102,13 +152,13 @@ public class MainJFrame extends javax.swing.JFrame {
                 topbarProfileText.setBackground(new java.awt.Color(255, 255, 255));
                 topbarProfileText.setLayout(new javax.swing.BoxLayout(topbarProfileText, javax.swing.BoxLayout.Y_AXIS));
 
-                lblProfileRole.setFont(new java.awt.Font("Inter 18pt SemiBold", 0, 14)); // NOI18N
-                lblProfileRole.setText("Jane Doe");
-                topbarProfileText.add(lblProfileRole);
-
-                lblProfileName.setFont(new java.awt.Font("Inter 18pt", 0, 12)); // NOI18N
-                lblProfileName.setText("Admin");
+                lblProfileName.setFont(new java.awt.Font("Inter 18pt SemiBold", 0, 14)); // NOI18N
+                lblProfileName.setText("Jane Doe");
                 topbarProfileText.add(lblProfileName);
+
+                lblProfileRole.setFont(new java.awt.Font("Inter 18pt", 0, 12)); // NOI18N
+                lblProfileRole.setText("Admin");
+                topbarProfileText.add(lblProfileRole);
 
                 topbarHeaderRight.add(topbarProfileText);
 
@@ -121,8 +171,10 @@ public class MainJFrame extends javax.swing.JFrame {
                 pnlContent.add(customerPanel1, "customerPanel1");
                 pnlContent.add(updateStatusPanel1, "updateStatusPanel1");
                 pnlContent.add(reportsPanel1, "reportsPanel1");
-                pnlContent.add(homePanel1, "homePanel1");
                 pnlContent.add(orderListPanel1, "orderListPanel1");
+
+                homePanel1.setMainFrame(this);
+                pnlContent.add(homePanel1, "homePanel1");
 
                 pnlMainRight.add(pnlContent, java.awt.BorderLayout.CENTER);
 
@@ -132,87 +184,88 @@ public class MainJFrame extends javax.swing.JFrame {
                 setLocationRelativeTo(null);
         }// </editor-fold>//GEN-END:initComponents
 
-	/**
-	 * @param args the command line arguments
-	 */
-	private static void ensureSingleInstance() {
-		try {
-			try (java.net.Socket clientSocket = new java.net.Socket("127.0.0.1", 12345)) {
-				java.io.PrintWriter out = new java.io.PrintWriter(clientSocket.getOutputStream(), true);
-				out.println("SHUTDOWN");
-				Thread.sleep(500); 
+		/**
+		 * @param args the command line arguments
+		 */
+		private static void ensureSingleInstance() {
+			try {
+				try (java.net.Socket clientSocket = new java.net.Socket("127.0.0.1", 12345)) {
+					java.io.PrintWriter out = new java.io.PrintWriter(clientSocket.getOutputStream(), true);
+					out.println("SHUTDOWN");
+					Thread.sleep(500);
+				}
+			} catch (Exception e) {
 			}
-		} catch (Exception e) {
-		}
 
-		new Thread(() -> {
-			try (java.net.ServerSocket serverSocket = new java.net.ServerSocket(12345)) {
-				while (true) {
-					try (java.net.Socket socket = serverSocket.accept(); java.io.BufferedReader in = new java.io.BufferedReader(new java.io.InputStreamReader(socket.getInputStream()))) {
+			new Thread(() -> {
+				try (java.net.ServerSocket serverSocket = new java.net.ServerSocket(12345)) {
+					while (true) {
+						try (java.net.Socket socket = serverSocket.accept(); java.io.BufferedReader in = new java.io.BufferedReader(new java.io.InputStreamReader(socket.getInputStream()))) {
 
-						if ("SHUTDOWN".equals(in.readLine())) {
-							System.exit(0);
+							if ("SHUTDOWN".equals(in.readLine())) {
+								System.exit(0);
+							}
 						}
 					}
+				} catch (Exception ex) {
 				}
-			} catch (Exception ex) {
-			}
-		}).start();
-	}
-
-	public static javax.swing.JLabel createHeaderIcon(String iconName, int size, int colorHex) {
-		javax.swing.JLabel label = new javax.swing.JLabel();
-		com.formdev.flatlaf.extras.FlatSVGIcon icon = new com.formdev.flatlaf.extras.FlatSVGIcon("icons/" + iconName, size, size);
-		icon.setColorFilter(new com.formdev.flatlaf.extras.FlatSVGIcon.ColorFilter(c -> new java.awt.Color(colorHex)));
-		label.setIcon(icon);
-		return label;
-	}
-
-	public static void main(String args[]) {
-		ensureSingleInstance();
-
-		com.formdev.flatlaf.FlatLightLaf.setup();
-
-		try {
-			java.awt.GraphicsEnvironment ge = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment();
-
-			java.io.InputStream isReg = MainJFrame.class.getResourceAsStream("/fonts/Inter_18pt-Regular.ttf");
-			if (isReg != null) {
-				ge.registerFont(java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, isReg));
-			}
-
-			java.io.InputStream isMedium = MainJFrame.class.getResourceAsStream("/fonts/Inter_18pt-Medium.ttf");
-			if (isMedium != null) {
-				ge.registerFont(java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, isMedium));
-			}
-
-			java.io.InputStream isSemiBold = MainJFrame.class.getResourceAsStream("/fonts/Inter_18pt-SemiBold.ttf");
-			if (isSemiBold != null) {
-				ge.registerFont(java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, isSemiBold));
-			}
-
-			java.io.InputStream isBold = MainJFrame.class.getResourceAsStream("/fonts/Inter_18pt-Bold.ttf");
-			if (isBold != null) {
-				ge.registerFont(java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, isBold));
-			}
-
-			java.io.InputStream is28Bold = MainJFrame.class.getResourceAsStream("/fonts/Inter_28pt-Bold.ttf");
-			if (is28Bold != null) {
-				ge.registerFont(java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, is28Bold));
-			}
-
-			java.io.InputStream isPlayfair = MainJFrame.class.getResourceAsStream("/fonts/PlayfairDisplay-Bold.ttf");
-			if (isPlayfair != null) {
-				ge.registerFont(java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, isPlayfair));
-			}
-
-		} catch (FontFormatException | IOException e) {
-			System.err.println("Warning: Failed to load custom fonts");
+			}).start();
 		}
 
-		/* Create and display the form */
-		java.awt.EventQueue.invokeLater(() -> new MainJFrame().setVisible(true));
-	}
+		public static javax.swing.JLabel createHeaderIcon(String iconName, int size, int colorHex) {
+			javax.swing.JLabel label = new javax.swing.JLabel();
+			com.formdev.flatlaf.extras.FlatSVGIcon icon = new com.formdev.flatlaf.extras.FlatSVGIcon("icons/" + iconName, size, size);
+			icon.setColorFilter(new com.formdev.flatlaf.extras.FlatSVGIcon.ColorFilter(c -> new java.awt.Color(colorHex)));
+			label.setIcon(icon);
+			return label;
+		}
+
+		public static void main(String args[]) {
+			ensureSingleInstance();
+
+			com.formdev.flatlaf.FlatLightLaf.setup();
+                        javax.swing.UIManager.put("Button.arc", 16);
+                        javax.swing.UIManager.put("Component.arc", 16);
+			try {
+				java.awt.GraphicsEnvironment ge = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment();
+
+				java.io.InputStream isReg = MainJFrame.class.getResourceAsStream("/fonts/Inter_18pt-Regular.ttf");
+				if (isReg != null) {
+					ge.registerFont(java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, isReg));
+				}
+
+				java.io.InputStream isMedium = MainJFrame.class.getResourceAsStream("/fonts/Inter_18pt-Medium.ttf");
+				if (isMedium != null) {
+					ge.registerFont(java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, isMedium));
+				}
+
+				java.io.InputStream isSemiBold = MainJFrame.class.getResourceAsStream("/fonts/Inter_18pt-SemiBold.ttf");
+				if (isSemiBold != null) {
+					ge.registerFont(java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, isSemiBold));
+				}
+
+				java.io.InputStream isBold = MainJFrame.class.getResourceAsStream("/fonts/Inter_18pt-Bold.ttf");
+				if (isBold != null) {
+					ge.registerFont(java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, isBold));
+				}
+
+				java.io.InputStream is28Bold = MainJFrame.class.getResourceAsStream("/fonts/Inter_28pt-Bold.ttf");
+				if (is28Bold != null) {
+					ge.registerFont(java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, is28Bold));
+				}
+
+				java.io.InputStream isPlayfair = MainJFrame.class.getResourceAsStream("/fonts/PlayfairDisplay-Bold.ttf");
+				if (isPlayfair != null) {
+					ge.registerFont(java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, isPlayfair));
+				}
+
+			} catch (FontFormatException | IOException e) {
+				System.err.println("Warning: Failed to load custom fonts");
+			}
+
+			/* Create and display the form */
+			java.awt.EventQueue.invokeLater(() -> new MainJFrame().setVisible(true));
+		}
 
         // Variables declaration - do not modify//GEN-BEGIN:variables
         private com.mycompany.laundryservice.panels.CustomerPanel customerPanel1;
