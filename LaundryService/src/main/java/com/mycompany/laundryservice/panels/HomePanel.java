@@ -5,6 +5,7 @@
 package com.mycompany.laundryservice.panels;
 
 import com.formdev.flatlaf.FlatLightLaf;
+import com.mycompany.laundryservice.MainJFrame;
 import javax.swing.JFrame;
 
 /**
@@ -88,4 +89,8 @@ public class HomePanel extends javax.swing.JPanel {
         private javax.swing.JPanel pnlMetrics;
         private javax.swing.JPanel pnlTable;
         // End of variables declaration//GEN-END:variables
+
+    public void setMainFrame(MainJFrame aThis) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }

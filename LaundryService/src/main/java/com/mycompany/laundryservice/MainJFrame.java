@@ -4,6 +4,7 @@
  */
 package com.mycompany.laundryservice;
 
+import com.mycompany.laundryservice.panels.NewOrderPanel;
 import com.mycompany.laundryservice.panels.SidebarPanel;
 import java.awt.FontFormatException;
 import java.io.IOException;
@@ -12,7 +13,7 @@ import java.io.IOException;
  *
  * @author Cral
  */
-public class MainJFrame extends javax.swing.JFrame {
+public final class MainJFrame extends javax.swing.JFrame {
 
 	private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(MainJFrame.class.getName());
 
@@ -194,7 +195,7 @@ public class MainJFrame extends javax.swing.JFrame {
 					out.println("SHUTDOWN");
 					Thread.sleep(500);
 				}
-			} catch (Exception e) {
+			} catch (IOException | InterruptedException e) {
 			}
 
 			new Thread(() -> {
@@ -289,4 +290,9 @@ public class MainJFrame extends javax.swing.JFrame {
         private javax.swing.JPanel topbarProfileText;
         private com.mycompany.laundryservice.panels.UpdateStatusPanel updateStatusPanel1;
         // End of variables declaration//GEN-END:variables
+
+    public int getCurrentEmployeeId() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
 }
