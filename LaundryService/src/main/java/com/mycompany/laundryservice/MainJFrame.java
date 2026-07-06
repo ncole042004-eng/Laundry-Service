@@ -1,11 +1,9 @@
-    /*
+/*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package com.mycompany.laundryservice;
 
-import com.mycompany.laundryservice.panels.NewOrderPanel;
-import com.mycompany.laundryservice.panels.SidebarPanel;
 import java.awt.FontFormatException;
 import java.io.IOException;
 
@@ -13,7 +11,7 @@ import java.io.IOException;
  *
  * @author Cral
  */
-public final class MainJFrame extends javax.swing.JFrame {
+public class MainJFrame extends javax.swing.JFrame {
 
 	private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(MainJFrame.class.getName());
 
@@ -22,6 +20,9 @@ public final class MainJFrame extends javax.swing.JFrame {
 	 */
 	public MainJFrame() {
 		initComponents();
+		newOrderPanel1 = new com.mycompany.laundryservice.panels.NewOrderPanel(this);
+		pnlContent.add(newOrderPanel1, "newOrderPanel1");
+
 		setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH);
 		sidebarPanel1.setMainFrame(this);
 
@@ -41,6 +42,19 @@ public final class MainJFrame extends javax.swing.JFrame {
 		java.awt.CardLayout c1 = (java.awt.CardLayout) pnlContent.getLayout();
 		c1.show(pnlContent, cardName);
 		sidebarPanel1.setActiveCard(cardName);
+
+		switch (cardName) {
+			case AppConstants.CARD_HOME ->
+				homePanel1.refreshData();
+//			case AppConstants.CARD_CUSTOMERS ->
+//				customerPanel1.refreshData();
+//			case AppConstants.CARD_ORDER_LIST ->
+//				orderListPanel1.refreshData();
+//			case AppConstants.CARD_UPDATE_STATUS ->
+//				updateStatusPanel1.refreshData();
+//			case AppConstants.CARD_REPORTS ->
+//				reportsPanel1.refreshData();
+		}
 
 		boolean showButton = (!cardName.equals(AppConstants.CARD_NEW_ORDER) && !cardName.equals(AppConstants.CARD_ORDER_LIST) && !cardName.equals(AppConstants.CARD_REPORTS));
 		setFloatingButtonVisible(showButton);
@@ -102,7 +116,6 @@ public final class MainJFrame extends javax.swing.JFrame {
                 lblProfileName = new javax.swing.JLabel();
                 lblProfileRole = new javax.swing.JLabel();
                 pnlContent = new javax.swing.JPanel();
-                newOrderPanel1 = new com.mycompany.laundryservice.panels.NewOrderPanel();
                 customerPanel1 = new com.mycompany.laundryservice.panels.CustomerPanel();
                 updateStatusPanel1 = new com.mycompany.laundryservice.panels.UpdateStatusPanel();
                 reportsPanel1 = new com.mycompany.laundryservice.panels.ReportsPanel();
@@ -168,7 +181,6 @@ public final class MainJFrame extends javax.swing.JFrame {
                 pnlMainRight.add(topbarHeader, java.awt.BorderLayout.PAGE_START);
 
                 pnlContent.setLayout(new java.awt.CardLayout());
-                pnlContent.add(newOrderPanel1, "newOrderPanel1");
                 pnlContent.add(customerPanel1, "customerPanel1");
                 pnlContent.add(updateStatusPanel1, "updateStatusPanel1");
                 pnlContent.add(reportsPanel1, "reportsPanel1");
@@ -185,88 +197,88 @@ public final class MainJFrame extends javax.swing.JFrame {
                 setLocationRelativeTo(null);
         }// </editor-fold>//GEN-END:initComponents
 
-		/**
-		 * @param args the command line arguments
-		 */
-		private static void ensureSingleInstance() {
-			try {
-				try (java.net.Socket clientSocket = new java.net.Socket("127.0.0.1", 12345)) {
-					java.io.PrintWriter out = new java.io.PrintWriter(clientSocket.getOutputStream(), true);
-					out.println("SHUTDOWN");
-					Thread.sleep(500);
-				}
-			} catch (IOException | InterruptedException e) {
+	/**
+	 * @param args the command line arguments
+	 */
+	private static void ensureSingleInstance() {
+		try {
+			try (java.net.Socket clientSocket = new java.net.Socket("127.0.0.1", 12345)) {
+				java.io.PrintWriter out = new java.io.PrintWriter(clientSocket.getOutputStream(), true);
+				out.println("SHUTDOWN");
+				Thread.sleep(500);
 			}
+		} catch (IOException | InterruptedException e) {
+		}
 
-			new Thread(() -> {
-				try (java.net.ServerSocket serverSocket = new java.net.ServerSocket(12345)) {
-					while (true) {
-						try (java.net.Socket socket = serverSocket.accept(); java.io.BufferedReader in = new java.io.BufferedReader(new java.io.InputStreamReader(socket.getInputStream()))) {
+		new Thread(() -> {
+			try (java.net.ServerSocket serverSocket = new java.net.ServerSocket(12345)) {
+				while (true) {
+					try (java.net.Socket socket = serverSocket.accept(); java.io.BufferedReader in = new java.io.BufferedReader(new java.io.InputStreamReader(socket.getInputStream()))) {
 
-							if ("SHUTDOWN".equals(in.readLine())) {
-								System.exit(0);
-							}
+						if ("SHUTDOWN".equals(in.readLine())) {
+							System.exit(0);
 						}
 					}
-				} catch (Exception ex) {
 				}
-			}).start();
-		}
+			} catch (Exception ex) {
+			}
+		}).start();
+	}
 
-		public static javax.swing.JLabel createHeaderIcon(String iconName, int size, int colorHex) {
-			javax.swing.JLabel label = new javax.swing.JLabel();
-			com.formdev.flatlaf.extras.FlatSVGIcon icon = new com.formdev.flatlaf.extras.FlatSVGIcon("icons/" + iconName, size, size);
-			icon.setColorFilter(new com.formdev.flatlaf.extras.FlatSVGIcon.ColorFilter(c -> new java.awt.Color(colorHex)));
-			label.setIcon(icon);
-			return label;
-		}
+	public static javax.swing.JLabel createHeaderIcon(String iconName, int size, int colorHex) {
+		javax.swing.JLabel label = new javax.swing.JLabel();
+		com.formdev.flatlaf.extras.FlatSVGIcon icon = new com.formdev.flatlaf.extras.FlatSVGIcon("icons/" + iconName, size, size);
+		icon.setColorFilter(new com.formdev.flatlaf.extras.FlatSVGIcon.ColorFilter(c -> new java.awt.Color(colorHex)));
+		label.setIcon(icon);
+		return label;
+	}
 
-		public static void main(String args[]) {
-			ensureSingleInstance();
+	public static void main(String args[]) {
+		ensureSingleInstance();
 
-			com.formdev.flatlaf.FlatLightLaf.setup();
-                        javax.swing.UIManager.put("Button.arc", 16);
-                        javax.swing.UIManager.put("Component.arc", 16);
-			try {
-				java.awt.GraphicsEnvironment ge = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment();
+		com.formdev.flatlaf.FlatLightLaf.setup();
+		javax.swing.UIManager.put("Button.arc", 16);
+		javax.swing.UIManager.put("Component.arc", 16);
+		try {
+			java.awt.GraphicsEnvironment ge = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment();
 
-				java.io.InputStream isReg = MainJFrame.class.getResourceAsStream("/fonts/Inter_18pt-Regular.ttf");
-				if (isReg != null) {
-					ge.registerFont(java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, isReg));
-				}
-
-				java.io.InputStream isMedium = MainJFrame.class.getResourceAsStream("/fonts/Inter_18pt-Medium.ttf");
-				if (isMedium != null) {
-					ge.registerFont(java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, isMedium));
-				}
-
-				java.io.InputStream isSemiBold = MainJFrame.class.getResourceAsStream("/fonts/Inter_18pt-SemiBold.ttf");
-				if (isSemiBold != null) {
-					ge.registerFont(java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, isSemiBold));
-				}
-
-				java.io.InputStream isBold = MainJFrame.class.getResourceAsStream("/fonts/Inter_18pt-Bold.ttf");
-				if (isBold != null) {
-					ge.registerFont(java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, isBold));
-				}
-
-				java.io.InputStream is28Bold = MainJFrame.class.getResourceAsStream("/fonts/Inter_28pt-Bold.ttf");
-				if (is28Bold != null) {
-					ge.registerFont(java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, is28Bold));
-				}
-
-				java.io.InputStream isPlayfair = MainJFrame.class.getResourceAsStream("/fonts/PlayfairDisplay-Bold.ttf");
-				if (isPlayfair != null) {
-					ge.registerFont(java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, isPlayfair));
-				}
-
-			} catch (FontFormatException | IOException e) {
-				System.err.println("Warning: Failed to load custom fonts");
+			java.io.InputStream isReg = MainJFrame.class.getResourceAsStream("/fonts/Inter_18pt-Regular.ttf");
+			if (isReg != null) {
+				ge.registerFont(java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, isReg));
 			}
 
-			/* Create and display the form */
-			java.awt.EventQueue.invokeLater(() -> new MainJFrame().setVisible(true));
+			java.io.InputStream isMedium = MainJFrame.class.getResourceAsStream("/fonts/Inter_18pt-Medium.ttf");
+			if (isMedium != null) {
+				ge.registerFont(java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, isMedium));
+			}
+
+			java.io.InputStream isSemiBold = MainJFrame.class.getResourceAsStream("/fonts/Inter_18pt-SemiBold.ttf");
+			if (isSemiBold != null) {
+				ge.registerFont(java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, isSemiBold));
+			}
+
+			java.io.InputStream isBold = MainJFrame.class.getResourceAsStream("/fonts/Inter_18pt-Bold.ttf");
+			if (isBold != null) {
+				ge.registerFont(java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, isBold));
+			}
+
+			java.io.InputStream is28Bold = MainJFrame.class.getResourceAsStream("/fonts/Inter_28pt-Bold.ttf");
+			if (is28Bold != null) {
+				ge.registerFont(java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, is28Bold));
+			}
+
+			java.io.InputStream isPlayfair = MainJFrame.class.getResourceAsStream("/fonts/PlayfairDisplay-Bold.ttf");
+			if (isPlayfair != null) {
+				ge.registerFont(java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, isPlayfair));
+			}
+
+		} catch (FontFormatException | IOException e) {
+			System.err.println("Warning: Failed to load custom fonts");
 		}
+
+		/* Create and display the form */
+		java.awt.EventQueue.invokeLater(() -> new MainJFrame().setVisible(true));
+	}
 
         // Variables declaration - do not modify//GEN-BEGIN:variables
         private com.mycompany.laundryservice.panels.CustomerPanel customerPanel1;
@@ -291,8 +303,8 @@ public final class MainJFrame extends javax.swing.JFrame {
         private com.mycompany.laundryservice.panels.UpdateStatusPanel updateStatusPanel1;
         // End of variables declaration//GEN-END:variables
 
-    public int getCurrentEmployeeId() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+	public int getCurrentEmployeeId() {
+		throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+	}
 
 }

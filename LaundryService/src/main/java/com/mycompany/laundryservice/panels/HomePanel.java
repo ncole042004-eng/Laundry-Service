@@ -108,6 +108,38 @@ public class HomePanel extends javax.swing.JPanel {
 		loadRecentOrdersTable();
 	}
 
+	public void refreshData() {
+		pnlMetrics.removeAll();   // clear old cards before adding new ones
+
+		double earningsToday = getEarningsToday();
+		double earningsYesterday = getEarningsYesterday();
+		boolean earningsUp = earningsToday >= earningsYesterday;
+		pnlMetrics.add(createStatCard("payments.svg", 0x2655bd, "Earnings Today",
+			"\u20b1" + String.format("%,.2f", earningsToday),
+			formatTrend(earningsToday, earningsYesterday),
+			earningsUp ? TREND_UP_COLOR : TREND_DOWN_COLOR,
+			earningsUp));
+		int ordersToday = getOrdersToday();
+		int ordersYesterday = getOrdersYesterday();
+		boolean ordersUp = ordersToday >= ordersYesterday;
+
+		pnlMetrics.add(createStatCard("shopping_basket.svg", 0x2655bd, "Orders Today",
+			String.valueOf(ordersToday),
+			formatTrend(ordersToday, ordersYesterday),
+			ordersUp ? TREND_UP_COLOR : TREND_DOWN_COLOR,
+			ordersUp));
+
+		pnlMetrics.add(createStatCard("check_circle.svg", 0x006781, "Claimed Today",
+			String.valueOf(getClaimedToday()), null, 0, true));
+		pnlMetrics.add(createStatCard("local_laundry_service.svg", 0x2a58c0, "Active Laundry",
+			String.valueOf(getActiveLaundryCount()), null, 0, true));
+		pnlMetrics.add(createStatCard("inventory_2.svg", 0x2e7d32, "Ready for Pickup",
+			String.valueOf(getReadyForPickupCount()), null, 0, true));
+
+		pnlMetrics.revalidate();  // tell the layout manager to recompute positions
+		pnlMetrics.repaint();     // force Swing to redraw with the new layout
+	}
+
 	private void startClock() {
 		javax.swing.Timer clockTimer = new javax.swing.Timer(1000, evt -> {
 			java.time.LocalDateTime now = java.time.LocalDateTime.now();
@@ -174,7 +206,8 @@ public class HomePanel extends javax.swing.JPanel {
 	}
 
 	private double getEarningsToday() {
-		String sql = "SELECT COALESCE(SUM(total_amount), 0) AS total FROM Orders WHERE DATE(order_date) = CURDATE()";
+		String sql = "SELECT COALESCE(SUM(total_amount), 0) AS total FROM Orders "
+			+ "WHERE payment_status = 'Paid' AND DATE(order_date) = CURDATE()";
 		try (Connection conn = DBConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
 
 			if (rs.next()) {
