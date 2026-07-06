@@ -4,18 +4,406 @@
  */
 package com.mycompany.laundryservice.panels;
 
+import com.formdev.flatlaf.FlatLightLaf;
+import com.mycompany.laundryservice.MainJFrame;
+import com.mycompany.laundryservice.database.DBConnection;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 /**
  *
  * @author Cral
  */
 public class NewOrderPanel extends javax.swing.JPanel {
+            
+    private final MainJFrame mainFrame;
+    private int selectedCustomerId = -1;
+    private double servicePrice = 0.0;
+    private int selectedServiceId = -1;
+
+
+
 
 	/**
 	 * Creates new form NewOrderPanel
+         * @param mainFrame
 	 */
-	public NewOrderPanel() {
-		initComponents();
-	}
+    public NewOrderPanel(MainJFrame mainFrame) {
+        this.mainFrame = mainFrame;
+        initComponents();
+        initializePanel();
+    }
+
+    public NewOrderPanel() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+        private void initializePanel() {
+        loadServices();
+        clearForm();
+        setupListeners();
+        setupValidation();
+        updateTotalAmount();
+        btnSaveOrder.setEnabled(false);
+    }
+
+    // ==================== SERVICE LOADING ====================
+
+    private void loadServices() {
+        String sql = "SELECT service_id, service_name, fixed_price FROM Services";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            cboService.removeAllItems();
+            while (rs.next()) {
+                ServiceItem item = new ServiceItem(
+                    rs.getInt("service_id"),
+                    rs.getString("service_name"),
+                    rs.getDouble("fixed_price")
+                );
+                cboService.addItem(item);
+            }
+
+            if (cboService.getItemCount() > 0) {
+                cboService.setSelectedIndex(0);
+                updateTotalAmount();
+            }
+
+        } catch (SQLException e) {
+            showError("Unable to load services. Please check database connection.");
+        }
+    }
+
+    // Inner class to store service data in combo box
+    private class ServiceItem {
+        int serviceId;
+        String serviceName;
+        double price;
+
+        ServiceItem(int serviceId, String serviceName, double price) {
+            this.serviceId = serviceId;
+            this.serviceName = serviceName;
+            this.price = price;
+        }
+
+        @Override
+        public String toString() {
+            return serviceName;
+        }
+    }
+
+    // ==================== TOTAL AMOUNT CALCULATION ====================
+
+    private void updateTotalAmount() {
+        ServiceItem selected = (ServiceItem) cboService.getSelectedItem();
+        if (selected != null) {
+            servicePrice = selected.price;
+            selectedServiceId = selected.serviceId;
+            lblServiceAmount.setText(String.format("₱ %.2f", servicePrice));
+            calculateTotal();
+        }
+    }
+
+    private void calculateTotal() {
+        try {
+            double additionalCharges = 0.0;
+            String chargesText = txtAdditionalCharges.getText().trim();
+            if (!chargesText.isEmpty()) {
+                additionalCharges = Double.parseDouble(chargesText);
+                if (additionalCharges < 0) {
+                    additionalCharges = 0;
+                    txtAdditionalCharges.setText("0.00");
+                }
+            }
+
+            double total = servicePrice + additionalCharges;
+            lblAdditonalChargesAmount.setText(String.format("₱ %.2f", additionalCharges));
+            lblTotalAmount.setText(String.format("₱ %.2f", total));
+
+        } catch (NumberFormatException e) {
+            lblTotalAmount.setText("₱ 0.00");
+        }
+    }
+
+    // ==================== CUSTOMER SELECTION ====================
+
+    private void openCustomerList() {
+        CustomerListDialog dialog = new CustomerListDialog(null, true);
+        dialog.setLocationRelativeTo(this);
+        dialog.setVisible(true);
+
+        if (dialog.isCustomerSelected()) {
+            selectedCustomerId = dialog.getSelectedCustomerId();
+            lblCustomerValue.setText(dialog.getSelectedCustomerName());
+            lblPhoneValue.setText(dialog.getSelectedPhoneNumber());
+            validateForm();
+        }
+    }
+
+    // ==================== WEIGHT VALIDATION ====================
+
+    private double getWeight() {
+        try {
+            String weightText = txtWeightKg.getText().trim();
+            if (weightText.isEmpty()) {
+                return -1;
+            }
+            double weight = Double.parseDouble(weightText);
+            if (weight < 0) {
+                return -1;
+            }
+            return weight;
+        } catch (NumberFormatException e) {
+            return -1;
+        }
+    }
+
+    private boolean validateWeight(double weight) {
+        if (weight == -1) {
+            JOptionPane.showMessageDialog(this,
+                "Please enter a valid weight.",
+                "Input Required",
+                JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+
+        if (weight > 7.0) {
+            JOptionPane.showMessageDialog(this,
+                "Weight exceeds maximum capacity of 7kg",
+                "Validation Error",
+                JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        if (weight <= 0) {
+            JOptionPane.showMessageDialog(this,
+                "Weight must be greater than 0.",
+                "Validation Error",
+                JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+
+        return true;
+    }
+
+    // ==================== CLAIM NUMBER GENERATION ====================
+
+    private String generateClaimNumber() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMMdd");
+        String datePrefix = formatter.format(LocalDate.now());
+
+        String sql = "SELECT MAX(CAST(SUBSTRING(claim_number, 10, 3) AS UNSIGNED)) as max_num " +
+                     "FROM Orders " +
+                     "WHERE claim_number LIKE 'LS-" + datePrefix + "-%'";
+
+        int nextNumber = 1;
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            if (rs.next()) {
+                int maxNum = rs.getInt("max_num");
+                if (!rs.wasNull()) {
+                    nextNumber = maxNum + 1;
+                }
+            }
+        } catch (SQLException e) {
+        }
+
+        return String.format("LS-%s-%03d", datePrefix, nextNumber);
+    }
+
+    // ==================== SAVE ORDER ====================
+
+    private void saveOrder() {
+        // Validate weight
+        double weight = getWeight();
+        if (!validateWeight(weight)) {
+            return;
+        }
+
+        // Check if customer is selected
+        if (selectedCustomerId == -1) {
+            JOptionPane.showMessageDialog(this,
+                "Please select a customer first.",
+                "Validation Error",
+                JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // Check employee session
+        int employeeId = mainFrame.getCurrentEmployeeId();
+        if (employeeId == -1) {
+            JOptionPane.showMessageDialog(this,
+                "No employee logged in. Please login again.",
+                "Session Error",
+                JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Check service selection
+        if (selectedServiceId == -1) {
+            JOptionPane.showMessageDialog(this,
+                "Please select a service.",
+                "Validation Error",
+                JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // Generate claim number
+        String claimNumber = generateClaimNumber();
+
+        // Calculate total
+        double total = servicePrice + getAdditionalCharges();
+
+        // Get notes
+        String notes = txtNotes.getText().trim();
+
+        // Insert order
+        String sql = "INSERT INTO Orders (claim_number, customer_id, employee_id, service_id, " +
+                     "weight_kg, total_amount, payment_status, order_status, notes) " +
+                     "VALUES (?, ?, ?, ?, ?, ?, 'Unpaid', 'Pending', ?)";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, claimNumber);
+            pstmt.setInt(2, selectedCustomerId);
+            pstmt.setInt(3, employeeId);
+            pstmt.setInt(4, selectedServiceId);
+            pstmt.setDouble(5, weight);
+            pstmt.setDouble(6, total);
+            pstmt.setString(7, notes);
+
+            int affected = pstmt.executeUpdate();
+            if (affected > 0) {
+                JOptionPane.showMessageDialog(this,
+                    "✅ Order saved successfully!\n\nClaim Number: " + claimNumber +
+                    "\nCustomer: " + lblCustomerValue.getText() +
+                    "\nTotal: ₱ " + String.format("%.2f", total),
+                    "Success",
+                    JOptionPane.INFORMATION_MESSAGE);
+                clearForm();
+            }
+
+        } catch (SQLException e) {
+            showError("Unable to save order. Please check database connection.");
+        }
+    }
+
+    private double getAdditionalCharges() {
+        try {
+            String chargesText = txtAdditionalCharges.getText().trim();
+            if (chargesText.isEmpty()) {
+                return 0.0;
+            }
+            double charges = Double.parseDouble(chargesText);
+            return charges < 0 ? 0 : charges;
+        } catch (NumberFormatException e) {
+            return 0.0;
+        }
+    }
+
+    // ==================== FORM VALIDATION ====================
+
+    private void validateForm() {
+        boolean isValid = true;
+
+        // Check if customer is selected
+        if (selectedCustomerId == -1) {
+            isValid = false;
+        }
+
+        // Check weight
+        double weight = getWeight();
+        if (weight == -1 || weight <= 0 || weight > 7.0) {
+            isValid = false;
+        }
+
+        btnSaveOrder.setEnabled(isValid);
+    }
+
+    // ==================== FORM CLEAR ====================
+
+    private void clearForm() {
+        selectedCustomerId = -1;
+        selectedServiceId = -1;
+        lblCustomerValue.setText("");
+        lblPhoneValue.setText("");
+        txtWeightKg.setText("0.00");
+        txtNotes.setText("");
+        txtAdditionalCharges.setText("0.00");
+        lblServiceAmount.setText("₱ 0.00");
+        lblAdditonalChargesAmount.setText("₱ 0.00");
+        lblTotalAmount.setText("₱ 0.00");
+        btnSaveOrder.setEnabled(false);
+
+        if (cboService.getItemCount() > 0) {
+            cboService.setSelectedIndex(0);
+        }
+    }
+
+    // ==================== ERROR HANDLING ====================
+
+    private void showError(String message) {
+        JOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
+    // ==================== REFRESH DATA (Required by MainJFrame) ====================
+
+    public void refreshData() {
+        loadServices();
+        clearForm();
+    }
+
+    // ==================== SETUP LISTENERS ====================
+
+    private void setupListeners() {
+        // Weight field validation on each keystroke
+        txtWeightKg.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) { validateForm(); }
+            @Override
+            public void removeUpdate(DocumentEvent e) { validateForm(); }
+            @Override
+            public void changedUpdate(DocumentEvent e) { validateForm(); }
+        });
+
+        // Additional charges - update total on each keystroke
+        txtAdditionalCharges.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) { calculateTotal(); }
+            @Override
+            public void removeUpdate(DocumentEvent e) { calculateTotal(); }
+            @Override
+            public void changedUpdate(DocumentEvent e) { calculateTotal(); }
+        });
+    }
+
+    private void setupValidation() {
+        // Additional validation can be added here
+    }
+
+    // ==================== MAIN METHOD ====================
+
+    public static void main(String[] args) {
+        FlatLightLaf.setup();
+
+        JFrame frame = new JFrame();
+        frame.add(new NewOrderPanel(null));  // FIXED: Opens itself
+        frame.pack();
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setVisible(true);
+    }
+
 
 	/**
 	 * This method is called from within the constructor to initialize the
@@ -83,17 +471,17 @@ public class NewOrderPanel extends javax.swing.JPanel {
         );
 
         lblTitle.setBackground(new java.awt.Color(44, 62, 80));
-        lblTitle.setFont(new java.awt.Font("Arial", 1, 22)); // NOI18N
-        lblTitle.setText("New Order");
+        lblTitle.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
+        lblTitle.setText("Create New Order");
 
         lblSubtitle.setBackground(new java.awt.Color(127, 140, 141));
-        lblSubtitle.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        lblSubtitle.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         lblSubtitle.setText("Complete the details below to process the Laundry Order");
 
         jPanel2.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
 
         jLabel3.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
-        jLabel3.setText("CUSTOMER LOOKUP");
+        jLabel3.setText("CUSTOMER INFO");
 
         btnCustomerList.setBackground(new java.awt.Color(52, 152, 219));
         btnCustomerList.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
@@ -213,25 +601,27 @@ public class NewOrderPanel extends javax.swing.JPanel {
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addGap(20, 20, 20)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(lblTotalAmount, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addGap(12, 12, 12)
-                                .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(41, 41, 41)
-                                .addComponent(btnSaveOrder))
-                            .addComponent(jLabel13)
-                            .addComponent(lblCustomerValue1, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lblService1, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(lblService, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(30, 30, 30)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblServiceAmount, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(lblAdditonalChargesAmount, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                .addContainerGap(42, Short.MAX_VALUE))
+                        .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(53, 53, 53)
+                        .addComponent(btnSaveOrder))
+                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(lblTotalAmount, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel13)
+                                    .addComponent(lblCustomerValue1, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(lblService1, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(88, 88, 88)))
+                        .addGroup(jPanel4Layout.createSequentialGroup()
+                            .addComponent(lblService, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(30, 30, 30)
+                            .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(lblServiceAmount, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(lblAdditonalChargesAmount, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -260,27 +650,30 @@ public class NewOrderPanel extends javax.swing.JPanel {
         jPanel5.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
 
         jLabel9.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
-        jLabel9.setText("ORDER DETAILS");
+        jLabel9.setText("ORDER DETAILS"); // NOI18N
+        jLabel9.setToolTipText("");
 
         jLabel10.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
         jLabel10.setText("SERVICE");
 
         jLabel11.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
-        jLabel11.setText("WEIGHT");
+        jLabel11.setText("WEIGHT (kg)");
 
         jLabel12.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
         jLabel12.setText("ADDITIONAL CHARGES");
 
+        cboService.setBackground(new java.awt.Color(231, 228, 228));
         cboService.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         cboService.setForeground(new java.awt.Color(44, 62, 80));
-        cboService.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Wash and Fold", "Item 3", "Item 4" }));
         cboService.addActionListener(this::cboServiceActionPerformed);
 
+        txtWeightKg.setBackground(new java.awt.Color(231, 228, 228));
         txtWeightKg.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         txtWeightKg.setForeground(new java.awt.Color(44, 62, 80));
-        txtWeightKg.setText("7 KG");
+        txtWeightKg.setText("0.00");
         txtWeightKg.addActionListener(this::txtWeightKgActionPerformed);
 
+        txtNotes.setBackground(new java.awt.Color(231, 228, 228));
         txtNotes.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         txtNotes.setForeground(new java.awt.Color(44, 62, 80));
         txtNotes.setText("No Fabric Softener");
@@ -289,6 +682,7 @@ public class NewOrderPanel extends javax.swing.JPanel {
         jLabel14.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
         jLabel14.setText("NOTES");
 
+        txtAdditionalCharges.setBackground(new java.awt.Color(231, 228, 228));
         txtAdditionalCharges.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         txtAdditionalCharges.setText("0.00");
         txtAdditionalCharges.addActionListener(this::txtAdditionalChargesActionPerformed);
@@ -304,32 +698,32 @@ public class NewOrderPanel extends javax.swing.JPanel {
                         .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 299, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())
+                        .addContainerGap(200, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel9, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jLabel12, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(jPanel5Layout.createSequentialGroup()
                                 .addComponent(cboService, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 91, Short.MAX_VALUE)
+                                .addGap(90, 90, 90)
                                 .addComponent(txtWeightKg, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jLabel14, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(txtAdditionalCharges, javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(txtNotes))
-                        .addGap(66, 66, 66))
-                    .addComponent(jLabel9, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGap(66, 66, 66))))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addGap(15, 15, 15)
-                .addComponent(jLabel9)
-                .addGap(18, 18, 18)
+                .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10)
                     .addComponent(jLabel11))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(cboService, javax.swing.GroupLayout.DEFAULT_SIZE, 38, Short.MAX_VALUE)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(cboService, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtWeightKg))
                 .addGap(18, 18, 18)
                 .addComponent(jLabel14)
@@ -354,11 +748,11 @@ public class NewOrderPanel extends javax.swing.JPanel {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                 .addComponent(lblTitle, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(lblSubtitle, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 302, Short.MAX_VALUE))
+                                .addComponent(lblSubtitle, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(55, Short.MAX_VALUE))
+                .addContainerGap(51, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -373,20 +767,23 @@ public class NewOrderPanel extends javax.swing.JPanel {
                     .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(40, 40, 40)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(48, Short.MAX_VALUE))
+                .addContainerGap(28, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCustomerListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCustomerListActionPerformed
         // TODO add your handling code here:
+         openCustomerList();
     }//GEN-LAST:event_btnCustomerListActionPerformed
 
     private void cboServiceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboServiceActionPerformed
         // TODO add your handling code here:
+        updateTotalAmount();
     }//GEN-LAST:event_cboServiceActionPerformed
 
     private void txtWeightKgActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtWeightKgActionPerformed
         // TODO add your handling code here:
+          validateForm();
     }//GEN-LAST:event_txtWeightKgActionPerformed
 
     private void txtNotesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNotesActionPerformed
@@ -395,14 +792,18 @@ public class NewOrderPanel extends javax.swing.JPanel {
 
     private void btnSaveOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveOrderActionPerformed
         // TODO add your handling code here:
+          saveOrder();
     }//GEN-LAST:event_btnSaveOrderActionPerformed
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
         // TODO add your handling code here:
+        clearForm();
+        mainFrame.showCard("ORDER_LIST");
     }//GEN-LAST:event_btnCancelActionPerformed
 
     private void txtAdditionalChargesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtAdditionalChargesActionPerformed
         // TODO add your handling code here:
+        calculateTotal();
     }//GEN-LAST:event_txtAdditionalChargesActionPerformed
 
 
@@ -410,7 +811,7 @@ public class NewOrderPanel extends javax.swing.JPanel {
     private javax.swing.JButton btnCancel;
     private javax.swing.JButton btnCustomerList;
     private javax.swing.JButton btnSaveOrder;
-    private javax.swing.JComboBox<String> cboService;
+    private javax.swing.JComboBox<ServiceItem> cboService;
     private javax.swing.JDialog jDialog1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;

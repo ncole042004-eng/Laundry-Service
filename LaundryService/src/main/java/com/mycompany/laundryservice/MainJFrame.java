@@ -53,15 +53,15 @@ public class MainJFrame extends javax.swing.JFrame {
                 topbarHeaderRight = new javax.swing.JPanel();
                 lblProfileIcon = MainJFrame.createHeaderIcon("account_circle.svg", 30, 0x2655bd);
                 topbarProfileText = new javax.swing.JPanel();
-                lblProfileName = new javax.swing.JLabel();
                 lblProfileRole = new javax.swing.JLabel();
+                lblProfileName = new javax.swing.JLabel();
                 pnlContent = new javax.swing.JPanel();
                 newOrderPanel1 = new com.mycompany.laundryservice.panels.NewOrderPanel();
                 customerPanel1 = new com.mycompany.laundryservice.panels.CustomerPanel();
                 updateStatusPanel1 = new com.mycompany.laundryservice.panels.UpdateStatusPanel();
                 reportsPanel1 = new com.mycompany.laundryservice.panels.ReportsPanel();
-                orderListPanel1 = new com.mycompany.laundryservice.panels.OrderListPanel();
                 homePanel1 = new com.mycompany.laundryservice.panels.HomePanel();
+                orderListPanel1 = new com.mycompany.laundryservice.panels.OrderListPanel();
 
                 setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
                 setBackground(new java.awt.Color(249, 249, 249));
@@ -77,12 +77,9 @@ public class MainJFrame extends javax.swing.JFrame {
 
                 topbarHeaderLeft.setBackground(new java.awt.Color(255, 255, 255));
                 topbarHeaderLeft.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 16, 17));
-
-                lblHeaderIcon.setIconTextGap(2);
                 topbarHeaderLeft.add(lblHeaderIcon);
 
                 lblHeaderTitle.setFont(new java.awt.Font("Inter 18pt", 1, 18)); // NOI18N
-                lblHeaderTitle.setForeground(new java.awt.Color(38, 85, 189));
                 lblHeaderTitle.setText("Laundry Service Management");
                 topbarHeaderLeft.add(lblHeaderTitle);
 
@@ -105,13 +102,13 @@ public class MainJFrame extends javax.swing.JFrame {
                 topbarProfileText.setBackground(new java.awt.Color(255, 255, 255));
                 topbarProfileText.setLayout(new javax.swing.BoxLayout(topbarProfileText, javax.swing.BoxLayout.Y_AXIS));
 
-                lblProfileName.setFont(new java.awt.Font("Inter 18pt SemiBold", 0, 14)); // NOI18N
-                lblProfileName.setText("Jane Doe");
-                topbarProfileText.add(lblProfileName);
-
-                lblProfileRole.setFont(new java.awt.Font("Inter 18pt", 0, 12)); // NOI18N
-                lblProfileRole.setText("Admin");
+                lblProfileRole.setFont(new java.awt.Font("Inter 18pt SemiBold", 0, 14)); // NOI18N
+                lblProfileRole.setText("Jane Doe");
                 topbarProfileText.add(lblProfileRole);
+
+                lblProfileName.setFont(new java.awt.Font("Inter 18pt", 0, 12)); // NOI18N
+                lblProfileName.setText("Admin");
+                topbarProfileText.add(lblProfileName);
 
                 topbarHeaderRight.add(topbarProfileText);
 
@@ -124,8 +121,8 @@ public class MainJFrame extends javax.swing.JFrame {
                 pnlContent.add(customerPanel1, "customerPanel1");
                 pnlContent.add(updateStatusPanel1, "updateStatusPanel1");
                 pnlContent.add(reportsPanel1, "reportsPanel1");
-                pnlContent.add(orderListPanel1, "orderListPanel1");
                 pnlContent.add(homePanel1, "homePanel1");
+                pnlContent.add(orderListPanel1, "orderListPanel1");
 
                 pnlMainRight.add(pnlContent, java.awt.BorderLayout.CENTER);
 
@@ -175,8 +172,7 @@ public class MainJFrame extends javax.swing.JFrame {
 		ensureSingleInstance();
 
 		com.formdev.flatlaf.FlatLightLaf.setup();
-                javax.swing.UIManager.put("Button.arc", 16);
-                javax.swing.UIManager.put("Component.arc", 16);
+
 		try {
 			java.awt.GraphicsEnvironment ge = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment();
 
