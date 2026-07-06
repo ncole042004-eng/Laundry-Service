@@ -1,4 +1,4 @@
-/*
+    /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
@@ -224,7 +224,8 @@ public class MainJFrame extends javax.swing.JFrame {
 			ensureSingleInstance();
 
 			com.formdev.flatlaf.FlatLightLaf.setup();
-
+                        javax.swing.UIManager.put("Button.arc", 16);
+                        javax.swing.UIManager.put("Component.arc", 16);
 			try {
 				java.awt.GraphicsEnvironment ge = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment();
 
