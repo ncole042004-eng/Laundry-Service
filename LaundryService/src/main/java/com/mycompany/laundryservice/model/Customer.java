@@ -16,17 +16,12 @@ import java.sql.SQLException;
  */
 public class Customer {
 
-	// 1. FIELDS — private, matching the real Customers table columns exactly
-	//    (confirmed against init_db.sql — note the real column names are
-	//    "name" and "phone", not "full_name"/"phone_number" as guessed earlier).
 	private int customerId;
 	private String name;
 	private String phone;
 	private String address;
 	private boolean isActive;
-
-	// 2. CONSTRUCTOR — how you build a Customer object.
-	//    This one takes every field, matching a full row from the database.
+	
 	public Customer(int customerId, String name, String phone, String address, boolean isActive) {
 		this.customerId = customerId;
 		this.name = name;
@@ -35,19 +30,13 @@ public class Customer {
 		this.isActive = isActive;
 	}
 
-	// A second constructor, for when you're creating a BRAND NEW customer
-	// that doesn't have an ID yet (the database assigns that automatically
-	// when you INSERT). This is a common, useful pattern — one constructor
-	// for "loading an existing row," one for "creating a new one."
 	public Customer(String name, String phone, String address) {
 		this.name = name;
 		this.phone = phone;
 		this.address = address;
-		this.isActive = true; // new customers are active by default
+		this.isActive = true; 
 	}
 
-	// 3. GETTERS AND SETTERS — the only way outside code reads or changes
-	//    the private fields above. This is called "encapsulation."
 	public int getCustomerId() {
 		return customerId;
 	}
