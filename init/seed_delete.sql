@@ -1,43 +1,23 @@
--- Removes all seed data inserted by seed_happy.sql and seed_full.sql
--- Safe to run regardless of which seed file was used
--- Does NOT touch the schema, the Services table, or any real data
--- Employees are not touched since they were not seeded via SQL
+-- -----------------------------------------------------------------------------
+-- COMPLETE SEED WIPE SCRIPT
+-- -----------------------------------------------------------------------------
+-- Removes ALL data from Orders, Customers, and Employees.
+-- Safe to run regardless of which seed file was used or if you added new 
+-- customers during testing.
+-- Does NOT touch the schema or the base Services table.
 
 USE laundry_service_db;
 
--- Delete orders first (child table, references Customers via FK)
-DELETE FROM Orders
-WHERE customer_id IN (
-    SELECT customer_id FROM Customers
-    WHERE phone IN (
-        '09171234501',
-        '09281234502',
-        '09391234503',
-        '09171234504',
-        '09281234505',
-        '09391234506',
-        '09171234507',
-        '09281234508',
-        '09391234509',
-        '09171234510',
-        '09281234511',
-        '09391234512'
-    )
-);
+-- 1. Temporarily disable foreign key checks so we can truncate cleanly
+SET FOREIGN_KEY_CHECKS = 0;
 
--- Delete seed customers (parent table, safe to delete after orders are gone)
-DELETE FROM Customers
-WHERE phone IN (
-    '09171234501',
-    '09281234502',
-    '09391234503',
-    '09171234504',
-    '09281234505',
-    '09391234506',
-    '09171234507',
-    '09281234508',
-    '09391234509',
-    '09171234510',
-    '09281234511',
-    '09391234512'
-);
+-- 2. Delete all records and instantly reset AUTO_INCREMENT to 1
+TRUNCATE TABLE Orders;
+TRUNCATE TABLE Customers;
+TRUNCATE TABLE Employees;
+
+-- 3. Re-enable foreign key checks
+SET FOREIGN_KEY_CHECKS = 1;
+
+-- At this point, the database is completely empty (except for Services) 
+-- and ready for fresh seeds or a clean production start.
