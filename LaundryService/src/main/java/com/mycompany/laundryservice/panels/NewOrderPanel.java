@@ -19,6 +19,14 @@ import javax.swing.JOptionPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Insets;
+import java.awt.RenderingHints;
+import javax.swing.JComponent;
+import javax.swing.JTextField;
 
 /**
  *
@@ -41,6 +49,33 @@ public class NewOrderPanel extends javax.swing.JPanel {
         initComponents();
         initializePanel();
     }
+                private static class RoundedBorder extends javax.swing.border.AbstractBorder {
+                         private final int radius;
+                        private final Color color;
+                        private final int thickness;
+
+                RoundedBorder(int radius, Color color, int thickness) {
+                    this.radius = radius;
+                    this.color = color;
+                    this.thickness = thickness;
+                }
+
+                @Override
+                public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
+                    Graphics2D g2 = (Graphics2D) g.create();
+                    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                    g2.setColor(color);
+                    g2.setStroke(new java.awt.BasicStroke(thickness));
+                    g2.drawRoundRect(x + thickness/2, y + thickness/2, width - thickness, height - thickness, radius, radius);
+                    g2.dispose();
+                }
+
+                @Override
+                public Insets getBorderInsets(Component c) {
+                    return new Insets(radius/2, radius/2, radius/2, radius/2);
+                }
+            }
+
 
     private void initializePanel() {
         loadServices();
@@ -50,8 +85,134 @@ public class NewOrderPanel extends javax.swing.JPanel {
         updateTotalAmount();
         btnSaveOrder.setEnabled(false);
         
-        // ====== ADD SVG ICONS ======
+        
+        
+                // ====== CONFIGURE SPINNER MODELS ======
+            spnWeightKg.setModel(new javax.swing.SpinnerNumberModel(0.0, 0.0, 7.0, 0.1));
+            spnAdditionalCharges.setModel(new javax.swing.SpinnerNumberModel(0.0, 0.0, 9999.0, 0.1));
+            // ====== END ======
+
+            // ====== LEFT ALIGN SPINNER TEXT ======
+            Color spinnerBg = new java.awt.Color(231, 228, 228);
+
+            spnWeightKg.setBackground(spinnerBg);
+            JComponent editor1 = spnWeightKg.getEditor();
+            if (editor1 instanceof javax.swing.JSpinner.DefaultEditor defaultEditor) {
+                JTextField tf1 = defaultEditor.getTextField();
+                tf1.setHorizontalAlignment(JTextField.LEFT);
+                tf1.setBackground(spinnerBg);
+                tf1.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 14));
+            }
+
+            spnAdditionalCharges.setBackground(spinnerBg);
+            JComponent editor2 = spnAdditionalCharges.getEditor();
+            if (editor2 instanceof javax.swing.JSpinner.DefaultEditor defaultEditor) {
+                JTextField tf2 = defaultEditor.getTextField();
+                tf2.setHorizontalAlignment(JTextField.LEFT);
+                tf2.setBackground(spinnerBg);
+                tf2.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 14));
+            }
+            // ====== END ======
+                    
+            // ====== ROUNDED PANEL BORDERS (BLUE) ======
+            int arc = 12;
+            Color borderColor = new java.awt.Color(38, 85, 189);
+
+            // Padding to prevent clipping
+            javax.swing.border.Border padding = javax.swing.BorderFactory.createEmptyBorder(2, 2, 2, 2);
+            javax.swing.border.Border roundedBorder = new RoundedBorder(arc, borderColor, 1);
+
+            jPanel2.setBorder(javax.swing.BorderFactory.createCompoundBorder(roundedBorder, padding));
+            jPanel4.setBorder(javax.swing.BorderFactory.createCompoundBorder(roundedBorder, padding));
+            jPanel5.setBorder(javax.swing.BorderFactory.createCompoundBorder(roundedBorder, padding));
+
+            jPanel2.setBackground(java.awt.Color.WHITE);
+            jPanel4.setBackground(java.awt.Color.WHITE);
+            jPanel5.setBackground(java.awt.Color.WHITE);
+            // ====== END ======
+
+            
+            
+            // ====== APPLY INTER FONTS (MATCHING HTML DESIGN) ======
+            // Title
+            lblTitle.setFont(new java.awt.Font("Inter 28pt", java.awt.Font.BOLD, 28));
+            lblTitle.setForeground(new java.awt.Color(26, 28, 28));
+
+            // Subtitle
+            lblSubtitle.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 16));
+            lblSubtitle.setForeground(new java.awt.Color(67, 70, 84));
+
+            // Section Headers
+            jLabel3.setFont(new java.awt.Font("Inter 18pt", java.awt.Font.BOLD, 18));
+            jLabel3.setForeground(new java.awt.Color(26, 28, 28));
+
+            jLabel9.setFont(new java.awt.Font("Inter 18pt", java.awt.Font.BOLD, 18));
+            jLabel9.setForeground(new java.awt.Color(26, 28, 28));
+
+            jLabel15.setFont(new java.awt.Font("Inter 18pt", java.awt.Font.BOLD, 24 ));
+            jLabel15.setForeground(new java.awt.Color(38, 85, 189));
+
+            jLabel4.setFont(new java.awt.Font("Inter 18pt", java.awt.Font.BOLD, 18));
+            jLabel4.setForeground(new java.awt.Color(26, 28, 28));
+
+            // Field Labels
+            jLabel5.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 14));
+            jLabel7.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 14));
+            jLabel2.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 14));
+            jLabel10.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 14));
+            jLabel11.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 14));
+            jLabel12.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 14));
+            jLabel14.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 14));
+
+            // Small Label - Max 7kg
+            jLabel1.setFont(new java.awt.Font("Inter", java.awt.Font.BOLD, 12));
+            jLabel1.setForeground(new java.awt.Color(116, 116, 116));
+
+            // Customer Values
+            lblCustomerValue.setFont(new java.awt.Font("Inter", java.awt.Font.BOLD, 16));
+            lblCustomerValue.setForeground(new java.awt.Color(44, 62, 80));
+
+            lblPhoneValue.setFont(new java.awt.Font("Inter", java.awt.Font.BOLD, 16));
+            lblPhoneValue.setForeground(new java.awt.Color(44, 62, 80));
+
+            lblAddressValue.setFont(new java.awt.Font("Inter", java.awt.Font.BOLD, 16));
+            lblAddressValue.setForeground(new java.awt.Color(44, 62, 80));
+
+            // Order Summary
+            lblService1.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 16));
+            lblServiceAmount.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 16));
+            lblService.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 16));
+            lblAdditonalChargesAmount.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 16));
+
+            // Total Amount - Display Large
+            lblTotalAmount.setFont(new java.awt.Font("Inter 28pt", java.awt.Font.BOLD, 36));
+            lblTotalAmount.setForeground(new java.awt.Color(38, 85, 189));
+
+            // Buttons
+            btnCustomerList.setFont(new java.awt.Font("Inter", java.awt.Font.BOLD, 14));
+            btnManageCustomers.setFont(new java.awt.Font("Inter", java.awt.Font.BOLD, 14));
+            btnSaveOrder.setFont(new java.awt.Font("Inter", java.awt.Font.BOLD, 14));
+            btnCancel.setFont(new java.awt.Font("Inter", java.awt.Font.BOLD, 14));
+            // ====== END FONT STYLING ======
     
+        
+        // ====== BUTTON ROUNDED CORNERS ======
+        int buttonArc = 8;
+        btnCustomerList.putClientProperty("JButton.arc", buttonArc);
+        btnCustomerList.putClientProperty("JButton.buttonType", "roundRect");
+
+        btnManageCustomers.putClientProperty("JButton.arc", buttonArc);
+        btnManageCustomers.putClientProperty("JButton.buttonType", "roundRect");
+
+        btnSaveOrder.putClientProperty("JButton.arc", buttonArc);
+        btnSaveOrder.putClientProperty("JButton.buttonType", "roundRect");
+
+        btnCancel.putClientProperty("JButton.arc", buttonArc);
+        btnCancel.putClientProperty("JButton.buttonType", "roundRect");
+        // ====== END ======
+
+    
+        // ====== ADD SVG ICONS ======
         // 1. Customer Info Label (jLabel3) - person_search.svg
         jLabel3.setIcon(loadIcon("person_search.svg", 18, 0x2655bd));
         jLabel3.setIconTextGap(8);
@@ -63,25 +224,26 @@ public class NewOrderPanel extends javax.swing.JPanel {
         jLabel9.setText(" ORDER DETAILS");
 
         // 3. Save Order Button - save.svg
-        btnSaveOrder.setIcon(loadIcon("save.svg", 18, 0xFFFFFF));
+        btnSaveOrder.setIcon(loadIcon("save.svg", 22, 0xFFFFFF));
         btnSaveOrder.setIconTextGap(8);
 
         // 4. Manage Customers Button - add.svg
-        btnManageCustomers.setIcon(loadIcon("add.svg", 18, 0xFFFFFF));
+        btnManageCustomers.setIcon(loadIcon("add.svg", 22, 0xFFFFFF));
         btnManageCustomers.setIconTextGap(8);
         
         // Customer List Button - list_alt.svg
-        btnCustomerList.setIcon(loadIcon("list.svg", 18, 0xFFFFFF));
+        btnCustomerList.setIcon(loadIcon("list.svg", 22, 0xFFFFFF));
         btnCustomerList.setIconTextGap(8);
         
         // Cancel Button - logout.svg
-        btnCancel.setIcon(loadIcon("logout.svg", 18, 0x666666));
+        btnCancel.setIcon(loadIcon("logout.svg", 22, 0x666666));
         btnCancel.setIconTextGap(8);
-
         // ====== END ADD ICONS ======
         
-        
-        
+        // ====== SETUP SPINNER LISTENERS ======
+        spnWeightKg.addChangeListener(e -> validateForm());
+        spnAdditionalCharges.addChangeListener(e -> calculateTotal());
+        // ====== END ======
     }
     
     /**
@@ -157,16 +319,7 @@ public class NewOrderPanel extends javax.swing.JPanel {
 
     private void calculateTotal() {
         try {
-            double additionalCharges = 0.0;
-            String chargesText = txtAdditionalCharges.getText().trim();
-            if (!chargesText.isEmpty()) {
-                additionalCharges = Double.parseDouble(chargesText);
-                if (additionalCharges < 0) {
-                    additionalCharges = 0;
-                    txtAdditionalCharges.setText("0.00");
-                }
-            }
-
+            double additionalCharges = getAdditionalCharges();
             double total = servicePrice + additionalCharges;
             lblAdditonalChargesAmount.setText(String.format("₱ %.2f", additionalCharges));
             lblTotalAmount.setText(String.format("₱ %.2f", total));
@@ -187,32 +340,59 @@ public class NewOrderPanel extends javax.swing.JPanel {
             selectedCustomerId = dialog.getSelectedCustomerId();
             lblCustomerValue.setText(dialog.getSelectedCustomerName());
             lblPhoneValue.setText(dialog.getSelectedPhoneNumber());
+            loadCustomerAddress(selectedCustomerId);
             validateForm();
+        }
+    }
+
+    // ==================== LOAD CUSTOMER ADDRESS ====================
+
+    private void loadCustomerAddress(int customerId) {
+        String sql = "SELECT address FROM Customers WHERE customer_id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setInt(1, customerId);
+            ResultSet rs = pstmt.executeQuery();
+            
+            if (rs.next()) {
+                String address = rs.getString("address");
+                if (address != null && !address.isEmpty()) {
+                    lblAddressValue.setText(address);
+                    lblAddressValue.setForeground(new java.awt.Color(44, 62, 80));
+                } else {
+                    lblAddressValue.setText("No address on file");
+                    lblAddressValue.setForeground(new java.awt.Color(127, 140, 141));
+                }
+            } else {
+                lblAddressValue.setText("No address on file");
+                lblAddressValue.setForeground(new java.awt.Color(127, 140, 141));
+            }
+            
+        } catch (SQLException e) {
+            lblAddressValue.setText("Unable to load address");
+            lblAddressValue.setForeground(new java.awt.Color(186, 26, 26));
+            e.printStackTrace();
         }
     }
 
     // ==================== WEIGHT VALIDATION ====================
 
     private double getWeight() {
-        try {
-            String weightText = txtWeightKg.getText().trim();
-            if (weightText.isEmpty()) {
-                return -1;
+        Object value = spnWeightKg.getValue();
+        if (value instanceof Number) {
+            double weight = ((Number) value).doubleValue();
+            if (weight >= 0 && weight <= 7) {
+                return weight;
             }
-            double weight = Double.parseDouble(weightText);
-            if (weight < 0) {
-                return -1;
-            }
-            return weight;
-        } catch (NumberFormatException e) {
-            return -1;
         }
+        return -1;
     }
 
     private boolean validateWeight(double weight) {
         if (weight == -1) {
             JOptionPane.showMessageDialog(this,
-                "Please enter a valid weight.",
+                "Please enter a valid weight between 0 and 7kg.",
                 "Input Required",
                 JOptionPane.WARNING_MESSAGE);
             return false;
@@ -259,7 +439,7 @@ public class NewOrderPanel extends javax.swing.JPanel {
                 }
             }
         } catch (SQLException e) {
-            
+            // If error occurs, default to 1
         }
 
         return String.format("LS-%s-%03d", datePrefix, nextNumber);
@@ -333,7 +513,7 @@ public class NewOrderPanel extends javax.swing.JPanel {
             int affected = pstmt.executeUpdate();
             if (affected > 0) {
                 JOptionPane.showMessageDialog(this,
-                    " Order saved successfully!\n\nClaim Number: " + claimNumber
+                    "Order saved successfully!\n\nClaim Number: " + claimNumber
                     + "\nCustomer: " + lblCustomerValue.getText()
                     + "\nTotal: ₱ " + String.format("%.2f", total),
                     "Success",
@@ -348,16 +528,12 @@ public class NewOrderPanel extends javax.swing.JPanel {
     }
 
     private double getAdditionalCharges() {
-        try {
-            String chargesText = txtAdditionalCharges.getText().trim();
-            if (chargesText.isEmpty()) {
-                return 0.0;
-            }
-            double charges = Double.parseDouble(chargesText);
+        Object value = spnAdditionalCharges.getValue();
+        if (value instanceof Number) {
+            double charges = ((Number) value).doubleValue();
             return charges < 0 ? 0 : charges;
-        } catch (NumberFormatException e) {
-            return 0.0;
         }
+        return 0.0;
     }
 
     // ==================== FORM VALIDATION ====================
@@ -386,9 +562,10 @@ public class NewOrderPanel extends javax.swing.JPanel {
         selectedServiceId = -1;
         lblCustomerValue.setText("");
         lblPhoneValue.setText("");
-        txtWeightKg.setText("");
+        lblAddressValue.setText("");
+        spnWeightKg.setValue(0);
         txtNotes.setText("");
-        txtAdditionalCharges.setText("");
+        spnAdditionalCharges.setValue(0);
         lblServiceAmount.setText("₱ 0.00");
         lblAdditonalChargesAmount.setText("₱ 0.00");
         lblTotalAmount.setText("₱ 0.00");
@@ -415,41 +592,11 @@ public class NewOrderPanel extends javax.swing.JPanel {
     // ==================== SETUP LISTENERS ====================
 
     private void setupListeners() {
-        // Weight field validation on each keystroke
-        txtWeightKg.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                validateForm();
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                validateForm();
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                validateForm();
-            }
-        });
-
-        // Additional charges - update total on each keystroke
-        txtAdditionalCharges.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                calculateTotal();
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                calculateTotal();
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                calculateTotal();
-            }
-        });
+        // Weight spinner - validate on change
+        spnWeightKg.addChangeListener(e -> validateForm());
+        
+        // Additional charges spinner - update total on change
+        spnAdditionalCharges.addChangeListener(e -> calculateTotal());
     }
 
     private void setupValidation() {
@@ -489,27 +636,30 @@ public class NewOrderPanel extends javax.swing.JPanel {
         lblCustomerValue = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         lblPhoneValue = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        lblAddressValue = new javax.swing.JLabel();
+        btnManageCustomers = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jLabel13 = new javax.swing.JLabel();
         lblTotalAmount = new javax.swing.JLabel();
         btnSaveOrder = new javax.swing.JButton();
         btnCancel = new javax.swing.JButton();
-        lblCustomerValue1 = new javax.swing.JLabel();
         lblService = new javax.swing.JLabel();
         lblService1 = new javax.swing.JLabel();
         lblAdditonalChargesAmount = new javax.swing.JLabel();
         lblServiceAmount = new javax.swing.JLabel();
+        jLabel15 = new javax.swing.JLabel();
         jPanel5 = new javax.swing.JPanel();
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
         cboService = new javax.swing.JComboBox<>();
-        txtWeightKg = new javax.swing.JTextField();
         txtNotes = new javax.swing.JTextField();
         jLabel14 = new javax.swing.JLabel();
-        txtAdditionalCharges = new javax.swing.JTextField();
-        btnManageCustomers = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        spnWeightKg = new javax.swing.JSpinner();
+        spnAdditionalCharges = new javax.swing.JSpinner();
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -541,16 +691,13 @@ public class NewOrderPanel extends javax.swing.JPanel {
         lblSubtitle.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         lblSubtitle.setText("Complete the details below to process the Laundry Order");
 
-        jPanel2.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
-
         jLabel3.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         jLabel3.setText("CUSTOMER INFO");
 
-        btnCustomerList.setBackground(new java.awt.Color(52, 152, 219));
+        btnCustomerList.setBackground(new java.awt.Color(51, 51, 255));
         btnCustomerList.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         btnCustomerList.setForeground(new java.awt.Color(255, 255, 255));
         btnCustomerList.setText("Customer List");
-        btnCustomerList.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         btnCustomerList.addActionListener(this::btnCustomerListActionPerformed);
 
         jLabel4.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
@@ -559,12 +706,23 @@ public class NewOrderPanel extends javax.swing.JPanel {
         jLabel5.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
         jLabel5.setText("CUSTOMER NAME");
 
+        lblCustomerValue.setBackground(new java.awt.Color(231, 228, 228));
         lblCustomerValue.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        lblCustomerValue.setText("NAME");
 
         jLabel7.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
         jLabel7.setText("PHONE NUMBER");
 
+        lblPhoneValue.setBackground(new java.awt.Color(231, 228, 228));
         lblPhoneValue.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        lblPhoneValue.setText("NUMBER");
+
+        jLabel2.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        jLabel2.setText("ADDRESS");
+
+        lblAddressValue.setBackground(new java.awt.Color(231, 228, 228));
+        lblAddressValue.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        lblAddressValue.setText("ADDRESS");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -573,32 +731,48 @@ public class NewOrderPanel extends javax.swing.JPanel {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(24, 24, 24)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel4)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lblCustomerValue, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblPhoneValue, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jLabel4)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 273, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(lblCustomerValue, javax.swing.GroupLayout.PREFERRED_SIZE, 273, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 84, Short.MAX_VALUE)
+                                .addComponent(lblPhoneValue, javax.swing.GroupLayout.PREFERRED_SIZE, 273, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(lblAddressValue, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(39, 39, 39))))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(19, 19, 19)
                 .addComponent(jLabel4)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
                     .addComponent(jLabel7))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblCustomerValue)
-                    .addComponent(lblPhoneValue))
-                .addContainerGap(38, Short.MAX_VALUE))
+                    .addComponent(lblCustomerValue, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblPhoneValue, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(lblAddressValue, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(20, Short.MAX_VALUE))
         );
+
+        btnManageCustomers.setBackground(new java.awt.Color(52, 152, 219));
+        btnManageCustomers.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        btnManageCustomers.setForeground(new java.awt.Color(255, 255, 255));
+        btnManageCustomers.setText("Add New Customer");
+        btnManageCustomers.addActionListener(this::btnManageCustomersActionPerformed);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -606,10 +780,13 @@ public class NewOrderPanel extends javax.swing.JPanel {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(36, 36, 36)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnCustomerList, javax.swing.GroupLayout.PREFERRED_SIZE, 522, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(btnCustomerList, javax.swing.GroupLayout.PREFERRED_SIZE, 311, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnManageCustomers, javax.swing.GroupLayout.PREFERRED_SIZE, 311, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -617,20 +794,23 @@ public class NewOrderPanel extends javax.swing.JPanel {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(23, 23, 23)
                 .addComponent(jLabel3)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(17, 17, 17)
+                        .addComponent(btnCustomerList, javax.swing.GroupLayout.DEFAULT_SIZE, 41, Short.MAX_VALUE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(16, 16, 16)
+                        .addComponent(btnManageCustomers, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnCustomerList, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanel4.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
-
         jLabel13.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
-        jLabel13.setText("TOTAL AMOUNT");
+        jLabel13.setText("TOTAL ");
 
-        lblTotalAmount.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
-        lblTotalAmount.setText("0000.00");
+        lblTotalAmount.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
+        lblTotalAmount.setText("₱ 0.00");
 
         btnSaveOrder.setBackground(new java.awt.Color(52, 152, 219));
         btnSaveOrder.setFont(new java.awt.Font("Arial", 0, 13)); // NOI18N
@@ -642,19 +822,21 @@ public class NewOrderPanel extends javax.swing.JPanel {
         btnCancel.setText("Cancel");
         btnCancel.addActionListener(this::btnCancelActionPerformed);
 
-        lblCustomerValue1.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-
-        lblService.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        lblService.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
         lblService.setText("Additional Charges");
 
-        lblService1.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        lblService1.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
         lblService1.setText("Service");
 
-        lblAdditonalChargesAmount.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        lblAdditonalChargesAmount.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         lblAdditonalChargesAmount.setText("0.00");
 
-        lblServiceAmount.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        lblServiceAmount.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         lblServiceAmount.setText("0.00");
+
+        jLabel15.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
+        jLabel15.setForeground(new java.awt.Color(51, 51, 255));
+        jLabel15.setText("Order Summary");
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -663,54 +845,51 @@ public class NewOrderPanel extends javax.swing.JPanel {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addGap(20, 20, 20)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblService1, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addGroup(jPanel4Layout.createSequentialGroup()
-                            .addComponent(lblService, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(30, 30, 30)
-                            .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(lblServiceAmount, javax.swing.GroupLayout.DEFAULT_SIZE, 58, Short.MAX_VALUE)
-                                .addComponent(lblAdditonalChargesAmount, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                        .addGroup(jPanel4Layout.createSequentialGroup()
-                            .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(lblTotalAmount, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGroup(jPanel4Layout.createSequentialGroup()
-                                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jLabel13)
-                                        .addComponent(lblCustomerValue1, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGap(88, 88, 88)))
-                            .addGap(13, 13, 13))
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
-                            .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(36, 36, 36)
-                            .addComponent(btnSaveOrder, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(17, Short.MAX_VALUE))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(btnCancel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
+                                .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 88, Short.MAX_VALUE)
+                                .addComponent(lblTotalAmount)
+                                .addGap(17, 17, 17))
+                            .addComponent(btnSaveOrder, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(lblService1, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(lblService, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(lblAdditonalChargesAmount, javax.swing.GroupLayout.DEFAULT_SIZE, 74, Short.MAX_VALUE)
+                                    .addComponent(lblServiceAmount, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addGap(27, 27, 27))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jLabel15)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel13)
-                .addGap(18, 18, 18)
-                .addComponent(lblCustomerValue1)
-                .addGap(18, 18, 18)
+                .addGap(21, 21, 21)
+                .addComponent(jLabel15)
+                .addGap(30, 30, 30)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblService1)
                     .addComponent(lblServiceAmount))
-                .addGap(26, 26, 26)
+                .addGap(33, 33, 33)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblService)
+                    .addComponent(lblService, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblAdditonalChargesAmount))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(lblTotalAmount, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(26, 26, 26)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 100, Short.MAX_VALUE)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnSaveOrder, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(14, 14, 14))
+                    .addComponent(lblTotalAmount, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(31, 31, 31)
+                .addComponent(btnSaveOrder, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(25, 25, 25))
         );
-
-        jPanel5.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
 
         jLabel9.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         jLabel9.setText("ORDER DETAILS"); // NOI18N
@@ -723,17 +902,12 @@ public class NewOrderPanel extends javax.swing.JPanel {
         jLabel11.setText("WEIGHT (kg)");
 
         jLabel12.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
-        jLabel12.setText("ADDITIONAL CHARGES");
+        jLabel12.setText("ADDITIONAL CHARGES (₱)");
 
         cboService.setBackground(new java.awt.Color(231, 228, 228));
         cboService.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         cboService.setForeground(new java.awt.Color(44, 62, 80));
         cboService.addActionListener(this::cboServiceActionPerformed);
-
-        txtWeightKg.setBackground(new java.awt.Color(231, 228, 228));
-        txtWeightKg.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        txtWeightKg.setForeground(new java.awt.Color(44, 62, 80));
-        txtWeightKg.addActionListener(this::txtWeightKgActionPerformed);
 
         txtNotes.setBackground(new java.awt.Color(231, 228, 228));
         txtNotes.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
@@ -743,34 +917,39 @@ public class NewOrderPanel extends javax.swing.JPanel {
         jLabel14.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
         jLabel14.setText("NOTES");
 
-        txtAdditionalCharges.setBackground(new java.awt.Color(231, 228, 228));
-        txtAdditionalCharges.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        txtAdditionalCharges.addActionListener(this::txtAdditionalChargesActionPerformed);
+        jLabel1.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        jLabel1.setText("Max 7 kg per load");
+
+        spnWeightKg.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        spnWeightKg.setName(""); // NOI18N
+
+        spnAdditionalCharges.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        spnAdditionalCharges.setToolTipText("");
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                 .addGap(35, 35, 35)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 299, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(spnAdditionalCharges)
+                    .addComponent(jLabel9, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel12, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel14, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(txtNotes)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel5Layout.createSequentialGroup()
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 299, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(cboService, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(200, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel9, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel12, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addComponent(cboService, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(90, 90, 90)
-                                .addComponent(txtWeightKg, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jLabel14, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(txtAdditionalCharges, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtNotes))
-                        .addGap(66, 66, 66))))
+                                .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 117, Short.MAX_VALUE)
+                                .addComponent(jLabel1))
+                            .addComponent(spnWeightKg))))
+                .addGap(66, 66, 66))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -780,65 +959,55 @@ public class NewOrderPanel extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10)
-                    .addComponent(jLabel11))
+                    .addComponent(jLabel11)
+                    .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cboService, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtWeightKg))
-                .addGap(18, 18, 18)
+                    .addComponent(cboService)
+                    .addComponent(spnWeightKg, javax.swing.GroupLayout.DEFAULT_SIZE, 44, Short.MAX_VALUE))
+                .addGap(28, 28, 28)
                 .addComponent(jLabel14)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtNotes, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel12)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtAdditionalCharges, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(18, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(spnAdditionalCharges, javax.swing.GroupLayout.DEFAULT_SIZE, 44, Short.MAX_VALUE)
+                .addGap(22, 22, 22))
         );
 
-        btnManageCustomers.setBackground(new java.awt.Color(52, 152, 219));
-        btnManageCustomers.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        btnManageCustomers.setForeground(new java.awt.Color(255, 255, 255));
-        btnManageCustomers.setText("Add New Customer");
-        btnManageCustomers.addActionListener(this::btnManageCustomersActionPerformed);
+        spnAdditionalCharges.getAccessibleContext().setAccessibleName("");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(50, 50, 50)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(43, 43, 43)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lblTitle, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lblTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 571, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblSubtitle)
-                    .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(89, 89, 89)
-                        .addComponent(btnManageCustomers, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(28, Short.MAX_VALUE))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(44, 44, 44)
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(45, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(27, 27, 27)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btnManageCustomers, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(15, 15, 15)
+                .addComponent(lblTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(lblSubtitle)
+                .addGap(29, 29, 29)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(lblTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblSubtitle)
+                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(40, 40, 40)
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(46, Short.MAX_VALUE))
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(29, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -852,19 +1021,14 @@ public class NewOrderPanel extends javax.swing.JPanel {
         updateTotalAmount();
     }//GEN-LAST:event_cboServiceActionPerformed
 
-    private void txtWeightKgActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtWeightKgActionPerformed
-        // TODO add your handling code here:
-          validateForm();
-    }//GEN-LAST:event_txtWeightKgActionPerformed
-
     private void txtNotesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNotesActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtNotesActionPerformed
 
-    private void btnSaveOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveOrderActionPerformed
+    private void btnManageCustomersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManageCustomersActionPerformed
         // TODO add your handling code here:
-          saveOrder();
-    }//GEN-LAST:event_btnSaveOrderActionPerformed
+        mainFrame.showCard(AppConstants.CARD_CUSTOMERS);
+    }//GEN-LAST:event_btnManageCustomersActionPerformed
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
         // TODO add your handling code here:
@@ -872,15 +1036,10 @@ public class NewOrderPanel extends javax.swing.JPanel {
         mainFrame.showCard("orderListPanel1");
     }//GEN-LAST:event_btnCancelActionPerformed
 
-    private void txtAdditionalChargesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtAdditionalChargesActionPerformed
+    private void btnSaveOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveOrderActionPerformed
         // TODO add your handling code here:
-        calculateTotal();
-    }//GEN-LAST:event_txtAdditionalChargesActionPerformed
-
-    private void btnManageCustomersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManageCustomersActionPerformed
-        // TODO add your handling code here:
-        mainFrame.showCard(AppConstants.CARD_CUSTOMERS);
-    }//GEN-LAST:event_btnManageCustomersActionPerformed
+        saveOrder();
+    }//GEN-LAST:event_btnSaveOrderActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -890,11 +1049,14 @@ public class NewOrderPanel extends javax.swing.JPanel {
     private javax.swing.JButton btnSaveOrder;
     private javax.swing.JComboBox<ServiceItem> cboService;
     private javax.swing.JDialog jDialog1;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -906,8 +1068,8 @@ public class NewOrderPanel extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JLabel lblAdditonalChargesAmount;
+    private javax.swing.JLabel lblAddressValue;
     private javax.swing.JLabel lblCustomerValue;
-    private javax.swing.JLabel lblCustomerValue1;
     private javax.swing.JLabel lblPhoneValue;
     private javax.swing.JLabel lblService;
     private javax.swing.JLabel lblService1;
@@ -915,8 +1077,8 @@ public class NewOrderPanel extends javax.swing.JPanel {
     private javax.swing.JLabel lblSubtitle;
     private javax.swing.JLabel lblTitle;
     private javax.swing.JLabel lblTotalAmount;
-    private javax.swing.JTextField txtAdditionalCharges;
+    private javax.swing.JSpinner spnAdditionalCharges;
+    private javax.swing.JSpinner spnWeightKg;
     private javax.swing.JTextField txtNotes;
-    private javax.swing.JTextField txtWeightKg;
     // End of variables declaration//GEN-END:variables
 }

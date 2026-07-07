@@ -18,6 +18,12 @@ import javax.swing.SortOrder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Insets;
+import java.awt.RenderingHints;
 
 
 /**
@@ -32,6 +38,37 @@ public class CustomerListDialog extends javax.swing.JDialog {
     private boolean customerSelected = false;
     private DefaultTableModel tableModel;
     private TableRowSorter<DefaultTableModel> sorter;
+    
+    
+     // ====== CUSTOM ROUNDED BORDER CLASS ======
+            private static class RoundedBorder extends javax.swing.border.AbstractBorder {
+                 private final int radius;
+                 private final Color color;
+                 private final int thickness;
+
+            RoundedBorder(int radius, Color color, int thickness) {
+                this.radius = radius;
+                this.color = color;
+                this.thickness = thickness;
+            }
+
+            @Override
+            public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(color);
+                g2.setStroke(new java.awt.BasicStroke(thickness));
+                g2.drawRoundRect(x + thickness/2, y + thickness/2, width - thickness, height - thickness, radius, radius);
+                g2.dispose();
+            }
+
+            @Override
+            public Insets getBorderInsets(Component c) {
+                return new Insets(radius/2, radius/2, radius/2, radius/2);
+            }
+        }
+    // ====== END ======
+
 
     /**
      * Creates new form CustomerListDialog
@@ -42,6 +79,11 @@ public class CustomerListDialog extends javax.swing.JDialog {
     public CustomerListDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        
+        // ====== SET FIXED SIZE ======
+        this.setResizable(false);
+        this.setSize(821, 650);
+        // ====== END ======
         initializeDialog();
     }
 
@@ -51,10 +93,72 @@ public class CustomerListDialog extends javax.swing.JDialog {
         sorter = new TableRowSorter<>(tableModel);
         scrCustomer.setRowSorter(sorter);
         
-        // ====== SET FIXED SIZE ======
-        this.setPreferredSize(new java.awt.Dimension(821, 575));
-        this.setSize(821, 575);
-        // ====== END ======
+      
+        
+        
+          //      ====== ROUNDED PANEL BORDERS (BLUE) ======
+         // ====== ROUNDED PANEL BORDERS (BLUE) ======
+            int arc = 12;
+            Color borderColor = new java.awt.Color(38, 85, 189);
+
+            javax.swing.border.Border padding = javax.swing.BorderFactory.createEmptyBorder(2, 2, 2, 2);
+            javax.swing.border.Border roundedBorder = new RoundedBorder(arc, borderColor, 1);
+
+            jPanel1.setBorder(javax.swing.BorderFactory.createCompoundBorder(roundedBorder, padding));
+            jPanel2.setBorder(javax.swing.BorderFactory.createCompoundBorder(roundedBorder, padding));
+
+            jPanel1.setBackground(java.awt.Color.WHITE);
+            jPanel2.setBackground(java.awt.Color.WHITE);
+            // ====== END ======
+         // ====== END ======
+        
+         // ====== APPLY INTER FONTS (MATCHING HTML DESIGN) ======
+        // Title - Headline Medium (Inter 18pt SemiBold)
+        jLabel1.setFont(new java.awt.Font("Inter 18pt", java.awt.Font.BOLD, 18));
+        jLabel1.setForeground(new java.awt.Color(26, 28, 28));
+        
+        // Search Label - Label Medium (Inter)
+        jLabel2.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 14));
+        jLabel2.setForeground(new java.awt.Color(44, 62, 80));
+        
+        // Search Text Field - Body Medium (Inter)
+        txtSearch.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 14));
+        txtSearch.setForeground(new java.awt.Color(26, 28, 28));
+        
+        // Buttons - Label Medium (Inter Bold)
+        btnSearch.setFont(new java.awt.Font("Inter", java.awt.Font.BOLD, 14));
+        btnSearch.setBackground(new java.awt.Color(52, 152, 219));
+        btnSearch.setForeground(java.awt.Color.WHITE);
+        
+        btnRefresh.setFont(new java.awt.Font("Inter", java.awt.Font.BOLD, 14));
+        btnRefresh.setBackground(new java.awt.Color(52, 152, 219));
+        btnRefresh.setForeground(java.awt.Color.WHITE);
+        
+        btnSelect.setFont(new java.awt.Font("Inter", java.awt.Font.BOLD, 14));
+        btnSelect.setBackground(new java.awt.Color(52, 152, 219));
+        btnSelect.setForeground(java.awt.Color.WHITE);
+        
+        btnCancel.setFont(new java.awt.Font("Inter", java.awt.Font.BOLD, 14));
+        btnCancel.setBackground(new java.awt.Color(52, 152, 219));
+        btnCancel.setForeground(java.awt.Color.WHITE);
+        
+        // Total Customers Label - Label Medium (Inter)
+        jLabel3.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 14));
+        jLabel3.setForeground(new java.awt.Color(44, 62, 80));
+        
+        // Total Count - Label Medium Bold (Inter)
+        lblCount.setFont(new java.awt.Font("Inter", java.awt.Font.BOLD, 14));
+        lblCount.setForeground(new java.awt.Color(38, 85, 189));
+        
+        // Table Header - Label Medium Bold (Inter)
+        scrCustomer.getTableHeader().setFont(new java.awt.Font("Inter", java.awt.Font.BOLD, 12));
+        scrCustomer.getTableHeader().setForeground(new java.awt.Color(26, 28, 28));
+        scrCustomer.getTableHeader().setBackground(new java.awt.Color(238, 238, 238));
+        
+        // Table Content - Body Medium (Inter)
+        scrCustomer.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 14));
+        scrCustomer.setRowHeight(35);
+        // ====== END FONT STYLING ======
 
         // ====== ADD SVG ICONS ======
         // Title Label - person_search.svg
@@ -75,8 +179,7 @@ public class CustomerListDialog extends javax.swing.JDialog {
         // Select Button - check_circle.svg
         btnSelect.setIcon(loadIcon("check_circle.svg", 16, 0xFFFFFF));
         btnSelect.setIconTextGap(8);
-        btnSelect.setBackground(new java.awt.Color(39, 174, 96));  // Green
-        btnSelect.setForeground(java.awt.Color.WHITE);
+        btnSelect.setBackground(new java.awt.Color(52,152,219)); 
         btnSelect.setText(" Select");
 
         // Cancel Button - logout.svg
@@ -299,8 +402,6 @@ public class CustomerListDialog extends javax.swing.JDialog {
         jLabel1.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         jLabel1.setText("Select Customer");
 
-        jPanel1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(52, 152, 219), 1, true));
-
         jLabel2.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         jLabel2.setText("Search: ");
 
@@ -332,7 +433,7 @@ public class CustomerListDialog extends javax.swing.JDialog {
                 .addComponent(btnSearch)
                 .addGap(18, 18, 18)
                 .addComponent(btnRefresh)
-                .addContainerGap(17, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -346,7 +447,6 @@ public class CustomerListDialog extends javax.swing.JDialog {
                 .addContainerGap(24, Short.MAX_VALUE))
         );
 
-        jPanel2.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(52, 152, 219), 1, true));
         jPanel2.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
 
         jLabel3.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
@@ -376,7 +476,7 @@ public class CustomerListDialog extends javax.swing.JDialog {
                 .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(30, 30, 30)
                 .addComponent(lblCount, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 79, Short.MAX_VALUE)
                 .addComponent(btnSelect)
                 .addGap(72, 72, 72)
                 .addComponent(btnCancel)
@@ -399,13 +499,13 @@ public class CustomerListDialog extends javax.swing.JDialog {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(28, 28, 28)
+                .addGap(29, 29, 29)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jScrollPane1)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(28, Short.MAX_VALUE))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(37, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
