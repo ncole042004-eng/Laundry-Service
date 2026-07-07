@@ -327,3 +327,18 @@ VALUES
 ('LS-260713-008', (SELECT customer_id FROM Customers WHERE phone = '09391234509'), (SELECT employee_id FROM Employees WHERE username = 'Yochie'), 1, '2026-07-13 08:00:00', '2026-07-13 10:00:00', '2026-07-13 11:00:00', 3.38, 175.0000, 175.0000, 'Paid', 'Claimed', NULL),
 ('LS-260713-009', (SELECT customer_id FROM Customers WHERE phone = '09171234510'), (SELECT employee_id FROM Employees WHERE username = 'Imeaa'), 1, '2026-07-13 13:00:00', NULL, NULL, 3.36, 175.0000, 225.0000, 'Unpaid', 'Pending', 'Rush Service (Same-Day) +₱50'),
 ('LS-260713-010', (SELECT customer_id FROM Customers WHERE phone = '09281234511'), (SELECT employee_id FROM Employees WHERE username = 'Iyah'), 1, '2026-07-13 13:00:00', NULL, NULL, 3.95, 175.0000, 186.0000, 'Unpaid', 'Processing', 'Extra Fabric Conditioner (Downy Passion) +₱11');
+
+-- -----------------------------------------------
+-- BACKFILL: mark all orders placed before today (2026-07-07) as Paid & Claimed
+-- Only fills ready_at/claimed_at where they're NULL, so real historical
+-- timestamps on already-Ready/Claimed rows are left untouched.
+-- Excludes 2026-07-07 itself and everything after (future/"today" orders).
+-- -----------------------------------------------
+UPDATE Orders
+SET
+    payment_status = 'Paid',
+    order_status   = 'Claimed',
+    ready_at   = COALESCE(ready_at,   DATE_ADD(order_date, INTERVAL 4 HOUR)),
+    claimed_at = COALESCE(claimed_at, DATE_ADD(order_date, INTERVAL 8 HOUR))
+WHERE order_date < '2026-07-07 00:00:00'
+  AND order_status <> 'Cancelled';
