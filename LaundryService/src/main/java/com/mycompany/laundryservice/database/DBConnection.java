@@ -27,6 +27,14 @@ public class DBConnection {
 		return DriverManager.getConnection(URL, USER, PASSWORD);
 	}
 
+	static {
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+		} catch (ClassNotFoundException e) {
+			System.err.println("MySQL JDBC Driver not found on classpath: " + e.getMessage());
+		}
+	}
+
 	public static boolean canConnectToDB() {
 		try (Connection conn = getConnection()) {
 			return true;
