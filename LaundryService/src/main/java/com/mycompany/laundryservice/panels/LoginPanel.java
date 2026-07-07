@@ -158,7 +158,7 @@ public class LoginPanel extends javax.swing.JPanel {
         pnlLogo = new javax.swing.JPanel();
 
         setPreferredSize(new java.awt.Dimension(800, 420));
-        setLayout(new java.awt.GridLayout());
+        setLayout(new java.awt.GridLayout(1, 0));
 
         pnlLeft.setBackground(new java.awt.Color(249, 249, 249));
         pnlLeft.setPreferredSize(new java.awt.Dimension(620, 740));

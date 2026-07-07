@@ -1,25 +1,27 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
- */
 package com.mycompany.laundryservice.panels;
 
 import javax.swing.JFrame;
 import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.Color;
 import javax.swing.BorderFactory;
-/**
- *
- * @author Cral
- */
-public class CustomerPanel extends javax.swing.JPanel {
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.JOptionPane;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.ListSelectionListener;
 
-	/**
-	 * Creates new form CustomerPanel
-	 */
+public class CustomerPanel extends javax.swing.JPanel {
+        private int selectedCustomerId = -1;
+        private boolean selectedIsActive = true;
 	public CustomerPanel() {
 		initComponents();
                 applyDesignStyling();
+                loadCustomers("");
+                attachTableSelectionListener();
                 txtName.putClientProperty("JTextField.placeholderText", "Enter Customer Name");
                 txtPhone.putClientProperty("JTextField.placeholderText", "+63 900 000 0000");
                 txtAddress.putClientProperty("JTextField.placeholderText", "Street, Barangay, City");
@@ -30,7 +32,10 @@ public class CustomerPanel extends javax.swing.JPanel {
                 btnFilter.setIcon(loadIcon("filter_list.svg", 18, 0x434654));
                 lblRegisterHeader.setIcon(loadIcon("person_add.svg", 20, 0x33CCF9));
                 txtSearch.putClientProperty("JTextField.leadingIcon", loadIcon("search.svg", 16, 0x434654));
+                lblTotalCustomersValue.setIcon(loadIcon("group.svg", 18, 0x2655BD));
+                lblTotalCustomersValue.setIconTextGap(6);
         }
+        
         private javax.swing.Icon loadIcon(String iconName, int size, int colorHex) {
             com.formdev.flatlaf.extras.FlatSVGIcon icon =
             new com.formdev.flatlaf.extras.FlatSVGIcon("icons/" + iconName, size, size);
@@ -69,6 +74,8 @@ public class CustomerPanel extends javax.swing.JPanel {
         pnlStats = new javax.swing.JPanel();
         lblTotalCustomersCaption = new javax.swing.JLabel();
         lblTotalCustomersValue = new javax.swing.JLabel();
+        lblStatus = new javax.swing.JLabel();
+        btnDeactivate1 = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(249, 249, 249));
 
@@ -81,6 +88,7 @@ public class CustomerPanel extends javax.swing.JPanel {
         lblSubtitle.setText("Register, search, and manage customer records for your laundry service.");
 
         pnlRegisterCard.setBackground(new java.awt.Color(255, 255, 255));
+        pnlRegisterCard.setPreferredSize(new java.awt.Dimension(269, 351));
 
         lblRegisterHeader.setFont(new java.awt.Font("Inter 28pt", 0, 18)); // NOI18N
         lblRegisterHeader.setText("Register New Customer");
@@ -96,6 +104,11 @@ public class CustomerPanel extends javax.swing.JPanel {
 
         txtPhone.setFont(new java.awt.Font("Inter 18pt", 0, 12)); // NOI18N
         txtPhone.setForeground(new java.awt.Color(0, 0, 0));
+        txtPhone.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtPhoneKeyTyped(evt);
+            }
+        });
 
         lblAddressCaption.setFont(new java.awt.Font("Inter 18pt SemiBold", 0, 11)); // NOI18N
         lblAddressCaption.setText("Home Address");
@@ -107,6 +120,7 @@ public class CustomerPanel extends javax.swing.JPanel {
         btnSave.setFont(new java.awt.Font("Inter 18pt SemiBold", 0, 12)); // NOI18N
         btnSave.setForeground(new java.awt.Color(255, 255, 255));
         btnSave.setText("Save Customer");
+        btnSave.addActionListener(this::btnSaveActionPerformed);
 
         javax.swing.GroupLayout pnlRegisterCardLayout = new javax.swing.GroupLayout(pnlRegisterCard);
         pnlRegisterCard.setLayout(pnlRegisterCardLayout);
@@ -123,7 +137,7 @@ public class CustomerPanel extends javax.swing.JPanel {
                     .addComponent(lblNameCaption)
                     .addComponent(txtName)
                     .addComponent(btnSave, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(18, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         pnlRegisterCardLayout.setVerticalGroup(
             pnlRegisterCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -229,35 +243,49 @@ public class CustomerPanel extends javax.swing.JPanel {
         btnDeactivate.setFont(new java.awt.Font("Inter 18pt SemiBold", 0, 12)); // NOI18N
         btnDeactivate.setForeground(new java.awt.Color(255, 255, 255));
         btnDeactivate.setText("Deactivate");
+        btnDeactivate.addActionListener(this::btnDeactivateActionPerformed);
 
-        pnlStats.setBackground(new java.awt.Color(238, 240, 246));
+        pnlStats.setBackground(new java.awt.Color(255, 255, 255));
 
         lblTotalCustomersCaption.setFont(new java.awt.Font("Inter 18pt", 0, 10)); // NOI18N
-        lblTotalCustomersCaption.setText("Total Customers");
+        lblTotalCustomersCaption.setText("Customers");
 
         lblTotalCustomersValue.setFont(new java.awt.Font("Inter 18pt", 1, 14)); // NOI18N
-        lblTotalCustomersValue.setText("1,284");
+        lblTotalCustomersValue.setText("0");
+
+        lblStatus.setFont(new java.awt.Font("Inter 18pt", 0, 10)); // NOI18N
 
         javax.swing.GroupLayout pnlStatsLayout = new javax.swing.GroupLayout(pnlStats);
         pnlStats.setLayout(pnlStatsLayout);
         pnlStatsLayout.setHorizontalGroup(
             pnlStatsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlStatsLayout.createSequentialGroup()
-                .addGap(50, 50, 50)
+                .addGap(27, 27, 27)
                 .addGroup(pnlStatsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lblTotalCustomersValue)
                     .addComponent(lblTotalCustomersCaption))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(lblStatus, javax.swing.GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE)
+                .addContainerGap())
         );
         pnlStatsLayout.setVerticalGroup(
             pnlStatsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlStatsLayout.createSequentialGroup()
-                .addGap(18, 18, 18)
-                .addComponent(lblTotalCustomersCaption)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lblTotalCustomersValue)
-                .addContainerGap(22, Short.MAX_VALUE))
+                .addGap(20, 20, 20)
+                .addGroup(pnlStatsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(lblStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(pnlStatsLayout.createSequentialGroup()
+                        .addComponent(lblTotalCustomersCaption)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblTotalCustomersValue)))
+                .addContainerGap(18, Short.MAX_VALUE))
         );
+
+        btnDeactivate1.setBackground(new java.awt.Color(102, 102, 102));
+        btnDeactivate1.setFont(new java.awt.Font("Inter 18pt SemiBold", 0, 12)); // NOI18N
+        btnDeactivate1.setForeground(new java.awt.Color(255, 255, 255));
+        btnDeactivate1.setText("Delete");
+        btnDeactivate1.addActionListener(this::btnDeactivate1ActionPerformed);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -270,17 +298,19 @@ public class CustomerPanel extends javax.swing.JPanel {
                     .addComponent(lblSubtitle)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(pnlRegisterCard, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(pnlStats, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(18, 18, 18)
+                            .addComponent(pnlRegisterCard, javax.swing.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE)
+                            .addComponent(pnlStats, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnDeactivate, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(btnDeactivate, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnDeactivate1))
                             .addComponent(pnlTableCard, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(pnlSearchBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addContainerGap(27, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -292,21 +322,55 @@ public class CustomerPanel extends javax.swing.JPanel {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(pnlRegisterCard, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(pnlStats, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
                         .addComponent(pnlSearchBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(pnlTableCard, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(23, 23, 23)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnDeactivate, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(pnlTableCard, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(23, 23, 23)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnDeactivate, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnDeactivate1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(pnlRegisterCard, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(pnlStats, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(54, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void attachTableSelectionListener() {
+    tblCustomers.getSelectionModel().addListSelectionListener(e -> {
+        if (e.getValueIsAdjusting()) return;
+
+        int row = tblCustomers.getSelectedRow();
+        if (row == -1) return;
+
+        selectedCustomerId = (int) tblCustomers.getValueAt(row, 0);
+        txtName.setText(String.valueOf(tblCustomers.getValueAt(row, 1)));
+        txtPhone.setText(String.valueOf(tblCustomers.getValueAt(row, 2)));
+        Object addr = tblCustomers.getValueAt(row, 3);
+        txtAddress.setText(addr == null ? "" : String.valueOf(addr));
+
+        btnUpdate.setEnabled(true);
+        btnDeactivate.setEnabled(true);
+        btnDeactivate1.setEnabled(true);
+
+        String activeStatus = String.valueOf(tblCustomers.getValueAt(row, 4));
+        selectedIsActive = "Active".equals(activeStatus);
+        updateDeactivateButtonLabel();
+    });
+    }
+    
+    private void updateDeactivateButtonLabel() {
+        if (selectedIsActive) {
+            btnDeactivate.setText("Deactivate");
+            btnDeactivate.setBackground(new Color(0xBA, 0x1A, 0x1A));
+        } else {
+            btnDeactivate.setText("Activate");
+            btnDeactivate.setBackground(new Color(0x2E, 0x7D, 0x32));
+        }
+    }
+    
     private void applyDesignStyling() {
     Color cardStroke = new Color(0xC3, 0xC6, 0xD7);
 
@@ -319,9 +383,71 @@ public class CustomerPanel extends javax.swing.JPanel {
 
     pnlTableCard.setOpaque(false);
     pnlTableCard.setBorder(new RoundedCardBorder(16, Color.WHITE, cardStroke));
-
-}
     
+    pnlStats.setOpaque(false);
+    pnlStats.setBorder(new RoundedCardBorder(16, Color.WHITE, cardStroke));
+}
+        private void loadCustomers(String searchTerm) {
+            DefaultTableModel model = new DefaultTableModel(
+                    new String[]{"ID", "Name", "Phone", "Address", "Active", "Created At"}, 0) {
+                @Override
+                public boolean isCellEditable(int row, int column) { return false; }
+            };
+
+            String sql = "SELECT customer_id, name, phone, address, is_active, created_at "
+                       + "FROM Customers WHERE name LIKE ? OR phone LIKE ? ORDER BY customer_id DESC";
+
+            try (Connection conn = com.mycompany.laundryservice.database.DBConnection.getConnection();
+                 PreparedStatement ps = conn.prepareStatement(sql)) {
+
+                String likeTerm = "%" + (searchTerm == null ? "" : searchTerm.trim()) + "%";
+                ps.setString(1, likeTerm);
+                ps.setString(2, likeTerm);
+
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        model.addRow(new Object[]{
+                            rs.getInt("customer_id"), rs.getString("name"), rs.getString("phone"),
+                            rs.getString("address"), rs.getInt("is_active") == 1 ? "Active" : "Inactive",
+                            rs.getTimestamp("created_at")
+                        });
+                    }
+                }
+                tblCustomers.setModel(model);
+                lblRecordCount.setText("Showing " + model.getRowCount() + " customers");
+                updateCustomerCount();
+
+            } catch (SQLException e) {
+                setStatus("Unable to connect to the database.", false);
+            }
+        }
+
+        private void setStatus(String message, boolean success) {
+            lblStatus.setForeground(success ? new Color(0x2E, 0x7D, 0x32) : new Color(0xBA, 0x1A, 0x1A));
+
+             int maxChars = 40;
+            String displayMessage = message.length() > maxChars
+            ? message.substring(0, maxChars - 3) + "..."
+            : message;
+            lblStatus.setText(displayMessage);
+            lblStatus.setToolTipText(message);
+}
+        
+
+        private void resetForm() {
+            txtName.setText("");
+            txtPhone.setText("");
+            txtAddress.setText("");
+            selectedCustomerId = -1;
+            tblCustomers.clearSelection();
+            btnUpdate.setEnabled(false);
+            btnDeactivate.setEnabled(false);
+            btnDeactivate1.setEnabled(false);
+            selectedIsActive = true;
+            btnDeactivate.setText("Deactivate");
+            btnDeactivate.setBackground(new Color(0xBA, 0x1A, 0x1A));
+        }
+
 private static class RoundedCardBorder extends javax.swing.border.AbstractBorder {
     private final int radius;
     private final Color fill;
@@ -338,12 +464,8 @@ private static class RoundedCardBorder extends javax.swing.border.AbstractBorder
         java.awt.Graphics2D g2 = (java.awt.Graphics2D) g.create();
         g2.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING, java.awt.RenderingHints.VALUE_ANTIALIAS_ON);
         g2.setRenderingHint(java.awt.RenderingHints.KEY_STROKE_CONTROL, java.awt.RenderingHints.VALUE_STROKE_PURE);
-
-        // Fill covers the full card area
         g2.setColor(fill);
         g2.fillRoundRect(x, y, width - 1, height - 1, radius, radius);
-
-        // Stroke drawn as a shape inset by 0.5px so it's never clipped on any edge
         g2.setColor(stroke);
         g2.setStroke(new java.awt.BasicStroke(1f));
         java.awt.geom.RoundRectangle2D.Float shape = new java.awt.geom.RoundRectangle2D.Float(
@@ -360,20 +482,165 @@ private static class RoundedCardBorder extends javax.swing.border.AbstractBorder
 }
      
     private void txtSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSearchActionPerformed
-        // TODO add your handling code here:
+        loadCustomers(txtSearch.getText());
     }//GEN-LAST:event_txtSearchActionPerformed
 
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
-        // TODO add your handling code here:
+        if (selectedCustomerId == -1) return;
+
+        String name = txtName.getText().trim();
+        String phone = txtPhone.getText().trim();
+        String address = txtAddress.getText().trim();
+
+        if (name.isEmpty() || phone.isEmpty()) {
+            setStatus("Please fill in all required fields.", false);
+            return;
+        }
+
+        String checkSql = "SELECT COUNT(*) FROM Customers WHERE phone = ? AND customer_id <> ?";
+        String updateSql = "UPDATE Customers SET name = ?, phone = ?, address = ? WHERE customer_id = ?";
+
+        try (Connection conn = com.mycompany.laundryservice.database.DBConnection.getConnection()) {
+            try (PreparedStatement check = conn.prepareStatement(checkSql)) {
+                check.setString(1, phone);
+                check.setInt(2, selectedCustomerId);
+                try (ResultSet rs = check.executeQuery()) {
+                    rs.next();
+                    if (rs.getInt(1) > 0) {
+                        setStatus("This phone number belongs to another customer.", false);
+                        return;
+                    }
+                }
+            }
+            try (PreparedStatement update = conn.prepareStatement(updateSql)) {
+                update.setString(1, name);
+                update.setString(2, phone);
+                update.setString(3, address.isEmpty() ? null : address);
+                update.setInt(4, selectedCustomerId);
+                update.executeUpdate();
+            }
+            resetForm();
+            loadCustomers(txtSearch.getText());
+            setStatus("Customer updated successfully.", true);
+        } catch (SQLException e) {
+            setStatus("Unable to connect to the database.", false);
+        }
     }//GEN-LAST:event_btnUpdateActionPerformed
 
     private void btnFilterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFilterActionPerformed
-        // TODO add your handling code here:
+        loadCustomers(txtSearch.getText());
     }//GEN-LAST:event_btnFilterActionPerformed
 
+    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
+        String name = txtName.getText().trim();
+        String phone = txtPhone.getText().trim();
+        String address = txtAddress.getText().trim();
+
+        if (name.isEmpty() || phone.isEmpty()) {
+            setStatus("Please fill in all required fields.", false);
+            return;
+        }
+
+        String checkSql = "SELECT COUNT(*) FROM Customers WHERE phone = ?";
+        String insertSql = "INSERT INTO Customers (name, phone, address) VALUES (?, ?, ?)";
+
+        try (Connection conn = com.mycompany.laundryservice.database.DBConnection.getConnection()) {
+            try (PreparedStatement check = conn.prepareStatement(checkSql)) {
+                check.setString(1, phone);
+                try (ResultSet rs = check.executeQuery()) {
+                    rs.next();
+                    if (rs.getInt(1) > 0) {
+                        setStatus("This phone number is already registered.", false);
+                        return;
+                    }
+                }
+            }
+            try (PreparedStatement insert = conn.prepareStatement(insertSql)) {
+                insert.setString(1, name);
+                insert.setString(2, phone);
+                insert.setString(3, address.isEmpty() ? null : address);
+                insert.executeUpdate();
+            }
+            resetForm();
+            loadCustomers(txtSearch.getText());
+            setStatus("Customer saved successfully.", true);
+        } catch (SQLException e) {
+            setStatus("Unable to connect to the database.", false);
+        }
+    }//GEN-LAST:event_btnSaveActionPerformed
+
+    private void btnDeactivateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeactivateActionPerformed
+        if (selectedCustomerId == -1) return;
+
+        String action = selectedIsActive ? "deactivate" : "reactivate";
+        int confirm = JOptionPane.showConfirmDialog(this,
+                "Are you sure you want to " + action + " this customer?",
+                "Confirm", JOptionPane.YES_NO_OPTION);
+        if (confirm != JOptionPane.YES_OPTION) return;
+
+        String sql = "UPDATE Customers SET is_active = ? WHERE customer_id = ?";
+        try (Connection conn = com.mycompany.laundryservice.database.DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, selectedIsActive ? 0 : 1);
+            ps.setInt(2, selectedCustomerId);
+            ps.executeUpdate();
+
+            resetForm();
+            loadCustomers(txtSearch.getText());
+            setStatus("Customer " + (selectedIsActive ? "deactivated." : "reactivated."), true);
+        } catch (SQLException e) {
+            setStatus("Unable to connect to the database.", false);
+        }
+    }//GEN-LAST:event_btnDeactivateActionPerformed
+
+    private void btnDeactivate1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeactivate1ActionPerformed
+         if (selectedCustomerId == -1) return;
+
+        String customerName = txtName.getText().trim();
+
+        int confirm = JOptionPane.showConfirmDialog(this,
+                "Permanently delete " + customerName + "?\n"
+                + "This cannot be undone. Any existing orders for this customer will be kept, "
+                + "but will no longer be linked to a customer record.",
+                "Confirm Deletion", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+        if (confirm != JOptionPane.YES_OPTION) return;
+
+        String sql = "DELETE FROM Customers WHERE customer_id = ?";
+        try (Connection conn = com.mycompany.laundryservice.database.DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, selectedCustomerId);
+            ps.executeUpdate();
+
+            resetForm();
+            loadCustomers(txtSearch.getText());
+            setStatus("Customer deleted successfully.", true);
+        } catch (SQLException e) {
+            setStatus("Unable to delete customer. It may still have related records.", false);
+        }
+    }//GEN-LAST:event_btnDeactivate1ActionPerformed
+
+    private void txtPhoneKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPhoneKeyTyped
+        char C = evt.getKeyChar();
+        if(!Character.isDigit(C)){
+            evt.consume();
+        }
+    }//GEN-LAST:event_txtPhoneKeyTyped
+    private void updateCustomerCount() {
+        String sql = "SELECT COUNT(*) FROM Customers";
+        try (Connection conn = com.mycompany.laundryservice.database.DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                lblTotalCustomersValue.setText(java.text.NumberFormat.getIntegerInstance().format(rs.getInt(1)));
+            }
+        } catch (SQLException e) {
+
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnDeactivate;
+    private javax.swing.JButton btnDeactivate1;
     private javax.swing.JButton btnFilter;
     private javax.swing.JButton btnSave;
     private javax.swing.JButton btnUpdate;
@@ -382,6 +649,7 @@ private static class RoundedCardBorder extends javax.swing.border.AbstractBorder
     private javax.swing.JLabel lblPhoneCaption;
     private javax.swing.JLabel lblRecordCount;
     private javax.swing.JLabel lblRegisterHeader;
+    private javax.swing.JLabel lblStatus;
     private javax.swing.JLabel lblSubtitle;
     private javax.swing.JLabel lblTitle;
     private javax.swing.JLabel lblTotalCustomersCaption;
