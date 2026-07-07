@@ -15,119 +15,178 @@ public class LoginPanel extends javax.swing.JPanel {
 	 * @param mainFrame
 	 */
 	public LoginPanel(MainJFrame mainFrame) {
-		this.mainFrame = mainFrame;
-		initComponents();
-		LAUNDRYSERVICEPOS.setFont(new Font("Playfair Display", Font.BOLD, 28));
-		employeelogin.setFont(new Font("Inter", Font.PLAIN, 14));
-		jLabel1.setFont(new Font("Inter", Font.PLAIN, 12));
-		btnLogin.setFont(new Font("Inter", Font.BOLD, 14));
-		System.out.println(LAUNDRYSERVICEPOS.getFont().getFamily());
-		txtUsername.putClientProperty("JTextField.placeholderText", "Username");
-		txtPassword.putClientProperty("JTextField.placeholderText", "********");
-		txtUsername.setText("Username");
-// remove text ng textfield
-		txtUsername.addFocusListener(new java.awt.event.FocusAdapter() {
-			@Override
-			public void focusGained(java.awt.event.FocusEvent evt) {
-				if (txtUsername.getText().equals("Username")) {
-					txtUsername.setText("");
-				}
-			}
+    this.mainFrame = mainFrame;
+    initComponents();
 
-			@Override
-			public void focusLost(java.awt.event.FocusEvent evt) {
-				if (txtUsername.getText().isEmpty()) {
-					txtUsername.setText("Username");
-				}
-			}
-		});
-//remove text ng password
-		txtPassword.setText("Password");
-		txtPassword.setEchoChar((char) 0); // Show placeholder text
+    // Fonts
+    LAUNDRYSERVICEPOS.setFont(new Font("Playfair Display", Font.BOLD, 30));
+    employeelogin.setFont(new Font("Inter", Font.PLAIN, 16));
+    jLabel1.setFont(new Font("Inter", Font.PLAIN, 14));
 
-		txtPassword.addFocusListener(new java.awt.event.FocusAdapter() {
-			@Override
-			public void focusGained(java.awt.event.FocusEvent evt) {
-				if (String.valueOf(txtPassword.getPassword()).equals("Password")) {
-					txtPassword.setText("");
-					txtPassword.setEchoChar('•'); // or '*' if you prefer
-				}
-			}
+    txtUsername.setFont(new Font("Inter", Font.PLAIN, 16));
+    txtPassword.setFont(new Font("Inter", Font.PLAIN, 16));
 
-			@Override
-			public void focusLost(java.awt.event.FocusEvent evt) {
-				if (txtPassword.getPassword().length == 0) {
-					txtPassword.setEchoChar((char) 0);
-					txtPassword.setText("Password");
-				}
-			}
-		});
+    btnLogin.setFont(new Font("Inter", Font.BOLD, 16));
 
-		txtUsername.setOpaque(false);
-		txtUsername.setBackground(new Color(0, 0, 0, 0));
-		txtUsername.setBorder(null);
+    // Placeholders
+    txtUsername.putClientProperty("JTextField.placeholderText", "Username");
+    txtPassword.putClientProperty("JTextField.placeholderText", "********");
 
-		txtPassword.setOpaque(false);
-		txtPassword.setBackground(new Color(0, 0, 0, 0));
-		txtPassword.setBorder(null);
-                // Press Enter to log in
-                txtUsername.addActionListener(e -> btnLogin.doClick());
-                txtPassword.addActionListener(e -> btnLogin.doClick());
-                //...
-		setLayout(new java.awt.GridLayout(1, 2));
+    txtUsername.setText("Username");
 
-		add(pnlLeft);
-		add(jPanel2);
+    txtUsername.addFocusListener(new java.awt.event.FocusAdapter() {
+        @Override
+        public void focusGained(java.awt.event.FocusEvent evt) {
+            if (txtUsername.getText().equals("Username")) {
+                txtUsername.setText("");
+            }
+        }
 
-		pnlLeft.setLayout(new java.awt.BorderLayout());
-		pnlLeft.add(new ImagePanel("/loginImage.png"), java.awt.BorderLayout.CENTER);
+        @Override
+        public void focusLost(java.awt.event.FocusEvent evt) {
+            if (txtUsername.getText().isEmpty()) {
+                txtUsername.setText("Username");
+            }
+        }
+    });
 
-		pnlLogo.setLayout(new java.awt.BorderLayout());
-		pnlLogo.add(new ImagePanel("/iconLogo.png", new java.awt.Dimension(300, 300)), java.awt.BorderLayout.CENTER);
+    txtPassword.setText("Password");
+    txtPassword.setEchoChar((char) 0);
 
-		javax.swing.GroupLayout jPanel2LayoutV = (javax.swing.GroupLayout) jPanel2.getLayout();
+    txtPassword.addFocusListener(new java.awt.event.FocusAdapter() {
+        @Override
+        public void focusGained(java.awt.event.FocusEvent evt) {
+            if (String.valueOf(txtPassword.getPassword()).equals("Password")) {
+                txtPassword.setText("");
+                txtPassword.setEchoChar('•');
+            }
+        }
 
-		jPanel2LayoutV.setVerticalGroup(
-			jPanel2LayoutV.createSequentialGroup()
-				.addGap(0, 0, Short.MAX_VALUE)
-				.addComponent(pnlLogo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-				.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-				.addComponent(LAUNDRYSERVICEPOS)
-				.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-				.addComponent(jLabel1)
-				.addGap(39, 39, 39)
-				.addComponent(employeelogin)
-				.addGap(43, 43, 43)
-				.addComponent(txtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-				.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-				.addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
-				.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-				.addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-				.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-				.addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
-				.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-				.addComponent(btnLogin)
-				.addGap(0, 0, Short.MAX_VALUE)
-		);
-		javax.swing.GroupLayout jPanel2Layout = (javax.swing.GroupLayout) jPanel2.getLayout();
-		javax.swing.GroupLayout.ParallelGroup contentGroup = jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-			.addComponent(pnlLogo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-			.addComponent(LAUNDRYSERVICEPOS)
-			.addComponent(jLabel1)
-			.addComponent(employeelogin)
-			.addComponent(txtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
-			.addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
-			.addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
-			.addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
-			.addComponent(btnLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE);
+        @Override
+        public void focusLost(java.awt.event.FocusEvent evt) {
+            if (txtPassword.getPassword().length == 0) {
+                txtPassword.setEchoChar((char) 0);
+                txtPassword.setText("Password");
+            }
+        }
+    });
 
-		jPanel2Layout.setHorizontalGroup(
-			jPanel2Layout.createSequentialGroup()
-				.addGap(0, 0, Short.MAX_VALUE)
-				.addGroup(contentGroup)
-				.addGap(0, 0, Short.MAX_VALUE)
-		);
-	}
+    // FlatLaf Button
+    btnLogin.putClientProperty("JButton.buttonType", "roundRect");
+    btnLogin.setBackground(new Color(66, 133, 244));
+    btnLogin.setForeground(Color.WHITE);
+    btnLogin.setFocusPainted(false);
+    btnLogin.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+
+    btnLogin.addMouseListener(new java.awt.event.MouseAdapter() {
+        @Override
+        public void mouseEntered(java.awt.event.MouseEvent e) {
+            btnLogin.setBackground(new Color(90, 155, 255));
+        }
+
+        @Override
+        public void mouseExited(java.awt.event.MouseEvent e) {
+            btnLogin.setBackground(new Color(66, 133, 244));
+        }
+    });
+
+    // Transparent text fields
+    txtUsername.setOpaque(false);
+    txtUsername.setBackground(new Color(0, 0, 0, 0));
+    txtUsername.setBorder(null);
+
+    txtPassword.setOpaque(false);
+    txtPassword.setBackground(new Color(0, 0, 0, 0));
+    txtPassword.setBorder(null);
+
+    // Press Enter to Login
+    txtUsername.addActionListener(e -> btnLogin.doClick());
+    txtPassword.addActionListener(e -> btnLogin.doClick());
+
+    setLayout(new java.awt.GridLayout(1, 2));
+
+    add(pnlLeft);
+    add(jPanel2);
+
+    pnlLeft.setLayout(new java.awt.BorderLayout());
+    pnlLeft.add(new ImagePanel("/loginImage.png"), java.awt.BorderLayout.CENTER);
+
+    pnlLogo.setLayout(new java.awt.BorderLayout());
+    pnlLogo.add(new ImagePanel("/iconLogo.png", new java.awt.Dimension(110, 110)), java.awt.BorderLayout.CENTER);
+
+    javax.swing.GroupLayout jPanel2LayoutV =
+            (javax.swing.GroupLayout) jPanel2.getLayout();
+
+    jPanel2LayoutV.setVerticalGroup(
+        jPanel2LayoutV.createSequentialGroup()
+            .addGap(0, 0, Short.MAX_VALUE)
+            .addComponent(pnlLogo, javax.swing.GroupLayout.PREFERRED_SIZE,
+                    javax.swing.GroupLayout.DEFAULT_SIZE,
+                    javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGap(12)
+            .addComponent(LAUNDRYSERVICEPOS)
+            .addGap(6)
+            .addComponent(jLabel1)
+            .addGap(28)
+            .addComponent(employeelogin)
+            .addGap(40)
+            .addComponent(txtUsername,
+                    javax.swing.GroupLayout.PREFERRED_SIZE, 48,
+                    javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGap(4)
+            .addComponent(jSeparator1,
+                    javax.swing.GroupLayout.PREFERRED_SIZE, 16,
+                    javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGap(16)
+            .addComponent(txtPassword,
+                    javax.swing.GroupLayout.PREFERRED_SIZE, 48,
+                    javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGap(4)
+            .addComponent(jSeparator2,
+                    javax.swing.GroupLayout.PREFERRED_SIZE, 16,
+                    javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGap(20)
+            .addComponent(btnLogin,
+                    javax.swing.GroupLayout.PREFERRED_SIZE, 56,
+                    javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGap(0, 0, Short.MAX_VALUE)
+    );
+
+    javax.swing.GroupLayout jPanel2Layout =
+            (javax.swing.GroupLayout) jPanel2.getLayout();
+
+    javax.swing.GroupLayout.ParallelGroup contentGroup =
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                .addComponent(pnlLogo,
+                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(LAUNDRYSERVICEPOS)
+                .addComponent(jLabel1)
+                .addComponent(employeelogin)
+                .addComponent(txtUsername,
+                        javax.swing.GroupLayout.PREFERRED_SIZE, 420,
+                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jSeparator1,
+                        javax.swing.GroupLayout.PREFERRED_SIZE, 420,
+                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtPassword,
+                        javax.swing.GroupLayout.PREFERRED_SIZE, 420,
+                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jSeparator2,
+                        javax.swing.GroupLayout.PREFERRED_SIZE, 420,
+                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnLogin,
+                        javax.swing.GroupLayout.PREFERRED_SIZE, 420,
+                        javax.swing.GroupLayout.PREFERRED_SIZE);
+
+    jPanel2Layout.setHorizontalGroup(
+        jPanel2Layout.createSequentialGroup()
+            .addGap(0, 0, Short.MAX_VALUE)
+            .addGroup(contentGroup)
+            .addGap(0, 0, Short.MAX_VALUE)
+    );
+}
 
 	public void refreshData() {
 
@@ -189,11 +248,11 @@ public class LoginPanel extends javax.swing.JPanel {
         employeelogin.setText("Enter your login information to continue");
 
         txtUsername.setBackground(new java.awt.Color(249, 249, 249));
-        txtUsername.setBorder(null);
+        txtUsername.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 1, true));
         txtUsername.addActionListener(this::txtUsernameActionPerformed);
 
         txtPassword.setBackground(new java.awt.Color(249, 249, 249));
-        txtPassword.setBorder(null);
+        txtPassword.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 1, true));
 
         btnLogin.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         btnLogin.setText("LOGIN");
@@ -237,9 +296,9 @@ public class LoginPanel extends javax.swing.JPanel {
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(112, Short.MAX_VALUE)
+                .addContainerGap(94, Short.MAX_VALUE)
                 .addComponent(pnlLogo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(12, 12, 12)
+                .addGap(30, 30, 30)
                 .addComponent(LAUNDRYSERVICEPOS)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel1)
@@ -254,8 +313,8 @@ public class LoginPanel extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnLogin)
-                .addGap(106, 106, 106))
+                .addComponent(btnLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(88, 88, 88))
         );
 
         add(jPanel2);
