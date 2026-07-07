@@ -149,8 +149,10 @@ public class HomePanel extends javax.swing.JPanel {
 		pnlMetrics.add(createStatCard("inventory_2.svg", 0x2e7d32, "Ready for Pickup",
 			String.valueOf(getReadyForPickupCount()), null, 0, true));
 
-		pnlMetrics.revalidate();  // tell the layout manager to recompute positions
-		pnlMetrics.repaint();     // force Swing to redraw with the new layout
+		pnlMetrics.revalidate();
+		pnlMetrics.repaint();
+
+		loadRecentOrdersTable();
 	}
 
 	private void startClock() {
