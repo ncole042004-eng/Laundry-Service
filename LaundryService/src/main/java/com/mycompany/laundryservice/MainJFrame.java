@@ -36,7 +36,6 @@ public class MainJFrame extends javax.swing.JFrame {
 			}
 		});
 		repositionFloatingButton();
-		updateSystemStatus();
 	}
 
 	public void showCard(String cardName) {
@@ -47,8 +46,6 @@ public class MainJFrame extends javax.swing.JFrame {
 		switch (cardName) {
 			case AppConstants.CARD_HOME ->
 				homePanel1.refreshData();
-			case AppConstants.CARD_NEW_ORDER ->
-				newOrderPanel1.refreshData();
 //			case AppConstants.CARD_CUSTOMERS ->
 //				customerPanel1.refreshData();
 //			case AppConstants.CARD_ORDER_LIST ->
@@ -92,15 +89,6 @@ public class MainJFrame extends javax.swing.JFrame {
 	public void setFloatingButtonVisible(boolean visible) {
 		if (floatingBtn != null) {
 			floatingBtn.setVisible(visible);
-		}
-	}
-
-	private void updateSystemStatus() {
-		boolean isOnline = com.mycompany.laundryservice.database.DBConnection.canConnectToDB();
-		if (isOnline) {
-			lblStatus.setText("<html><span style=\"color:#2e7d32;\">&#9679;</span> System Operational</html>");
-		} else {
-			lblStatus.setText("<html><span style=\"color:#ba1a1a;\">&#9679;</span> System Down</html>");
 		}
 	}
 

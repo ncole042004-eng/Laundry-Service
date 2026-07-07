@@ -68,15 +68,6 @@ public class HomePanel extends javax.swing.JPanel {
 		tblRecentOrders.setGridColor(new Color(0xc3, 0xc6, 0xd7));
 		tblRecentOrders.setRowHeight(48);
 
-		String[] columnNames = {"Claim Number", "Customer", "Phone Number", "Weight (kg)", "Status", "Payment", "Notes", "Total Amount"};
-		DefaultTableModel model = new DefaultTableModel(columnNames, 0) {
-			@Override
-			public boolean isCellEditable(int row, int column) {
-				return false;
-			}
-		};
-		tblRecentOrders.setModel(model);
-
 		tblRecentOrders.getColumnModel().getColumn(4).setCellRenderer(new ChipCellRenderer()); // Status
 		tblRecentOrders.getColumnModel().getColumn(5).setCellRenderer(new ChipCellRenderer()); // Payment
 
@@ -98,11 +89,7 @@ public class HomePanel extends javax.swing.JPanel {
 			public java.awt.Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 				super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 				setFont(new Font("Inter 18pt", Font.BOLD, 14));
-				if (isSelected) {
-					setForeground(Color.WHITE);
-				} else {
-					setForeground(new Color(0x2655bd));
-				}
+				setForeground(new Color(0x2655bd));
 				setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
 				return this;
@@ -299,7 +286,7 @@ public class HomePanel extends javax.swing.JPanel {
 		String sql = "SELECT order_id, claim_number, customer_id, employee_id, service_id, "
 			+ "order_date, ready_at, claimed_at, weight_kg, price_at_order, total_amount, "
 			+ "payment_status, order_status, notes "
-			+ "FROM Orders WHERE DATE(order_date) = CURDATE() ORDER BY order_date DESC";
+			+ "FROM Orders ORDER BY order_date DESC LIMIT 10";
 
 		try (Connection conn = DBConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
 
@@ -332,10 +319,10 @@ public class HomePanel extends javax.swing.JPanel {
 
 	private void loadRecentOrdersTable() {
 		DefaultTableModel model = (DefaultTableModel) tblRecentOrders.getModel();
-		model.setRowCount(0);
+		model.setRowCount(0); // clear existing rows before reloading
 
 		for (Order order : getRecentOrders()) {
-			Customer customer = findCustomerById(order.getCustomerId());
+			Customer customer = findCustomerById(order.getCustomerId()); // write this the same way as findCustomerByPhone, but WHERE customer_id = ?
 
 			model.addRow(new Object[]{
 				order.getClaimNumber(),

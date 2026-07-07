@@ -7,28 +7,24 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class DBConnection {
-<<<<<<< HEAD
     private static final String URL =
             "jdbc:mysql://localhost:3306/laundry_service_db";
     private static final String USER = "root";
     private static final String PASSWORD = "";
-=======
 
-	private static final String URL
-		= "jdbc:mysql://localhost:3306/laundry_service_db";
-	private static final String USER = "root";
-	private static final String PASSWORD = "";
->>>>>>> ae5508c (Updated MainJFrame: System Status Added (System Operational/Down Indicator). Updated DBConnection: Force MySQL driver to load and register with DriveManager. Updated HomePanel: Updated Row Count and Table Selection to non editable, Claim Number when highlighted is now white)
+    /**
+     * Returns a new connection to the laundry_service_db database.
+     * Call this as: DBConnection.getConnection()
+     *
+     * Always use try-with-resources when calling this method:
+     * try (Connection conn = DBConnection.getConnection()) { ... }
+	 * @return 
+	 * @throws java.sql.SQLException
+     */
+    public static Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(URL, USER, PASSWORD);
+    }
 
-	static {
-		try {
-			Class.forName("com.mysql.cj.jdbc.Driver");
-		} catch (ClassNotFoundException e) {
-			System.err.println("MySQL JDBC Driver not found on classpath: " + e.getMessage());
-		}
-	}
-
-<<<<<<< HEAD
     public static boolean canConnectToDB() {
         try (Connection conn = getConnection()) {
             return true;
@@ -57,18 +53,3 @@ public class DBConnection {
         return -1; // invalid credentials
     }
 }
-=======
-	public static Connection getConnection() throws SQLException {
-		return DriverManager.getConnection(URL, USER, PASSWORD);
-	}
-
-	public static boolean canConnectToDB() {
-		try (Connection conn = getConnection()) {
-			return true;
-		} catch (SQLException e) {
-			System.out.println("Database Error: " + e.getMessage());
-			return false;
-		}
-	}
-}
->>>>>>> ae5508c (Updated MainJFrame: System Status Added (System Operational/Down Indicator). Updated DBConnection: Force MySQL driver to load and register with DriveManager. Updated HomePanel: Updated Row Count and Table Selection to non editable, Claim Number when highlighted is now white)
