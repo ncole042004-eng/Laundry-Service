@@ -219,6 +219,7 @@ public class SidebarPanel extends javax.swing.JPanel {
 
                 navLogoutbtn.setFont(new java.awt.Font("Inter 18pt SemiBold", 0, 11)); // NOI18N
                 navLogoutbtn.setText("Logout");
+                navLogoutbtn.addActionListener(evt -> mainFrame.logout());
                 add(navLogoutbtn);
                 add(filler4);
         }// </editor-fold>//GEN-END:initComponents

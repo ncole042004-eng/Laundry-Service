@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS Employees (
     name VARCHAR(100) NOT NULL,
     username VARCHAR(50) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
+    role ENUM('Admin', 'Cashier') NOT NULL DEFAULT 'Cashier',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -50,4 +51,4 @@ CREATE TABLE IF NOT EXISTS Orders (
 );
 
 INSERT IGNORE INTO Services (service_name, fixed_price)
-VALUES ('Full Service', 175.0000);
+VALUES ('Full Service (Wash-Dry-Fold)', 175.0000);

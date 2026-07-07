@@ -4,6 +4,7 @@
  */
 package com.mycompany.laundryservice;
 
+import com.mycompany.laundryservice.database.DBConnection;
 import java.awt.FontFormatException;
 import java.io.IOException;
 
@@ -14,6 +15,7 @@ import java.io.IOException;
 public class MainJFrame extends javax.swing.JFrame {
 
 	private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(MainJFrame.class.getName());
+	private int currentEmployeeId = -1;
 
 	/**
 	 * Creates new form MainJFrame
@@ -26,8 +28,6 @@ public class MainJFrame extends javax.swing.JFrame {
 		setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH);
 		sidebarPanel1.setMainFrame(this);
 
-		showCard("homePanel1");
-
 		initFloatingButton();
 		addComponentListener(new java.awt.event.ComponentAdapter() {
 			@Override
@@ -36,6 +36,11 @@ public class MainJFrame extends javax.swing.JFrame {
 			}
 		});
 		repositionFloatingButton();
+
+		sidebarPanel1.setVisible(false);
+		topbarHeader.setVisible(false);
+		showCard(AppConstants.CARD_LOGIN);
+
 		updateSystemStatus();
 	}
 
@@ -47,6 +52,8 @@ public class MainJFrame extends javax.swing.JFrame {
 		switch (cardName) {
 			case AppConstants.CARD_HOME ->
 				homePanel1.refreshData();
+			case AppConstants.CARD_LOGIN ->
+				loginPanel1.refreshData();
 			case AppConstants.CARD_NEW_ORDER ->
 				newOrderPanel1.refreshData();
 //			case AppConstants.CARD_CUSTOMERS ->
@@ -59,8 +66,28 @@ public class MainJFrame extends javax.swing.JFrame {
 //				reportsPanel1.refreshData();
 		}
 
-		boolean showButton = (!cardName.equals(AppConstants.CARD_NEW_ORDER) && !cardName.equals(AppConstants.CARD_ORDER_LIST) && !cardName.equals(AppConstants.CARD_REPORTS));
+		boolean showButton = (!cardName.equals(AppConstants.CARD_NEW_ORDER) && !cardName.equals(AppConstants.CARD_ORDER_LIST) && !cardName.equals(AppConstants.CARD_REPORTS) && !cardName.equals(AppConstants.CARD_LOGIN));
 		setFloatingButtonVisible(showButton);
+	}
+
+	public void onLoginSuccess(int employeeId) {
+		this.currentEmployeeId = employeeId;
+		lblProfileName.setText(DBConnection.getUserName(currentEmployeeId));
+		lblProfileRole.setText(DBConnection.getUserRole(currentEmployeeId));
+		sidebarPanel1.setVisible(true);
+		topbarHeader.setVisible(true);
+		showCard(AppConstants.CARD_HOME);
+		getContentPane().revalidate();
+		getContentPane().repaint();
+	}
+
+	public void logout() {
+		this.currentEmployeeId = -1;
+		showCard(AppConstants.CARD_LOGIN);
+		sidebarPanel1.setVisible(false);
+		topbarHeader.setVisible(false);
+		getContentPane().revalidate();
+		getContentPane().repaint();
 	}
 
 	private javax.swing.JButton floatingBtn;
@@ -133,6 +160,7 @@ public class MainJFrame extends javax.swing.JFrame {
                 reportsPanel1 = new com.mycompany.laundryservice.panels.ReportsPanel();
                 orderListPanel1 = new com.mycompany.laundryservice.panels.OrderListPanel();
                 homePanel1 = new com.mycompany.laundryservice.panels.HomePanel();
+				loginPanel1 = new com.mycompany.laundryservice.panels.LoginPanel(this);
 
                 setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
                 setBackground(new java.awt.Color(249, 249, 249));
@@ -200,6 +228,7 @@ public class MainJFrame extends javax.swing.JFrame {
 
                 homePanel1.setMainFrame(this);
                 pnlContent.add(homePanel1, "homePanel1");
+				pnlContent.add(loginPanel1, AppConstants.CARD_LOGIN);
 
                 pnlMainRight.add(pnlContent, java.awt.BorderLayout.CENTER);
 
@@ -295,6 +324,7 @@ public class MainJFrame extends javax.swing.JFrame {
         // Variables declaration - do not modify//GEN-BEGIN:variables
         private com.mycompany.laundryservice.panels.CustomerPanel customerPanel1;
         private com.mycompany.laundryservice.panels.HomePanel homePanel1;
+		private com.mycompany.laundryservice.panels.LoginPanel loginPanel1;
         private javax.swing.JSeparator jSeparator1;
         private javax.swing.JLabel lblHeaderIcon;
         private javax.swing.JLabel lblHeaderTitle;
@@ -316,7 +346,7 @@ public class MainJFrame extends javax.swing.JFrame {
         // End of variables declaration//GEN-END:variables
 
 	public int getCurrentEmployeeId() {
-		throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+		return currentEmployeeId;
 	}
 
 }

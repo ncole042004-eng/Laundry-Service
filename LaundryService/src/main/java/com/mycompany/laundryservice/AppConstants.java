@@ -12,6 +12,7 @@ public final class AppConstants {
 
     private AppConstants() {}
 
+    public static final String CARD_LOGIN = "loginPanel1";
     public static final String CARD_HOME = "homePanel1";
     public static final String CARD_NEW_ORDER = "newOrderPanel1";
     public static final String CARD_CUSTOMERS = "customerPanel1";
