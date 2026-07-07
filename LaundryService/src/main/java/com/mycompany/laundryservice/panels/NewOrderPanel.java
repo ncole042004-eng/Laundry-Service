@@ -18,6 +18,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 
 /**
  *
@@ -48,6 +49,52 @@ public class NewOrderPanel extends javax.swing.JPanel {
         setupValidation();
         updateTotalAmount();
         btnSaveOrder.setEnabled(false);
+        
+        // ====== ADD SVG ICONS ======
+    
+        // 1. Customer Info Label (jLabel3) - person_search.svg
+        jLabel3.setIcon(loadIcon("person_search.svg", 18, 0x2655bd));
+        jLabel3.setIconTextGap(8);
+        jLabel3.setText(" CUSTOMER INFO");
+
+        // 2. Order Details Label (jLabel9) - density_small.svg
+        jLabel9.setIcon(loadIcon("density_small.svg", 18, 0x2655bd));
+        jLabel9.setIconTextGap(8);
+        jLabel9.setText(" ORDER DETAILS");
+
+        // 3. Save Order Button - save.svg
+        btnSaveOrder.setIcon(loadIcon("save.svg", 18, 0xFFFFFF));
+        btnSaveOrder.setIconTextGap(8);
+
+        // 4. Manage Customers Button - add.svg
+        btnManageCustomers.setIcon(loadIcon("add.svg", 18, 0xFFFFFF));
+        btnManageCustomers.setIconTextGap(8);
+        
+        // Customer List Button - list_alt.svg
+        btnCustomerList.setIcon(loadIcon("list.svg", 18, 0xFFFFFF));
+        btnCustomerList.setIconTextGap(8);
+        
+        // Cancel Button - logout.svg
+        btnCancel.setIcon(loadIcon("logout.svg", 18, 0x666666));
+        btnCancel.setIconTextGap(8);
+
+        // ====== END ADD ICONS ======
+        
+        
+        
+    }
+    
+    /**
+     * Helper method to load SVG icons
+     */
+    private javax.swing.Icon loadIcon(String iconName, int size, int colorHex) {
+        try {
+            FlatSVGIcon icon = new FlatSVGIcon("icons/" + iconName, size, size);
+            icon.setColorFilter(new FlatSVGIcon.ColorFilter(c -> new java.awt.Color(colorHex)));
+            return icon;
+        } catch (Exception e) {
+            return null; // Icon not found
+        }
     }
 
     // ==================== SERVICE LOADING ====================
@@ -196,7 +243,7 @@ public class NewOrderPanel extends javax.swing.JPanel {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMMdd");
         String datePrefix = formatter.format(LocalDate.now());
 
-        String sql = "SELECT MAX(CAST(SUBSTRING(claim_number, 10, 3) AS UNSIGNED)) as max_num "
+        String sql = "SELECT MAX(CAST(SUBSTRING(claim_number, -3) AS UNSIGNED)) as max_num "
                 + "FROM Orders "
                 + "WHERE claim_number LIKE 'LS-" + datePrefix + "-%'";
 
@@ -212,6 +259,7 @@ public class NewOrderPanel extends javax.swing.JPanel {
                 }
             }
         } catch (SQLException e) {
+            
         }
 
         return String.format("LS-%s-%03d", datePrefix, nextNumber);
@@ -614,27 +662,29 @@ public class NewOrderPanel extends javax.swing.JPanel {
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addGap(20, 20, 20)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(53, 53, 53)
-                        .addComponent(btnSaveOrder))
-                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(lblTotalAmount, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel13)
-                                    .addComponent(lblCustomerValue1, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(lblService1, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(88, 88, 88)))
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblService1, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                         .addGroup(jPanel4Layout.createSequentialGroup()
-                            .addComponent(lblService, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblService, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGap(30, 30, 30)
-                            .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(lblServiceAmount, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(lblAdditonalChargesAmount, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
-                .addContainerGap(20, Short.MAX_VALUE))
+                            .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(lblServiceAmount, javax.swing.GroupLayout.DEFAULT_SIZE, 58, Short.MAX_VALUE)
+                                .addComponent(lblAdditonalChargesAmount, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGroup(jPanel4Layout.createSequentialGroup()
+                            .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(lblTotalAmount, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(jPanel4Layout.createSequentialGroup()
+                                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jLabel13)
+                                        .addComponent(lblCustomerValue1, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGap(88, 88, 88)))
+                            .addGap(13, 13, 13))
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
+                            .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(36, 36, 36)
+                            .addComponent(btnSaveOrder, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(17, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -760,15 +810,17 @@ public class NewOrderPanel extends javax.swing.JPanel {
                 .addGap(50, 50, 50)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(lblTitle, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(lblSubtitle, javax.swing.GroupLayout.Alignment.LEADING))
+                    .addComponent(lblTitle, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lblSubtitle)
                     .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnManageCustomers, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(50, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(89, 89, 89)
+                        .addComponent(btnManageCustomers, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(28, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

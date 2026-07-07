@@ -17,6 +17,7 @@ import javax.swing.RowSorter;
 import javax.swing.SortOrder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 
 
 /**
@@ -49,6 +50,47 @@ public class CustomerListDialog extends javax.swing.JDialog {
         tableModel = (DefaultTableModel) scrCustomer.getModel();
         sorter = new TableRowSorter<>(tableModel);
         scrCustomer.setRowSorter(sorter);
+        
+        // ====== SET FIXED SIZE ======
+        this.setPreferredSize(new java.awt.Dimension(821, 575));
+        this.setSize(821, 575);
+        // ====== END ======
+
+        // ====== ADD SVG ICONS ======
+        // Title Label - person_search.svg
+        jLabel1.setIcon(loadIcon("person_search.svg", 16, 0x2655bd));
+        jLabel1.setIconTextGap(8);
+        jLabel1.setText(" Select Customer");
+
+        // Search Button - search.svg
+        btnSearch.setIcon(loadIcon("search.svg", 16, 0x2655bd));
+        btnSearch.setIconTextGap(8);
+        btnSearch.setText(" Search");
+
+        // Refresh Button - density_small.svg
+        btnRefresh.setIcon(loadIcon("density_small.svg", 16, 0x2655bd));
+        btnRefresh.setIconTextGap(8);
+        btnRefresh.setText(" Refresh");
+
+        // Select Button - check_circle.svg
+        btnSelect.setIcon(loadIcon("check_circle.svg", 16, 0xFFFFFF));
+        btnSelect.setIconTextGap(8);
+        btnSelect.setBackground(new java.awt.Color(39, 174, 96));  // Green
+        btnSelect.setForeground(java.awt.Color.WHITE);
+        btnSelect.setText(" Select");
+
+        // Cancel Button - logout.svg
+        btnCancel.setIcon(loadIcon("logout.svg", 16, 0x666666));
+        btnCancel.setIconTextGap(8);
+        btnCancel.setText(" Cancel");
+        // ====== END ADD ICONS ======
+        
+        
+            // ====== DISABLE COLUMN REORDERING ======
+            scrCustomer.getTableHeader().setReorderingAllowed(false);
+            // ====== END ======
+    
+    
 
         // ====== SORT ONLY CUSTOMER ID IN ASCENDING ORDER ======
         // Enable sorting only on Customer ID (Column 0)
@@ -92,6 +134,18 @@ public class CustomerListDialog extends javax.swing.JDialog {
                 }
             }
         });
+    }
+    /**
+     * Helper method to load SVG icons
+     */
+    private javax.swing.Icon loadIcon(String iconName, int size, int colorHex) {
+        try {
+            FlatSVGIcon icon = new FlatSVGIcon("icons/" + iconName, size, size);
+            icon.setColorFilter(new FlatSVGIcon.ColorFilter(c -> new java.awt.Color(colorHex)));
+            return icon;
+        } catch (Exception e) {
+            return null; // Icon not found
+        }
     }
 
     private void loadCustomers() {
@@ -230,7 +284,6 @@ public class CustomerListDialog extends javax.swing.JDialog {
         jMenuBar1.add(jMenu2);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(700, 500));
 
         scrCustomer.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         scrCustomer.setModel(new javax.swing.table.DefaultTableModel(
@@ -243,19 +296,26 @@ public class CustomerListDialog extends javax.swing.JDialog {
         ));
         jScrollPane1.setViewportView(scrCustomer);
 
-        jLabel1.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         jLabel1.setText("Select Customer");
 
-        jLabel2.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        jPanel1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(52, 152, 219), 1, true));
+
+        jLabel2.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         jLabel2.setText("Search: ");
 
+        txtSearch.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         txtSearch.addActionListener(this::txtSearchActionPerformed);
 
-        btnSearch.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        btnSearch.setBackground(new java.awt.Color(52, 152, 219));
+        btnSearch.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        btnSearch.setForeground(new java.awt.Color(255, 255, 255));
         btnSearch.setText("Search");
         btnSearch.addActionListener(this::btnSearchActionPerformed);
 
-        btnRefresh.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        btnRefresh.setBackground(new java.awt.Color(52, 152, 219));
+        btnRefresh.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        btnRefresh.setForeground(new java.awt.Color(255, 255, 255));
         btnRefresh.setText("Refresh");
         btnRefresh.addActionListener(this::btnRefreshActionPerformed);
 
@@ -267,34 +327,43 @@ public class CustomerListDialog extends javax.swing.JDialog {
                 .addGap(20, 20, 20)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 368, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 376, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(31, 31, 31)
                 .addComponent(btnSearch)
                 .addGap(18, 18, 18)
                 .addComponent(btnRefresh)
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addContainerGap(17, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(24, 24, 24)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnSearch)
                     .addComponent(btnRefresh))
-                .addGap(12, 12, 12))
+                .addContainerGap(24, Short.MAX_VALUE))
         );
 
+        jPanel2.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(52, 152, 219), 1, true));
         jPanel2.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
 
+        jLabel3.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         jLabel3.setText("Total Customer: ");
 
+        lblCount.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         lblCount.setText("0");
 
+        btnSelect.setBackground(new java.awt.Color(52, 152, 219));
+        btnSelect.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        btnSelect.setForeground(new java.awt.Color(255, 255, 255));
         btnSelect.setText("Select");
         btnSelect.addActionListener(this::btnSelectActionPerformed);
 
+        btnCancel.setBackground(new java.awt.Color(52, 152, 219));
+        btnCancel.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        btnCancel.setForeground(new java.awt.Color(255, 255, 255));
         btnCancel.setText("Cancel");
         btnCancel.addActionListener(this::btnCancelActionPerformed);
 
@@ -303,28 +372,26 @@ public class CustomerListDialog extends javax.swing.JDialog {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(17, 17, 17)
-                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(23, 23, 23)
+                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(30, 30, 30)
                 .addComponent(lblCount, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnSelect)
-                .addGap(18, 18, 18)
+                .addGap(72, 72, 72)
                 .addComponent(btnCancel)
-                .addGap(21, 21, 21))
+                .addGap(42, 42, 42))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap(13, Short.MAX_VALUE)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(btnSelect)
-                        .addComponent(btnCancel))
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel3)
-                        .addComponent(lblCount)))
-                .addGap(13, 13, 13))
+                .addGap(22, 22, 22)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(lblCount)
+                    .addComponent(btnSelect)
+                    .addComponent(btnCancel))
+                .addContainerGap(22, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -334,27 +401,27 @@ public class CustomerListDialog extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addGap(28, 28, 28)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane1)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(14, 14, 14)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1))
-                .addContainerGap(42, Short.MAX_VALUE))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(28, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(20, Short.MAX_VALUE)
+                .addGap(27, 27, 27)
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(18, 18, 18)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 308, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addContainerGap(27, Short.MAX_VALUE))
         );
+
+        getAccessibleContext().setAccessibleDescription("");
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
