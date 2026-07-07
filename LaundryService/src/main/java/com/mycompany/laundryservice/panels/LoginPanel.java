@@ -70,6 +70,10 @@ public class LoginPanel extends javax.swing.JPanel {
 		txtPassword.setOpaque(false);
 		txtPassword.setBackground(new Color(0, 0, 0, 0));
 		txtPassword.setBorder(null);
+                // Press Enter to log in
+                txtUsername.addActionListener(e -> btnLogin.doClick());
+                txtPassword.addActionListener(e -> btnLogin.doClick());
+                //...
 		setLayout(new java.awt.GridLayout(1, 2));
 
 		add(pnlLeft);
