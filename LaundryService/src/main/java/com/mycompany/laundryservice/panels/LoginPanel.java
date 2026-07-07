@@ -4,12 +4,6 @@ import com.formdev.flatlaf.FlatLightLaf;
 import com.mycompany.laundryservice.MainJFrame;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Image;
-import java.io.File;
-import java.net.URL;
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
 
 public class LoginPanel extends javax.swing.JPanel {
 
@@ -144,7 +138,7 @@ jPanel2Layout.setHorizontalGroup(
 	
 
 	public static void main(String[] args) {
-		com.formdev.flatlaf.FlatLightLaf.setup();
+		FlatLightLaf.setup();
 		try {
 			java.awt.GraphicsEnvironment ge = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment();
 			ge.registerFont(java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, LoginPanel.class.getResourceAsStream("/fonts/Inter_18pt-Regular.ttf")));
