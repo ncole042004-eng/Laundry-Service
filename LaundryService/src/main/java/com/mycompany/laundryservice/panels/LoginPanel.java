@@ -5,7 +5,6 @@ import com.mycompany.laundryservice.MainJFrame;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Image;
-import java.awt.image.BaseMultiResolutionImage;
 import java.io.File;
 import java.net.URL;
 import javax.swing.ImageIcon;
@@ -28,6 +27,11 @@ public class LoginPanel extends javax.swing.JPanel {
 	public LoginPanel(MainJFrame mainFrame) {
 		this.mainFrame = mainFrame;
 		initComponents();
+                LAUNDRYSERVICEPOS.setFont(new Font("Playfair Display", Font.BOLD, 28));
+employeelogin.setFont(new Font("Inter", Font.PLAIN, 14));
+jLabel1.setFont(new Font("Inter", Font.PLAIN, 12));
+btnLogin.setFont(new Font("Inter", Font.BOLD, 14));
+                System.out.println(LAUNDRYSERVICEPOS.getFont().getFamily());
 		txtUsername.putClientProperty("JTextField.placeholderText", "Username");
 		txtPassword.putClientProperty("JTextField.placeholderText", "********");
 		txtUsername.setText("Username");
