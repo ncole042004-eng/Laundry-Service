@@ -11,6 +11,7 @@ import com.mycompany.laundryservice.MainJFrame;
 import com.mycompany.laundryservice.AppConstants;
 import com.mycompany.laundryservice.database.DBConnection;
 import com.mycompany.laundryservice.model.Customer;
+import com.mycompany.laundryservice.model.Employee;
 import com.mycompany.laundryservice.model.Order;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -69,7 +70,7 @@ public class HomePanel extends javax.swing.JPanel {
 		tblRecentOrders.setGridColor(new Color(0xc3, 0xc6, 0xd7));
 		tblRecentOrders.setRowHeight(48);
 
-		String[] columnNames = {"Claim Number", "Customer", "Phone Number", "Weight (kg)", "Status", "Payment", "Notes", "Total Amount"};
+		String[] columnNames = {"Claim Number", "Employee", "Customer", "Phone Number", "Weight (kg)", "Status", "Payment", "Notes", "Total Amount"};
 		DefaultTableModel model = new DefaultTableModel(columnNames, 0) {
 			@Override
 			public boolean isCellEditable(int row, int column) {
@@ -78,8 +79,8 @@ public class HomePanel extends javax.swing.JPanel {
 		};
 		tblRecentOrders.setModel(model);
 
-		tblRecentOrders.getColumnModel().getColumn(4).setCellRenderer(new ChipCellRenderer()); // Status
-		tblRecentOrders.getColumnModel().getColumn(5).setCellRenderer(new ChipCellRenderer()); // Payment
+		tblRecentOrders.getColumnModel().getColumn(5).setCellRenderer(new ChipCellRenderer()); // Status
+		tblRecentOrders.getColumnModel().getColumn(6).setCellRenderer(new ChipCellRenderer()); // Payment
 
 		lblViewAll.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		lblViewAll.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -117,6 +118,7 @@ public class HomePanel extends javax.swing.JPanel {
 		tblRecentOrders.getColumnModel().getColumn(1).setCellRenderer(centerRenderer);
 		tblRecentOrders.getColumnModel().getColumn(2).setCellRenderer(centerRenderer);
 		tblRecentOrders.getColumnModel().getColumn(3).setCellRenderer(centerRenderer);
+		tblRecentOrders.getColumnModel().getColumn(4).setCellRenderer(centerRenderer);
 		tblRecentOrders.getColumnModel().getColumn(7).setCellRenderer(centerRenderer);
 
 		loadRecentOrdersTable();
@@ -339,9 +341,11 @@ public class HomePanel extends javax.swing.JPanel {
 
 		for (Order order : getRecentOrders()) {
 			Customer customer = findCustomerById(order.getCustomerId());
+			Employee employee = findEmployeeById(order.getEmployeeId());
 
 			model.addRow(new Object[]{
 				order.getClaimNumber(),
+				employee != null ? employee.getName() : "Unknown",
 				customer != null ? customer.getName() : "Unknown",
 				customer != null ? customer.getPhone() : "",
 				order.getWeightKg(),
@@ -372,6 +376,27 @@ public class HomePanel extends javax.swing.JPanel {
 			}
 		} catch (java.sql.SQLException e) {
 			System.err.println("Failed to find customer: " + e.getMessage());
+		}
+		return null;
+	}
+
+	private Employee findEmployeeById(int id) {
+		String sql = "SELECT * FROM Employees WHERE employee_id = ?";
+		try (java.sql.Connection conn = DBConnection.getConnection(); java.sql.PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+			stmt.setInt(1, id);
+			try (java.sql.ResultSet rs = stmt.executeQuery()) {
+				if (rs.next()) {
+					return new Employee(
+						rs.getInt("employee_id"),
+						rs.getString("name"),
+						rs.getString("username"),
+						rs.getString("password")
+					);
+				}
+			}
+		} catch (java.sql.SQLException e) {
+			System.err.println("Failed to find employee: " + e.getMessage());
 		}
 		return null;
 	}
