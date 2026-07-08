@@ -18,6 +18,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.ArrayList;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -373,6 +374,71 @@ public class HomePanel extends javax.swing.JPanel {
 			System.err.println("Failed to find customer: " + e.getMessage());
 		}
 		return null;
+	}
+
+	private class ChipCellRenderer extends DefaultTableCellRenderer {
+
+		private Color chipBg = Color.WHITE;
+
+		public ChipCellRenderer() {
+			setHorizontalAlignment(JLabel.CENTER);
+			setOpaque(false); // important: we paint our own background
+		}
+
+		@Override
+		public Component getTableCellRendererComponent(JTable table, Object value,
+			boolean isSelected, boolean hasFocus, int row, int column) {
+			super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+			String text = value != null ? value.toString() : "";
+			setFont(new java.awt.Font("Inter 18pt", java.awt.Font.BOLD, 12));
+
+			switch (text.toLowerCase()) {
+				case "pending":
+					chipBg = new Color(255, 243, 224);
+					setForeground(new Color(239, 107, 0));
+					break;
+				case "processing":
+					chipBg = new Color(192, 237, 250);
+					setForeground(new Color(0, 85, 108));
+					break;
+				case "ready":
+					chipBg = new Color(204, 235, 255);
+					setForeground(new Color(37, 99, 235));
+					break;
+				case "claimed":
+				case "paid":
+					chipBg = new Color(232, 245, 233);
+					setForeground(new Color(47, 124, 49));
+					break;
+				case "unpaid":
+					chipBg = new Color(255, 218, 214);
+					setForeground(new Color(198, 40, 40));
+					break;
+				default:
+					chipBg = Color.WHITE;
+					setForeground(Color.BLACK);
+			}
+			return this;
+		}
+
+		@Override
+		protected void paintComponent(java.awt.Graphics g) {
+			java.awt.Graphics2D g2 = (java.awt.Graphics2D) g.create();
+			g2.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING, java.awt.RenderingHints.VALUE_ANTIALIAS_ON);
+
+			java.awt.FontMetrics fm = g2.getFontMetrics(getFont());
+			int textWidth = fm.stringWidth(getText());
+			int chipHeight = getHeight() - 16;
+			int chipWidth = textWidth + 28;
+			int x = (getWidth() - chipWidth) / 2;
+			int y = (getHeight() - chipHeight) / 2;
+
+			g2.setColor(chipBg);
+			g2.fillRoundRect(x, y, chipWidth, chipHeight, chipHeight, chipHeight);
+			g2.dispose();
+
+			super.paintComponent(g);
+		}
 	}
 
 	/**
