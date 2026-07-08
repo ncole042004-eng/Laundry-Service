@@ -24,6 +24,7 @@ public class CustomerPanel extends javax.swing.JPanel {
         private int selectedCustomerId = -1;
         private boolean editMode = false;
         private boolean selectedIsActive = true;
+        private boolean showingDeactivated = false;
 	public CustomerPanel() {
 		initComponents();
                 applyDesignStyling();
@@ -85,6 +86,7 @@ public class CustomerPanel extends javax.swing.JPanel {
         scrollCustomers = new javax.swing.JScrollPane();
         tblCustomers = new javax.swing.JTable();
         lblRecordCount = new javax.swing.JLabel();
+        btnDeactivatedAccounts = new javax.swing.JButton();
         btnUpdate = new javax.swing.JButton();
         btnDeactivate = new javax.swing.JButton();
 
@@ -292,6 +294,10 @@ public class CustomerPanel extends javax.swing.JPanel {
         lblRecordCount.setFont(new java.awt.Font("Inter 18pt SemiBold", 0, 11)); // NOI18N
         lblRecordCount.setText("Showing 5 of 1,284 customers");
 
+        btnDeactivatedAccounts.setFont(new java.awt.Font("Inter 18pt SemiBold", 0, 12)); // NOI18N
+        btnDeactivatedAccounts.setText("Show Deactivated Accounts");
+        btnDeactivatedAccounts.addActionListener(this::btnDeactivatedAccountsActionPerformed);
+
         javax.swing.GroupLayout pnlTableCardLayout = new javax.swing.GroupLayout(pnlTableCard);
         pnlTableCard.setLayout(pnlTableCardLayout);
         pnlTableCardLayout.setHorizontalGroup(
@@ -299,8 +305,11 @@ public class CustomerPanel extends javax.swing.JPanel {
             .addGroup(pnlTableCardLayout.createSequentialGroup()
                 .addGap(15, 15, 15)
                 .addGroup(pnlTableCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblRecordCount)
-                    .addComponent(scrollCustomers))
+                    .addGroup(pnlTableCardLayout.createSequentialGroup()
+                        .addComponent(lblRecordCount)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnDeactivatedAccounts))
+                    .addComponent(scrollCustomers, javax.swing.GroupLayout.DEFAULT_SIZE, 931, Short.MAX_VALUE))
                 .addGap(15, 15, 15))
         );
         pnlTableCardLayout.setVerticalGroup(
@@ -308,9 +317,11 @@ public class CustomerPanel extends javax.swing.JPanel {
             .addGroup(pnlTableCardLayout.createSequentialGroup()
                 .addGap(15, 15, 15)
                 .addComponent(scrollCustomers, javax.swing.GroupLayout.PREFERRED_SIZE, 382, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(lblRecordCount)
-                .addContainerGap(25, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(pnlTableCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnDeactivatedAccounts, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblRecordCount))
+                .addContainerGap(18, Short.MAX_VALUE))
         );
 
         btnUpdate.setBackground(new java.awt.Color(38, 85, 189));
@@ -339,7 +350,8 @@ public class CustomerPanel extends javax.swing.JPanel {
                     .addGroup(pnlBodyLayout.createSequentialGroup()
                         .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(btnDeactivate, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(btnDeactivate, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(pnlTableCard, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(pnlSearchBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
@@ -498,11 +510,20 @@ public class CustomerPanel extends javax.swing.JPanel {
                 public boolean isCellEditable(int row, int column) { return false; }
             };
 
-            String sql = "SELECT customer_id, name, phone, address, is_active, created_at "
-            + "FROM Customers "
-            + "WHERE is_active = 1 "
-            + "AND (name LIKE ? OR phone LIKE ?) "
-            + "ORDER BY customer_id DESC";
+            String sql;
+            if (showingDeactivated) {
+                sql = "SELECT customer_id, name, phone, address, is_active, created_at "
+                    + "FROM Customers "
+                    + "WHERE is_active = 0 "
+                    + "AND (name LIKE ? OR phone LIKE ?) "
+                    + "ORDER BY customer_id DESC";
+            } else {
+                sql = "SELECT customer_id, name, phone, address, is_active, created_at "
+                    + "FROM Customers "
+                    + "WHERE is_active = 1 "
+                    + "AND (name LIKE ? OR phone LIKE ?) "
+                    + "ORDER BY customer_id DESC";
+            }
 
             try (Connection conn = com.mycompany.laundryservice.database.DBConnection.getConnection();
                  PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -693,9 +714,10 @@ private static class RoundedCardBorder extends javax.swing.border.AbstractBorder
     }//GEN-LAST:event_btnSaveActionPerformed
 
     private void btnDeactivateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeactivateActionPerformed
-        if (selectedCustomerId == -1) return;
+         if (selectedCustomerId == -1) return;
+        boolean activate = !selectedIsActive;
+        String action = activate ? "activate" : "deactivate";
 
-        String action = "deactivate";
         int confirm = JOptionPane.showConfirmDialog(this,
                 "Are you sure you want to " + action + " this customer?",
                 "Confirm", JOptionPane.YES_NO_OPTION);
@@ -704,14 +726,14 @@ private static class RoundedCardBorder extends javax.swing.border.AbstractBorder
         String sql = "UPDATE Customers SET is_active = ? WHERE customer_id = ?";
         try (Connection conn = com.mycompany.laundryservice.database.DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, 0);
+            ps.setInt(1, activate ? 1 : 0);
             ps.setInt(2, selectedCustomerId);
             ps.executeUpdate();
 
             resetForm();
             loadCustomers(txtSearch.getText());
             updateCustomerCount();
-            setStatus("Customer deactivated.", true);
+            setStatus(activate ? "Customer activated successfully." : "Customer deactivated successfully.", true);
         } catch (SQLException e) {
             setStatus("Unable to connect to the database.", false);
         }
@@ -723,21 +745,41 @@ private static class RoundedCardBorder extends javax.swing.border.AbstractBorder
             evt.consume();
         }
     }//GEN-LAST:event_txtPhoneKeyTyped
+
+    private void btnDeactivatedAccountsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeactivatedAccountsActionPerformed
+         showingDeactivated = !showingDeactivated;
+    resetForm();
+    loadCustomers(txtSearch.getText());
+    updateCustomerCount();
+    btnDeactivatedAccounts.setText(showingDeactivated ? "Show Active Accounts" : "Show Deactivated Accounts");
+    }//GEN-LAST:event_btnDeactivatedAccountsActionPerformed
     private void updateCustomerCount() {
-        String sql = "SELECT COUNT(*) FROM Customers WHERE is_active = 1";
+        String sql;
+
+        if (showingDeactivated) {
+            sql = "SELECT COUNT(*) FROM Customers WHERE is_active = 0";
+        } else {
+            sql = "SELECT COUNT(*) FROM Customers WHERE is_active = 1";
+        }
+
         try (Connection conn = com.mycompany.laundryservice.database.DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
-            if (rs.next()) {
-                lblTotalCustomersValue.setText(java.text.NumberFormat.getIntegerInstance().format(rs.getInt(1)));
-            }
-        } catch (SQLException e) {
 
+            if (rs.next()) {
+                lblTotalCustomersValue.setText(
+                    java.text.NumberFormat.getIntegerInstance().format(rs.getInt(1))
+                );
+            }
+
+        } catch (SQLException e) {
+            setStatus("Unable to count customers.", false);
         }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnDeactivate;
+    private javax.swing.JButton btnDeactivatedAccounts;
     private javax.swing.JButton btnFilter;
     private javax.swing.JButton btnSave;
     private javax.swing.JButton btnUpdate;
