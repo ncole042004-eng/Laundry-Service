@@ -37,6 +37,7 @@ public class ReportsPanel extends javax.swing.JPanel {
                 txtStartDate.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(createDateMask()));
                 txtEndDate.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(createDateMask()));
                 applyDashboardStyle();
+                applyComparisonCardStyle();
                 refreshData();
                 styleTable();
                 styleOrderStatusTable(); 
@@ -201,8 +202,7 @@ public class ReportsPanel extends javax.swing.JPanel {
         lblLowestMonth.setForeground(new java.awt.Color(15, 23, 42));
 
         // Trend text - small gray with arrow
-        lblTrend.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 12));
-        lblTrend.setForeground(new java.awt.Color(100, 116, 139));
+        
 
         // Section headers
         jLabel3.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 18));
@@ -224,7 +224,7 @@ public class ReportsPanel extends javax.swing.JPanel {
         // Card panel border - light gray box like screenshot
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(226, 232, 240)));
         jPanel1.setBackground(new java.awt.Color(248, 250, 252));
-        lblTrend.setPreferredSize(new java.awt.Dimension(250, 20));
+        
         
     }
 
@@ -249,7 +249,8 @@ public class ReportsPanel extends javax.swing.JPanel {
         loadEmployeeOrders();
         loadOrderStatus();
         loadHighestLowestMonth();
-        loadTrend();
+        
+        loadComparisonCards();
         tblOrderStatus.getColumnModel()
             .getColumn(0)   // Change 0 if Status is another column
             .setCellRenderer(new StatusChipRenderer());
@@ -300,6 +301,14 @@ public class ReportsPanel extends javax.swing.JPanel {
         }
     }
     private void loadTotalRevenue() {
+        String selectedRange = (String) cmbDateFilter.getSelectedItem();
+
+        if ("Today".equals(selectedRange)) {
+            java.math.BigDecimal total = getEarningsTodaySQL();
+            jLabel4.setText(String.format("\u20B1%,.2f", total));
+            return;
+        }
+
         java.time.LocalDateTime[] range = getSelectedRange();
         String sql = "SELECT SUM(total_amount) AS revenue FROM Orders "
                    + "WHERE payment_status = 'Paid' AND order_date BETWEEN ? AND ?";
@@ -322,7 +331,6 @@ public class ReportsPanel extends javax.swing.JPanel {
             jLabel4.setText("Error");
         }
     }
-
     private void loadEmployeeOrders() {
         java.time.LocalDateTime[] range = getSelectedRange();
         String sql = "SELECT e.name, COUNT(o.order_id) AS order_count "
@@ -451,7 +459,109 @@ public class ReportsPanel extends javax.swing.JPanel {
             lblLowestMonth.setText("<html><b>Lowest</b><br>Error</html>");
         }
     }
+    private void loadComparisonCards() {
+        java.time.LocalDate today = java.time.LocalDate.now();
 
+        // Daily
+        java.math.BigDecimal todayRev = getRevenueForRange(today.atStartOfDay(), today.atTime(23,59,59));
+        java.math.BigDecimal yesterdayRev = getRevenueForRange(today.minusDays(1).atStartOfDay(), today.minusDays(1).atTime(23,59,59));
+        lblDailyTodayValue.setText(String.format("\u20B1%,.2f", todayRev));
+        lblDailyYesterdayValue.setText(String.format("\u20B1%,.2f", yesterdayRev));
+        setTrendLabel(lblDailyTrend, todayRev, yesterdayRev);
+
+        // Weekly
+        java.time.LocalDate startOfThisWeek = today.minusDays(6);
+        java.time.LocalDate startOfLastWeek = today.minusDays(13);
+        java.time.LocalDate endOfLastWeek = today.minusDays(7);
+        java.math.BigDecimal thisWeekRev = getRevenueForRange(startOfThisWeek.atStartOfDay(), today.atTime(23,59,59));
+        java.math.BigDecimal lastWeekRev = getRevenueForRange(startOfLastWeek.atStartOfDay(), endOfLastWeek.atTime(23,59,59));
+        lblWeeklyThisValue.setText(String.format("\u20B1%,.2f", thisWeekRev));
+        lblWeeklyLastValue.setText(String.format("\u20B1%,.2f", lastWeekRev));
+        setTrendLabel(lblWeeklyTrend, thisWeekRev, lastWeekRev);
+
+        // Monthly
+        java.time.LocalDate startOfThisMonth = today.withDayOfMonth(1);
+        java.time.LocalDate startOfLastMonth = startOfThisMonth.minusMonths(1);
+        java.time.LocalDate endOfLastMonth = startOfThisMonth.minusDays(1);
+        java.math.BigDecimal thisMonthRev = getRevenueForRange(startOfThisMonth.atStartOfDay(), today.atTime(23,59,59));
+        java.math.BigDecimal lastMonthRev = getRevenueForRange(startOfLastMonth.atStartOfDay(), endOfLastMonth.atTime(23,59,59));
+        lblMonthlyThisValue.setText(String.format("\u20B1%,.2f", thisMonthRev));
+        lblMonthlyLastValue.setText(String.format("\u20B1%,.2f", lastMonthRev));
+        setTrendLabel(lblMonthlyTrend, thisMonthRev, lastMonthRev);
+    }
+    private java.math.BigDecimal getEarningsTodaySQL() {
+        String sql = "SELECT COALESCE(SUM(total_amount), 0) AS total FROM Orders "
+                   + "WHERE payment_status = 'Paid' AND DATE(order_date) = CURDATE()";
+        try (java.sql.Connection conn = com.mycompany.laundryservice.database.DBConnection.getConnection();
+             java.sql.PreparedStatement stmt = conn.prepareStatement(sql);
+             java.sql.ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                return rs.getBigDecimal("total");
+            }
+        } catch (java.sql.SQLException e) {
+            System.err.println("Failed to load today's earnings: " + e.getMessage());
+        }
+        return java.math.BigDecimal.ZERO;
+    }
+    private void setTrendLabel(javax.swing.JLabel label, java.math.BigDecimal current, java.math.BigDecimal previous) {
+        label.setFont(new java.awt.Font("Inter 18pt", java.awt.Font.PLAIN, 12));
+        if (previous.compareTo(java.math.BigDecimal.ZERO) == 0) {
+            label.setText("No prior data");
+            label.setForeground(new java.awt.Color(100, 116, 139));
+            return;
+        }
+        java.math.BigDecimal change = current.subtract(previous)
+                .divide(previous, 4, java.math.RoundingMode.HALF_UP)
+                .multiply(java.math.BigDecimal.valueOf(100));
+        boolean up = change.compareTo(java.math.BigDecimal.ZERO) >= 0;
+        String arrow = up ? "\u2191" : "\u2193";
+        label.setText(arrow + " " + change.abs().setScale(1, java.math.RoundingMode.HALF_UP) + "%");
+        label.setForeground(up ? new java.awt.Color(34, 197, 94) : new java.awt.Color(239, 68, 68));
+    }
+    private void applyComparisonCardStyle() {
+        java.awt.Font bigBoldFont = new java.awt.Font("Inter 18pt", java.awt.Font.BOLD, 24);
+        java.awt.Font labelFont = new java.awt.Font("Inter 18pt", java.awt.Font.PLAIN, 14);
+        java.awt.Font smallMutedFont = new java.awt.Font("Inter 18pt", java.awt.Font.PLAIN, 11);
+        java.awt.Color darkColor = new java.awt.Color(0x1a, 0x1c, 0x1c);
+        java.awt.Color labelColor = new java.awt.Color(0x43, 0x46, 0x54);
+        java.awt.Color mutedColor = new java.awt.Color(148, 163, 184);
+
+        // Daily card
+        lblDailyToday.setFont(labelFont);
+        lblDailyToday.setForeground(labelColor);
+        lblDailyTodayValue.setFont(bigBoldFont);
+        lblDailyTodayValue.setForeground(darkColor);
+        lblDailyYesterday.setFont(smallMutedFont);
+        lblDailyYesterday.setForeground(mutedColor);
+        lblDailyYesterdayValue.setFont(smallMutedFont);
+        lblDailyYesterdayValue.setForeground(mutedColor);
+
+        // Weekly card
+        lblWeeklyThis.setFont(labelFont);
+        lblWeeklyThis.setForeground(labelColor);
+        lblWeeklyThisValue.setFont(bigBoldFont);
+        lblWeeklyThisValue.setForeground(darkColor);
+        lblWeeklyLast.setFont(smallMutedFont);
+        lblWeeklyLast.setForeground(mutedColor);
+        lblWeeklyLastValue.setFont(smallMutedFont);
+        lblWeeklyLastValue.setForeground(mutedColor);
+
+        // Monthly card
+        lblMonthlyThis.setFont(labelFont);
+        lblMonthlyThis.setForeground(labelColor);
+        lblMonthlyThisValue.setFont(bigBoldFont);
+        lblMonthlyThisValue.setForeground(darkColor);
+        lblMonthlyLast.setFont(smallMutedFont);
+        lblMonthlyLast.setForeground(mutedColor);
+        lblMonthlyLastValue.setFont(smallMutedFont);
+        lblMonthlyLastValue.setForeground(mutedColor);
+
+        // Trend labels - small font, color set dynamically in setTrendLabel()
+        java.awt.Font trendFont = new java.awt.Font("Inter 18pt", java.awt.Font.PLAIN, 12);
+        lblDailyTrend.setFont(trendFont);
+        lblWeeklyTrend.setFont(trendFont);
+        lblMonthlyTrend.setFont(trendFont);
+    }
     private void loadTrend() {
         java.time.LocalDateTime[] range = getSelectedRange();
         long daysInRange = java.time.temporal.ChronoUnit.DAYS.between(range[0], range[1]);
@@ -466,17 +576,14 @@ public class ReportsPanel extends javax.swing.JPanel {
         java.math.BigDecimal currentRevenue = getRevenueForRange(range[0], range[1]);
         java.math.BigDecimal previousRevenue = getRevenueForRange(prevStart, prevEnd);
 
-        if (previousRevenue.compareTo(java.math.BigDecimal.ZERO) == 0) {
-            lblTrend.setText("No prior data to compare");
-            return;
-        }
+        
 
         java.math.BigDecimal change = currentRevenue.subtract(previousRevenue)
                 .divide(previousRevenue, 4, java.math.RoundingMode.HALF_UP)
                 .multiply(java.math.BigDecimal.valueOf(100));
 
         String arrow = change.compareTo(java.math.BigDecimal.ZERO) >= 0 ? "\u2191" : "\u2193";
-        lblTrend.setText(arrow + " " + change.abs().setScale(1, java.math.RoundingMode.HALF_UP) + "% vs previous period");
+        
     }
 
     private java.math.BigDecimal getRevenueForRange(java.time.LocalDateTime start, java.time.LocalDateTime end) {
@@ -523,8 +630,28 @@ public class ReportsPanel extends javax.swing.JPanel {
         jLabel5 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         lblHighestMonth = new javax.swing.JLabel();
-        lblTrend = new javax.swing.JLabel();
         lblLowestMonth = new javax.swing.JLabel();
+        pnlDaily = new javax.swing.JPanel();
+        lblDailyTitle = new javax.swing.JLabel();
+        lblDailyToday = new javax.swing.JLabel();
+        lblDailyTodayValue = new javax.swing.JLabel();
+        lblDailyYesterday = new javax.swing.JLabel();
+        lblDailyYesterdayValue = new javax.swing.JLabel();
+        lblDailyTrend = new javax.swing.JLabel();
+        pnlWeekly = new javax.swing.JPanel();
+        lblDailyTitle1 = new javax.swing.JLabel();
+        lblWeeklyThis = new javax.swing.JLabel();
+        lblWeeklyThisValue = new javax.swing.JLabel();
+        lblWeeklyLast = new javax.swing.JLabel();
+        lblWeeklyLastValue = new javax.swing.JLabel();
+        lblWeeklyTrend = new javax.swing.JLabel();
+        pnlMonthly = new javax.swing.JPanel();
+        lblMonthlyTitle = new javax.swing.JLabel();
+        lblMonthlyThis = new javax.swing.JLabel();
+        lblMonthlyThisValue = new javax.swing.JLabel();
+        lblMonthlyLast = new javax.swing.JLabel();
+        lblMonthlyLastValue = new javax.swing.JLabel();
+        lblMonthlyTrend = new javax.swing.JLabel();
         txtStartDate = new javax.swing.JFormattedTextField();
         txtEndDate = new javax.swing.JFormattedTextField();
 
@@ -592,6 +719,7 @@ public class ReportsPanel extends javax.swing.JPanel {
         jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel3.setText("Orders per Employee");
 
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED, new java.awt.Color(204, 204, 204), null, new java.awt.Color(204, 204, 204), new java.awt.Color(204, 204, 204)));
 
         jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 28)); // NOI18N
@@ -606,47 +734,238 @@ public class ReportsPanel extends javax.swing.JPanel {
         lblHighestMonth.setForeground(new java.awt.Color(51, 51, 51));
         lblHighestMonth.setText("Total Revenue");
 
-        lblTrend.setFont(new java.awt.Font("Segoe UI", 1, 8)); // NOI18N
-        lblTrend.setForeground(new java.awt.Color(51, 51, 51));
-        lblTrend.setText("Total Revenue");
-
         lblLowestMonth.setFont(new java.awt.Font("Segoe UI", 1, 28)); // NOI18N
         lblLowestMonth.setForeground(new java.awt.Color(51, 51, 51));
         lblLowestMonth.setText("Total Revenue");
+
+        pnlDaily.setBackground(new java.awt.Color(255, 255, 255));
+        pnlDaily.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+
+        lblDailyTitle.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        lblDailyTitle.setText("DAILY COMPARISON");
+
+        lblDailyToday.setText("Today");
+
+        lblDailyTodayValue.setText("₱0.00");
+
+        lblDailyYesterday.setText("Yesterday");
+
+        lblDailyYesterdayValue.setText("₱0.00");
+
+        lblDailyTrend.setText("+0.0%");
+
+        javax.swing.GroupLayout pnlDailyLayout = new javax.swing.GroupLayout(pnlDaily);
+        pnlDaily.setLayout(pnlDailyLayout);
+        pnlDailyLayout.setHorizontalGroup(
+            pnlDailyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlDailyLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pnlDailyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlDailyLayout.createSequentialGroup()
+                        .addComponent(lblDailyToday, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(lblDailyTodayValue, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(pnlDailyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlDailyLayout.createSequentialGroup()
+                        .addGap(19, 19, 19)
+                        .addComponent(lblDailyYesterday, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(pnlDailyLayout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(lblDailyYesterdayValue, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(14, 14, 14))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlDailyLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lblDailyTrend, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(144, 144, 144))
+            .addGroup(pnlDailyLayout.createSequentialGroup()
+                .addComponent(lblDailyTitle)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+        pnlDailyLayout.setVerticalGroup(
+            pnlDailyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlDailyLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lblDailyTitle)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(pnlDailyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblDailyToday)
+                    .addComponent(lblDailyYesterday))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(pnlDailyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblDailyTodayValue, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
+                    .addComponent(lblDailyYesterdayValue))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblDailyTrend)
+                .addContainerGap())
+        );
+
+        pnlWeekly.setBackground(new java.awt.Color(255, 255, 255));
+        pnlWeekly.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+
+        lblDailyTitle1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        lblDailyTitle1.setText("WEEKLY COMPARISON");
+
+        lblWeeklyThis.setText("This Week");
+
+        lblWeeklyThisValue.setText("₱0.00");
+
+        lblWeeklyLast.setText("Last Week");
+
+        lblWeeklyLastValue.setText("₱0.00");
+
+        lblWeeklyTrend.setText("+0.0%");
+
+        javax.swing.GroupLayout pnlWeeklyLayout = new javax.swing.GroupLayout(pnlWeekly);
+        pnlWeekly.setLayout(pnlWeeklyLayout);
+        pnlWeeklyLayout.setHorizontalGroup(
+            pnlWeeklyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlWeeklyLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pnlWeeklyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlWeeklyLayout.createSequentialGroup()
+                        .addComponent(lblDailyTitle1)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(pnlWeeklyLayout.createSequentialGroup()
+                        .addGroup(pnlWeeklyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(pnlWeeklyLayout.createSequentialGroup()
+                                .addComponent(lblWeeklyThis, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(lblWeeklyThisValue, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(18, 18, 18)
+                        .addGroup(pnlWeeklyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblWeeklyLastValue, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblWeeklyLast, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlWeeklyLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lblWeeklyTrend, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(134, 134, 134))
+        );
+        pnlWeeklyLayout.setVerticalGroup(
+            pnlWeeklyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlWeeklyLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lblDailyTitle1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(pnlWeeklyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblWeeklyThis)
+                    .addComponent(lblWeeklyLast, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(pnlWeeklyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblWeeklyThisValue, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
+                    .addComponent(lblWeeklyLastValue))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblWeeklyTrend)
+                .addContainerGap())
+        );
+
+        pnlMonthly.setBackground(new java.awt.Color(255, 255, 255));
+        pnlMonthly.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+
+        lblMonthlyTitle.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        lblMonthlyTitle.setText("MONTHLY COMPARISON");
+
+        lblMonthlyThis.setText("This Month");
+
+        lblMonthlyThisValue.setText("₱0.00");
+
+        lblMonthlyLast.setText("Last Month");
+
+        lblMonthlyLastValue.setText("₱0.00");
+
+        lblMonthlyTrend.setText("+0.0%");
+
+        javax.swing.GroupLayout pnlMonthlyLayout = new javax.swing.GroupLayout(pnlMonthly);
+        pnlMonthly.setLayout(pnlMonthlyLayout);
+        pnlMonthlyLayout.setHorizontalGroup(
+            pnlMonthlyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlMonthlyLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pnlMonthlyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlMonthlyLayout.createSequentialGroup()
+                        .addComponent(lblMonthlyTitle)
+                        .addGap(50, 50, 50))
+                    .addGroup(pnlMonthlyLayout.createSequentialGroup()
+                        .addGroup(pnlMonthlyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(pnlMonthlyLayout.createSequentialGroup()
+                                .addComponent(lblMonthlyThis, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 129, Short.MAX_VALUE))
+                            .addComponent(lblMonthlyThisValue, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(27, 27, 27)
+                        .addGroup(pnlMonthlyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblMonthlyLastValue, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblMonthlyLast, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(36, 36, 36))))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlMonthlyLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lblMonthlyTrend, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(138, 138, 138))
+        );
+        pnlMonthlyLayout.setVerticalGroup(
+            pnlMonthlyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlMonthlyLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lblMonthlyTitle)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(pnlMonthlyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblMonthlyThis)
+                    .addComponent(lblMonthlyLast, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(pnlMonthlyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblMonthlyThisValue, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblMonthlyLastValue))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblMonthlyTrend)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(22, 22, 22)
+                .addGap(30, 30, 30)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblTrend, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(pnlDaily, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel5)
                             .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(82, 82, 82)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 133, Short.MAX_VALUE)))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(43, 43, 43)
+                        .addComponent(pnlWeekly, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(37, 37, 37))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 76, Short.MAX_VALUE)
                         .addComponent(lblHighestMonth)
-                        .addGap(118, 118, 118)
-                        .addComponent(lblLowestMonth)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(188, 188, 188)))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(pnlMonthly, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(51, 51, 51))
+                    .addComponent(lblLowestMonth, javax.swing.GroupLayout.PREFERRED_SIZE, 409, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap(14, Short.MAX_VALUE)
+                .addGap(41, 41, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(lblHighestMonth, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(lblLowestMonth)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lblTrend)
-                .addGap(80, 80, 80))
+                        .addComponent(lblLowestMonth))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(24, 24, 24)))
+                .addGap(15, 15, 15)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(pnlMonthly, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(pnlWeekly, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(pnlDaily, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
         txtStartDate.setEnabled(false);
@@ -662,7 +981,6 @@ public class ReportsPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addGap(25, 25, 25)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 307, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -673,17 +991,21 @@ public class ReportsPanel extends javax.swing.JPanel {
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 452, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(280, 280, 280)
+                        .addGap(210, 210, 210)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(cmbDateFilter, 0, 205, Short.MAX_VALUE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(btnRefresh))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(txtStartDate, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(txtStartDate, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtEndDate, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE)))))
+                                .addComponent(txtEndDate, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(cmbDateFilter, 0, 450, Short.MAX_VALUE)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnRefresh)
+                                .addGap(64, 64, 64))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -702,15 +1024,15 @@ public class ReportsPanel extends javax.swing.JPanel {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(txtStartDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txtEndDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(11, 11, 11)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(jLabel3))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 282, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 26, Short.MAX_VALUE)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addGap(26, 26, 26))
         );
@@ -753,9 +1075,29 @@ public class ReportsPanel extends javax.swing.JPanel {
     private javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JLabel lblDailyTitle;
+    private javax.swing.JLabel lblDailyTitle1;
+    private javax.swing.JLabel lblDailyToday;
+    private javax.swing.JLabel lblDailyTodayValue;
+    private javax.swing.JLabel lblDailyTrend;
+    private javax.swing.JLabel lblDailyYesterday;
+    private javax.swing.JLabel lblDailyYesterdayValue;
     private javax.swing.JLabel lblHighestMonth;
     private javax.swing.JLabel lblLowestMonth;
-    private javax.swing.JLabel lblTrend;
+    private javax.swing.JLabel lblMonthlyLast;
+    private javax.swing.JLabel lblMonthlyLastValue;
+    private javax.swing.JLabel lblMonthlyThis;
+    private javax.swing.JLabel lblMonthlyThisValue;
+    private javax.swing.JLabel lblMonthlyTitle;
+    private javax.swing.JLabel lblMonthlyTrend;
+    private javax.swing.JLabel lblWeeklyLast;
+    private javax.swing.JLabel lblWeeklyLastValue;
+    private javax.swing.JLabel lblWeeklyThis;
+    private javax.swing.JLabel lblWeeklyThisValue;
+    private javax.swing.JLabel lblWeeklyTrend;
+    private javax.swing.JPanel pnlDaily;
+    private javax.swing.JPanel pnlMonthly;
+    private javax.swing.JPanel pnlWeekly;
     private javax.swing.JTable tblEmployeeOrders;
     private javax.swing.JTable tblOrderStatus;
     private javax.swing.JFormattedTextField txtEndDate;
