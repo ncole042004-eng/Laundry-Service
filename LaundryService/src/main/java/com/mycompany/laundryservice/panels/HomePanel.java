@@ -93,6 +93,8 @@ public class HomePanel extends javax.swing.JPanel {
 		startClock();
 
 		tblRecentOrders.getTableHeader().setFont(new Font("Inter 18pt", Font.BOLD, 14));
+		tblRecentOrders.getTableHeader().setBackground(new Color(0x45, 0x6f, 0xd7));
+		tblRecentOrders.getTableHeader().setForeground(Color.WHITE);
 		tblRecentOrders.setFont(new Font("Inter 18pt", Font.PLAIN, 14));
 
 		javax.swing.table.DefaultTableCellRenderer claimRenderer = new javax.swing.table.DefaultTableCellRenderer() {
