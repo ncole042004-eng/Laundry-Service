@@ -92,11 +92,11 @@ public class CustomerPanel extends javax.swing.JPanel {
 
         pnlHeader.setBackground(new java.awt.Color(249, 249, 249));
 
-        lblTitle.setFont(new java.awt.Font("Inter 28pt", 0, 22)); // NOI18N
+        lblTitle.setFont(new java.awt.Font("Inter 28pt", 0, 28)); // NOI18N
         lblTitle.setForeground(new java.awt.Color(26, 28, 28));
         lblTitle.setText("Customer Management");
 
-        lblSubtitle.setFont(new java.awt.Font("Inter 18pt", 0, 11)); // NOI18N
+        lblSubtitle.setFont(new java.awt.Font("Inter 18pt", 0, 14)); // NOI18N
         lblSubtitle.setForeground(new java.awt.Color(67, 70, 84));
         lblSubtitle.setText("Register, search, and manage customer records for your laundry service.");
 
@@ -297,11 +297,11 @@ public class CustomerPanel extends javax.swing.JPanel {
         pnlTableCardLayout.setHorizontalGroup(
             pnlTableCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlTableCardLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(15, 15, 15)
                 .addGroup(pnlTableCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lblRecordCount)
-                    .addComponent(scrollCustomers, javax.swing.GroupLayout.PREFERRED_SIZE, 931, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(scrollCustomers))
+                .addGap(15, 15, 15))
         );
         pnlTableCardLayout.setVerticalGroup(
             pnlTableCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -335,14 +335,14 @@ public class CustomerPanel extends javax.swing.JPanel {
                     .addComponent(pnlRegisterCard, javax.swing.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE)
                     .addComponent(pnlStats, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(pnlBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(pnlBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlBodyLayout.createSequentialGroup()
                         .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(btnDeactivate, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(pnlTableCard, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(pnlSearchBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(pnlSearchBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         pnlBodyLayout.setVerticalGroup(
             pnlBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -360,8 +360,7 @@ public class CustomerPanel extends javax.swing.JPanel {
                     .addGroup(pnlBodyLayout.createSequentialGroup()
                         .addComponent(pnlRegisterCard, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(pnlStats, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(156, 156, 156)))
+                        .addComponent(pnlStats, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(37, Short.MAX_VALUE))
         );
 
