@@ -8,12 +8,18 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 public class LoginPanel extends javax.swing.JPanel {
 
     private final MainJFrame mainFrame;
-
+    
+private FlatSVGIcon createDarkIcon(String path, int width, int height) {
+    FlatSVGIcon icon = new FlatSVGIcon(path, width, height);
+    icon.setColorFilter(new FlatSVGIcon.ColorFilter(color -> new Color(55, 65, 81)));
+    return icon;
+}
     public LoginPanel(MainJFrame mainFrame) {
 
         this.mainFrame = mainFrame;
@@ -97,14 +103,16 @@ LAUNDRYSERVICEPOS.setText("Laundry Service");
     // FlatLaf Icons
     //-------------------------
 
-    FlatSVGIcon userIcon = new FlatSVGIcon("icons/account_circle.svg", 20, 20);
-    userIcon.setColorFilter(new FlatSVGIcon.ColorFilter(c -> new Color(0x73, 0x76, 0x86)));
-    txtUsername.putClientProperty("JTextField.leadingIcon", userIcon);
+ txtUsername.putClientProperty(
+        "JTextField.leadingIcon",
+        createDarkIcon("icons/account_circle.svg", 20, 20));
 
-    FlatSVGIcon lockIcon = new FlatSVGIcon("icons/lock.svg", 20, 20);
-    lockIcon.setColorFilter(new FlatSVGIcon.ColorFilter(c -> new Color(0x73, 0x76, 0x86)));
-    txtPassword.putClientProperty("JTextField.leadingIcon", lockIcon);
+txtPassword.putClientProperty(
+        "JTextField.leadingIcon",
+        createDarkIcon("icons/lock.svg", 20, 20));
 
+lblLocation.setIcon(
+        createDarkIcon("icons/location_on.svg", 16, 16));
 
     //-------------------------
     // Placeholders
@@ -456,6 +464,8 @@ background.setLayout(new BorderLayout());
     }//GEN-LAST:event_txtUsernameActionPerformed
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
+		 boolean systemOnline = false;   // Change to true when the system is online
+    
 	    String username = txtUsername.getText().trim();
 	    String password = new String(txtPassword.getPassword());
 
