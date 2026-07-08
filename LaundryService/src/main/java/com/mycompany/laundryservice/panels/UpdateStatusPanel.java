@@ -18,21 +18,15 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import javax.swing.BorderFactory;
-import javax.swing.border.Border;
 import java.awt.Font;
 import java.awt.Color;
 import javax.swing.SwingUtilities;
-import java.awt.Dimension;
 
-/**
- *
- * @author Cral
- */
+
+
 public class UpdateStatusPanel extends javax.swing.JPanel {
 
-    /**
-     * Creates new form UpdateStatusPanel
-     */
+    
     public UpdateStatusPanel() {
         loadCustomFonts();
         initComponents();
@@ -42,16 +36,17 @@ public class UpdateStatusPanel extends javax.swing.JPanel {
         setupTableStyles();
         setupEnhancedLayout();
 
-        SwingUtilities.invokeLater(() -> {
-            pnlEditorContent.revalidate();
-            pnlEditorContent.repaint();
+          SwingUtilities.invokeLater(() -> {
+        applyStyles();  
+        pnlEditorContent.revalidate();
+        pnlEditorContent.repaint();
         });
 
     }
 
     private void setupLayout() {
-        pnlContent.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 24, 24, 24));
-    }
+    pnlContent.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+}
 
     private void setupIcons() {
         btnUpdate.setIcon(new FlatSVGIcon("icons/save.svg", 20, 20));
@@ -66,19 +61,20 @@ public class UpdateStatusPanel extends javax.swing.JPanel {
         jLabel12.setIconTextGap(8);
     }
 
-    DefaultTableCellRenderer claimNumberRenderer = new DefaultTableCellRenderer() {
-        @Override
-        public java.awt.Component getTableCellRendererComponent(JTable table, Object value,
-                boolean isSelected, boolean hasFocus, int row, int column) {
+   DefaultTableCellRenderer claimNumberRenderer = new DefaultTableCellRenderer() {
+    @Override
+    public java.awt.Component getTableCellRendererComponent(JTable table, Object value,
+            boolean isSelected, boolean hasFocus, int row, int column) {
 
-            java.awt.Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+        java.awt.Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+        setHorizontalAlignment(JLabel.CENTER);
+        
+        c.setForeground(new java.awt.Color(51, 153, 255));
+        c.setFont(new java.awt.Font("Inter 18pt", java.awt.Font.BOLD, 14));
 
-            c.setForeground(new java.awt.Color(51, 153, 255));
-            c.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 12));
-
-            return c;
-        }
-    };
+        return c;
+    }
+};
 
     private class ChipCellRenderer extends DefaultTableCellRenderer {
 
@@ -86,7 +82,7 @@ public class UpdateStatusPanel extends javax.swing.JPanel {
 
         public ChipCellRenderer() {
             setHorizontalAlignment(JLabel.CENTER);
-            setOpaque(false); // important: we paint our own background
+            setOpaque(false); 
         }
 
         @Override
@@ -164,177 +160,184 @@ public class UpdateStatusPanel extends javax.swing.JPanel {
         }
     }
 
-    private void setupTableStyles() {
+   private void setupTableStyles() {
+    tblOrders.getColumnModel().getColumn(0).setCellRenderer(claimNumberRenderer);
 
-        tblOrders.getColumnModel().getColumn(0).setCellRenderer(claimNumberRenderer);
-
-        try {
-
-            java.awt.Font interFont = java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT,
-                    new java.io.File("fonts/Inter-Regular.ttf")).deriveFont(12f);
-            java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(interFont);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        tblOrders.getTableHeader().setBackground(new Color(0x45, 0x6f, 0xd7));
-        tblOrders.getTableHeader().setForeground(Color.WHITE);
-        tblOrders.setRowHeight(48);
-        tblOrders.setGridColor(new Color(0xc3, 0xc6, 0xd7));
-        tblOrders.setShowGrid(false);
-        tblOrders.setShowHorizontalLines(true);
-        tblOrders.setShowVerticalLines(false);
-
-        tblOrders.setFont(new java.awt.Font("Inter 18pt", java.awt.Font.PLAIN, 14));
-        tblOrders.getTableHeader().setFont(new java.awt.Font("Inter 18pt", java.awt.Font.BOLD, 14));
-
-        tblOrders.getColumnModel().getColumn(6).setCellRenderer(new ChipCellRenderer()); // Status
-        tblOrders.getColumnModel().getColumn(7).setCellRenderer(new ChipCellRenderer()); // Payment
-
-        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
-        tblOrders.getColumnModel().getColumn(4).setCellRenderer(centerRenderer);
-        tblOrders.getColumnModel().getColumn(5).setCellRenderer(centerRenderer);
-
-        DefaultTableCellRenderer amountRenderer = new DefaultTableCellRenderer();
-        amountRenderer.setHorizontalAlignment(JLabel.CENTER);
-        tblOrders.getColumnModel().getColumn(8).setCellRenderer(amountRenderer);
-
+    try {
+        java.awt.Font interFont = java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT,
+            new java.io.File("fonts/Inter-Regular.ttf")).deriveFont(12f);
+        java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(interFont);
+    } catch (Exception e) {
+        e.printStackTrace();
     }
 
+   
+    tblOrders.getTableHeader().setBackground(new Color(0x45, 0x6f, 0xd7));
+    tblOrders.getTableHeader().setForeground(Color.WHITE);
+    tblOrders.setRowHeight(48);
+    tblOrders.setGridColor(new Color(0xc3, 0xc6, 0xd7));
+    tblOrders.setShowGrid(false);
+    tblOrders.setShowHorizontalLines(true);
+    tblOrders.setShowVerticalLines(false);
+
+    tblOrders.setFont(new java.awt.Font("Inter 18pt", java.awt.Font.PLAIN, 14));
+    tblOrders.getTableHeader().setFont(new java.awt.Font("Inter 18pt", java.awt.Font.BOLD, 14));
+  
+    DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+    centerRenderer.setHorizontalAlignment(JLabel.CENTER);   
+    
+    for (int i = 0; i < tblOrders.getColumnCount(); i++) {
+        if (i == 7 || i == 8) {
+            continue;
+        }
+    tblOrders.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+    }
+
+    tblOrders.getColumnModel().getColumn(7).setCellRenderer(new ChipCellRenderer()); 
+    tblOrders.getColumnModel().getColumn(8).setCellRenderer(new ChipCellRenderer()); 
+    tblOrders.getColumnModel().getColumn(0).setCellRenderer(claimNumberRenderer);
+    
+    filteredTable.setBorder(null);
+    filteredTable.setViewportBorder(null);
+    tblOrders.setBorder(null);
+}
+
     private void styleCardLayout() {
-        // Background colors
         pnlEditorContent.setBackground(new Color(249, 249, 249));
         cardEditor.setBackground(new Color(249, 249, 249));
         pnlEditorHeader.setBackground(new Color(249, 249, 249));
         pnlEditorFooter.setBackground(new Color(249, 249, 249));
 
-        // Card backgrounds
+        
         pnlCustomer.setBackground(Color.WHITE);
         pnlService.setBackground(Color.WHITE);
         pnlWorkflow.setBackground(Color.WHITE);
 
-        // Customer Panel
+        
         pnlCustomer.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(new Color(195, 198, 215), 1),
                 BorderFactory.createEmptyBorder(8, 12, 8, 12)
         ));
 
-        // Service Panel
+        
         pnlService.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(new Color(195, 198, 215), 1),
                 BorderFactory.createEmptyBorder(8, 12, 8, 12)
         ));
 
-        // Workflow Panel
+        
         pnlWorkflow.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(new Color(195, 198, 215), 1),
                 BorderFactory.createEmptyBorder(12, 15, 12, 15)
         ));
 
         setupInnerLayouts();
-        setupWorkflowLayout();
-
-        styleLabelsAndValues();
-        styleButtons();
-        styleComboBoxes();
+        setupWorkflowLayout();     
     }
 
-    private void setupInnerLayouts() {
-        // --- Customer Panel ---
-        pnlCustomer.removeAll();
-        pnlCustomer.setLayout(new java.awt.GridBagLayout());
-        java.awt.GridBagConstraints gbc = new java.awt.GridBagConstraints();
-        gbc.anchor = java.awt.GridBagConstraints.WEST;
-        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
+  private void setupInnerLayouts() {
+    pnlCustomer.removeAll();
+    pnlCustomer.setLayout(new java.awt.GridBagLayout());
+    java.awt.GridBagConstraints gbc = new java.awt.GridBagConstraints();
+    gbc.anchor = java.awt.GridBagConstraints.WEST;
+    gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
 
-        // Header
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridwidth = 2;
-        gbc.insets = new java.awt.Insets(0, 0, 8, 0);
-        pnlCustomer.add(jLabel10, gbc);
+    
+    gbc.gridx = 0;
+    gbc.gridy = 0;
+    gbc.gridwidth = 2;
+    gbc.insets = new java.awt.Insets(0, 0, 8, 0);
+    pnlCustomer.add(jLabel10, gbc);
+    gbc.gridwidth = 1;
 
-        gbc.gridwidth = 1;
+    
+    gbc.gridx = 0;
+    gbc.gridy = 1;
+    gbc.weightx = 0.5;
+    gbc.insets = new java.awt.Insets(2, 5, 0, 5);
+    pnlCustomer.add(jLabel2, gbc);
 
-        // Row 1: CLAIM NUMBER
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.weightx = 0.5;
-        gbc.insets = new java.awt.Insets(2, 5, 0, 5);
-        pnlCustomer.add(jLabel2, gbc);
+    gbc.gridx = 1;
+    pnlCustomer.add(jLabel4, gbc);
 
-        gbc.gridx = 1;
-        pnlCustomer.add(jLabel4, gbc);
+    
+    gbc.gridx = 0;
+    gbc.gridy = 2;
+    gbc.insets = new java.awt.Insets(0, 5, 8, 5);
+    pnlCustomer.add(lblClaimNumber, gbc);
 
-        // Row 2: Values
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        gbc.insets = new java.awt.Insets(0, 5, 8, 5);
-        pnlCustomer.add(lblClaimNumber, gbc);
+    gbc.gridx = 1;
+    pnlCustomer.add(lblFullName, gbc);
 
-        gbc.gridx = 1;
-        pnlCustomer.add(lblFullName, gbc);
+    
+    gbc.gridx = 0;
+    gbc.gridy = 3;
+    gbc.insets = new java.awt.Insets(2, 5, 0, 5);
+    pnlCustomer.add(jLabel3, gbc);
 
-        // Row 3: PHONE NUMBER
-        gbc.gridx = 0;
-        gbc.gridy = 3;
-        gbc.insets = new java.awt.Insets(2, 5, 0, 5);
-        pnlCustomer.add(jLabel3, gbc);
+    gbc.gridx = 1;
+    pnlCustomer.add(jLabel5, gbc);
 
-        gbc.gridx = 1;
-        pnlCustomer.add(jLabel5, gbc);
+   
+    gbc.gridx = 0;
+    gbc.gridy = 4;
+    gbc.insets = new java.awt.Insets(0, 5, 0, 5);
+    pnlCustomer.add(lblPhone, gbc);
 
-        // Row 4: Values
-        gbc.gridx = 0;
-        gbc.gridy = 4;
-        gbc.insets = new java.awt.Insets(0, 5, 0, 5);
-        pnlCustomer.add(lblPhone, gbc);
+    gbc.gridx = 1;
+    pnlCustomer.add(lblAddress, gbc);
 
-        gbc.gridx = 1;
-        pnlCustomer.add(lblAddress, gbc);
+    pnlCustomer.revalidate();
+    pnlCustomer.repaint();
 
-        // --- Service Panel ---
-        pnlService.removeAll();
-        pnlService.setLayout(new java.awt.GridBagLayout());
-        gbc = new java.awt.GridBagConstraints();
-        gbc.anchor = java.awt.GridBagConstraints.WEST;
-        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    
+    pnlService.removeAll();
+    pnlService.setLayout(new java.awt.GridBagLayout());
+    gbc = new java.awt.GridBagConstraints();
+    gbc.anchor = java.awt.GridBagConstraints.WEST;
+    gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
 
-        // Header
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridwidth = 2;
-        gbc.insets = new java.awt.Insets(0, 0, 8, 0);
-        pnlService.add(jLabel11, gbc);
+    
+    gbc.gridx = 0;
+    gbc.gridy = 0;
+    gbc.gridwidth = 3;
+    gbc.insets = new java.awt.Insets(0, 0, 12, 0);
+    pnlService.add(jLabel11, gbc);
 
-        gbc.gridwidth = 1;
+    gbc.gridwidth = 1;
 
-        // Row 1: SERVICE TYPE
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.weightx = 0.5;
-        gbc.insets = new java.awt.Insets(2, 5, 0, 5);
-        pnlService.add(jLabel6, gbc);
+   
+    gbc.gridx = 0;
+    gbc.gridy = 1;
+    gbc.weightx = 0.33;
+    gbc.insets = new java.awt.Insets(2, 8, 0, 8);
+    pnlService.add(jLabel15, gbc);
+  
+    gbc.gridx = 1;
+    gbc.insets = new java.awt.Insets(2, 8, 0, 8);
+    pnlService.add(jLabel6, gbc);
+    
+    gbc.gridx = 2;
+    gbc.insets = new java.awt.Insets(2, 8, 0, 8);
+    pnlService.add(jLabel7, gbc);
+   
+    gbc.gridx = 0;
+    gbc.gridy = 2;
+    gbc.insets = new java.awt.Insets(0, 8, 4, 8);
+    pnlService.add(lblEmployee, gbc);
+    
+    gbc.gridx = 1;
+    gbc.insets = new java.awt.Insets(0, 8, 4, 8);
+    pnlService.add(lblServiceType, gbc);
+    
+    gbc.gridx = 2;
+    gbc.insets = new java.awt.Insets(0, 8, 4, 8);
+    pnlService.add(lblWeight, gbc);
 
-        gbc.gridx = 1;
-        pnlService.add(jLabel7, gbc);
-
-        // Row 2: Values
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        gbc.insets = new java.awt.Insets(0, 5, 0, 5);
-        pnlService.add(lblServiceType, gbc);
-
-        gbc.gridx = 1;
-        pnlService.add(lblWeight, gbc);
-
-        pnlCustomer.revalidate();
-        pnlCustomer.repaint();
-        pnlService.revalidate();
-        pnlService.repaint();
-    }
-
+    pnlService.revalidate();
+    pnlService.repaint();
+}
+   
     private void setupWorkflowLayout() {
         pnlWorkflow.removeAll();
         pnlWorkflow.setLayout(new java.awt.GridBagLayout());
@@ -343,54 +346,47 @@ public class UpdateStatusPanel extends javax.swing.JPanel {
         gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gbc.insets = new java.awt.Insets(2, 5, 2, 5);
 
-        // Header
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.insets = new java.awt.Insets(0, 0, 10, 0);
         pnlWorkflow.add(jLabel12, gbc);
 
-        // CHANGE STATUS TO
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.insets = new java.awt.Insets(2, 0, 2, 0);
         pnlWorkflow.add(jLabel8, gbc);
 
-        // Status ComboBox
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.insets = new java.awt.Insets(2, 0, 10, 0);
         gbc.ipady = 2;
         pnlWorkflow.add(jComboBox1, gbc);
 
-        // PAYMENT STATUS
+        
         gbc.gridx = 0;
         gbc.gridy = 3;
         gbc.insets = new java.awt.Insets(2, 0, 2, 0);
         gbc.ipady = 0;
         pnlWorkflow.add(jLabel13, gbc);
 
-        // Payment ComboBox
         gbc.gridx = 0;
         gbc.gridy = 4;
         gbc.insets = new java.awt.Insets(2, 0, 10, 0);
         gbc.ipady = 2;
         pnlWorkflow.add(jComboBox2, gbc);
 
-        // Note
         gbc.gridx = 0;
         gbc.gridy = 5;
         gbc.insets = new java.awt.Insets(0, 0, 10, 0);
         gbc.ipady = 0;
         pnlWorkflow.add(jLabel14, gbc);
 
-        // Update button
         gbc.gridx = 0;
         gbc.gridy = 6;
         gbc.insets = new java.awt.Insets(4, 0, 2, 0);
         gbc.ipady = 6;
         pnlWorkflow.add(btnUpdate, gbc);
 
-        // Cancel button
         gbc.gridx = 0;
         gbc.gridy = 7;
         gbc.insets = new java.awt.Insets(2, 0, 0, 0);
@@ -401,162 +397,47 @@ public class UpdateStatusPanel extends javax.swing.JPanel {
         pnlWorkflow.repaint();
     }
 
-    private void styleLabelsAndValues() {
-        // Headers
-        Font headerFont = new java.awt.Font("Inter", java.awt.Font.BOLD, 10);
-        Color headerColor = new Color(67, 70, 84);
 
-        jLabel10.setFont(headerFont);
-        jLabel10.setForeground(headerColor);
-        jLabel10.setText("CUSTOMER CONTACT");
+   private void setupEnhancedLayout() {
+    pnlEditorContent.removeAll();
+    pnlEditorContent.setLayout(new java.awt.GridBagLayout());
+    java.awt.GridBagConstraints gbc = new java.awt.GridBagConstraints();
+    gbc.insets = new java.awt.Insets(8, 12, 8, 12);
+    gbc.fill = java.awt.GridBagConstraints.BOTH;
+   
+    gbc.gridx = 0;
+    gbc.gridy = 0;
+    gbc.weightx = 0.6;
+    gbc.weighty = 0.5;
+    gbc.gridwidth = 1;
+    gbc.gridheight = 1;
+    pnlEditorContent.add(pnlCustomer, gbc);
+   
+    gbc.gridx = 0;
+    gbc.gridy = 1;
+    gbc.weightx = 0.6;
+    gbc.weighty = 0.5;
+    gbc.gridwidth = 1;
+    gbc.gridheight = 1;
+    pnlEditorContent.add(pnlService, gbc);
+  
+    gbc.gridx = 1;
+    gbc.gridy = 0;
+    gbc.weightx = 0.4;
+    gbc.weighty = 1.0;
+    gbc.gridwidth = 1;
+    gbc.gridheight = 2;
+    pnlEditorContent.add(pnlWorkflow, gbc);
 
-        jLabel11.setFont(headerFont);
-        jLabel11.setForeground(headerColor);
-        jLabel11.setText("SERVICE SUMMARY");
+    pnlEditorContent.revalidate();
+    pnlEditorContent.repaint();
 
-        jLabel12.setFont(headerFont);
-        jLabel12.setForeground(headerColor);
-        jLabel12.setText("UPDATE WORKFLOW STATUS");
+    filteredTable.setBorder(null);
+    filteredTable.setViewportBorder(null);
+    tblOrders.setBorder(null);
 
-        // Labels
-        Font labelFont = new java.awt.Font("Inter", java.awt.Font.BOLD, 8);
-        Color labelColor = new Color(67, 70, 84);
-
-        jLabel2.setFont(labelFont);
-        jLabel2.setForeground(labelColor);
-        jLabel2.setText("CLAIM NUMBER");
-
-        jLabel3.setFont(labelFont);
-        jLabel3.setForeground(labelColor);
-        jLabel3.setText("PHONE NUMBER");
-
-        jLabel4.setFont(labelFont);
-        jLabel4.setForeground(labelColor);
-        jLabel4.setText("FULL NAME");
-
-        jLabel5.setFont(labelFont);
-        jLabel5.setForeground(labelColor);
-        jLabel5.setText("ADDRESS");
-
-        jLabel6.setFont(labelFont);
-        jLabel6.setForeground(labelColor);
-        jLabel6.setText("SERVICE TYPE");
-
-        jLabel7.setFont(labelFont);
-        jLabel7.setForeground(labelColor);
-        jLabel7.setText("WEIGHT");
-
-        jLabel8.setFont(labelFont);
-        jLabel8.setForeground(labelColor);
-        jLabel8.setText("CHANGE STATUS TO");
-
-        jLabel13.setFont(labelFont);
-        jLabel13.setForeground(labelColor);
-        jLabel13.setText("PAYMENT STATUS");
-
-        jLabel14.setFont(new java.awt.Font("Inter", java.awt.Font.ITALIC, 8));
-        jLabel14.setForeground(new Color(115, 118, 134));
-
-        // Values
-        Font valueFont = new java.awt.Font("Inter", java.awt.Font.BOLD, 12);
-        Color valueColor = new Color(26, 28, 28);
-
-        lblClaimNumber.setFont(new java.awt.Font("Inter", java.awt.Font.BOLD, 14));
-        lblClaimNumber.setForeground(new Color(38, 85, 189));
-
-        lblFullName.setFont(valueFont);
-        lblFullName.setForeground(valueColor);
-
-        lblPhone.setFont(valueFont);
-        lblPhone.setForeground(valueColor);
-
-        lblAddress.setFont(valueFont);
-        lblAddress.setForeground(valueColor);
-
-        lblServiceType.setFont(valueFont);
-        lblServiceType.setForeground(valueColor);
-
-        lblWeight.setFont(valueFont);
-        lblWeight.setForeground(valueColor);
-
-        // Main header
-        jLabel9.setFont(new java.awt.Font("Inter", java.awt.Font.BOLD, 20));
-        jLabel9.setForeground(new Color(26, 28, 28));
-    }
-
-    private void styleComboBoxes() {
-        jComboBox1.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 12));
-        jComboBox1.setBackground(Color.WHITE);
-        jComboBox1.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(195, 198, 215), 1),
-                BorderFactory.createEmptyBorder(3, 8, 3, 8)
-        ));
-        jComboBox1.setPreferredSize(new java.awt.Dimension(180, 26));
-
-        jComboBox2.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 12));
-        jComboBox2.setBackground(Color.WHITE);
-        jComboBox2.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(195, 198, 215), 1),
-                BorderFactory.createEmptyBorder(3, 8, 3, 8)
-        ));
-        jComboBox2.setPreferredSize(new java.awt.Dimension(180, 26));
-    }
-
-    private void styleButtons() {
-        btnUpdate.setBackground(new Color(38, 85, 189));
-        btnUpdate.setForeground(Color.WHITE);
-        btnUpdate.setFont(new java.awt.Font("Inter", java.awt.Font.BOLD, 12));
-        btnUpdate.setFocusPainted(false);
-        btnUpdate.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
-        btnUpdate.setPreferredSize(new java.awt.Dimension(180, 28));
-
-        btnCancel.setBackground(new Color(226, 226, 226));
-        btnCancel.setForeground(new Color(67, 70, 84));
-        btnCancel.setFont(new java.awt.Font("Inter", java.awt.Font.BOLD, 12));
-        btnCancel.setFocusPainted(false);
-        btnCancel.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
-        btnCancel.setPreferredSize(new java.awt.Dimension(180, 28));
-    }
-
-    private void setupEnhancedLayout() {
-        pnlEditorContent.removeAll();
-        pnlEditorContent.setLayout(new java.awt.GridBagLayout());
-        java.awt.GridBagConstraints gbc = new java.awt.GridBagConstraints();
-        gbc.insets = new java.awt.Insets(5, 8, 5, 8);
-        gbc.fill = java.awt.GridBagConstraints.BOTH;
-
-        // Customer Panel
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.weightx = 0.6;
-        gbc.weighty = 0.5;
-        gbc.gridwidth = 1;
-        gbc.gridheight = 1;
-        pnlEditorContent.add(pnlCustomer, gbc);
-
-        // Service Panel
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.weightx = 0.6;
-        gbc.weighty = 0.5;
-        gbc.gridwidth = 1;
-        gbc.gridheight = 1;
-        pnlEditorContent.add(pnlService, gbc);
-
-        // Workflow Panel
-        gbc.gridx = 1;
-        gbc.gridy = 0;
-        gbc.weightx = 0.4;
-        gbc.weighty = 1.0;
-        gbc.gridwidth = 1;
-        gbc.gridheight = 2;
-        pnlEditorContent.add(pnlWorkflow, gbc);
-
-        pnlEditorContent.revalidate();
-        pnlEditorContent.repaint();
-
-        styleCardLayout();
-    }
+    styleCardLayout();
+}
 
     public void refreshData() {
         loadTableData();
@@ -569,27 +450,30 @@ public class UpdateStatusPanel extends javax.swing.JPanel {
         DefaultTableModel model = (DefaultTableModel) tblOrders.getModel();
         model.setRowCount(0);
 
-        String query = "SELECT o.claim_number, c.name, c.phone, c.address, s.service_name, o.weight_kg, o.order_status, o.payment_status, o.total_amount "
-                + "FROM orders o "
-                + "JOIN customers c ON o.customer_id = c.customer_id "
-                + "JOIN services s ON o.service_id = s.service_id "
-                + "WHERE o.order_status != 'Claimed'";
+        String query = "SELECT o.claim_number, e.name AS employee_name, c.name, c.phone, c.address, s.service_name, o.weight_kg, o.order_status, o.payment_status, o.total_amount "
+        + "FROM orders o "
+        + "JOIN customers c ON o.customer_id = c.customer_id "
+        + "JOIN services s ON o.service_id = s.service_id "
+        + "LEFT JOIN employees e ON o.employee_id = e.employee_id "
+        + "WHERE o.order_status != 'Claimed'";
 
         try (Connection conn = DBConnection.getConnection(); PreparedStatement pstmt = conn.prepareStatement(query); ResultSet rs = pstmt.executeQuery()) {
 
             while (rs.next()) {
-                model.addRow(new Object[]{
-                    rs.getString("claim_number"),
-                    rs.getString("name"),
-                    rs.getString("phone"),
-                    rs.getString("address"),
-                    rs.getString("service_name"),
-                    rs.getDouble("weight_kg"),
-                    rs.getString("order_status"),
-                    rs.getString("payment_status"),
-                    "\u20b1" + String.format("%,.2f", rs.getDouble("total_amount"))
-                });
-            }
+    String employeeName = rs.getString("employee_name");
+    model.addRow(new Object[]{
+        rs.getString("claim_number"),
+        employeeName != null ? employeeName : "Unassigned",
+        rs.getString("name"),
+        rs.getString("phone"),
+        rs.getString("address"),
+        rs.getString("service_name"),
+        rs.getDouble("weight_kg"),
+        rs.getString("order_status"),
+        rs.getString("payment_status"),
+        "\u20b1" + String.format("%,.2f", rs.getDouble("total_amount"))
+    });
+}
         } catch (SQLException e) {
             e.printStackTrace();
             javax.swing.JOptionPane.showMessageDialog(this, "Error loading data: " + e.getMessage());
@@ -597,36 +481,145 @@ public class UpdateStatusPanel extends javax.swing.JPanel {
 
     }
 
-    /*   
-private void refreshFilteredTableData() {
+   
+  private void applyStyles() {
     
-    DefaultTableModel model = (DefaultTableModel) tblOrders.getModel(); 
-    model.setRowCount(0); 
+    Font headerFont = new java.awt.Font("Inter", java.awt.Font.BOLD, 14);
+    Color headerColor = new Color(26, 28, 28);
 
-    String query = "SELECT o.claim_number, c.customer_name, o.phone_number, o.address, s.service_name, o.weight_kg, o.order_status, o.total_amount " +
-               "FROM orders o " +
-               "JOIN customers c ON o.customer_id = c.customer_id " +
-               "JOIN services s ON o.service_id = s.service_id";
-    
-    try (Connection conn = DBConnection.getConnection();
-         PreparedStatement pstmt = conn.prepareStatement(query);
-         ResultSet rs = pstmt.executeQuery()) {
-        
-        while (rs.next()) {
-            model.addRow(new Object[]{
-                rs.getString("claim_number"),
-                rs.getString("customer_name"),
-                rs.getString("order_status"),
-                rs.getDouble("total_amount")
-            });
-        }
-    } catch (SQLException e) {
-        e.printStackTrace();
+    jLabel10.setFont(headerFont);
+    jLabel10.setForeground(headerColor);
+    jLabel10.setText("CUSTOMER CONTACT");
+
+    jLabel11.setFont(headerFont);
+    jLabel11.setForeground(headerColor);
+    jLabel11.setText("SERVICE SUMMARY");
+
+    jLabel12.setFont(headerFont);
+    jLabel12.setForeground(headerColor);
+    jLabel12.setText("UPDATE WORKFLOW STATUS");
+
+    if (lblPageTitle != null) {
+        lblPageTitle.setFont(new java.awt.Font("Inter 18pt", java.awt.Font.BOLD, 28));
+        lblPageTitle.setForeground(new java.awt.Color(26, 28, 28));
     }
-}
-  
-     */
 
+    if (lblsubtile1 != null) {
+        lblsubtile1.setFont(new java.awt.Font("Inter 18pt", java.awt.Font.PLAIN, 14));
+        lblsubtile1.setForeground(new java.awt.Color(67, 70, 84));
+    }
+
+    if (lblsubtitle2 != null) {
+        lblsubtitle2.setFont(new java.awt.Font("Inter 18pt", java.awt.Font.PLAIN, 14));
+        lblsubtitle2.setForeground(new java.awt.Color(67, 70, 84));
+    }
+
+    if (jLabel9 != null) {
+        jLabel9.setFont(new java.awt.Font("Inter 18pt", java.awt.Font.BOLD, 28));
+        jLabel9.setForeground(new java.awt.Color(26, 28, 28));
+    }
+
+   
+    Font labelFont = new java.awt.Font("Inter", java.awt.Font.PLAIN, 14);
+    Color labelColor = new Color(67, 70, 84);
+
+    jLabel2.setFont(labelFont);
+    jLabel2.setForeground(labelColor);
+    jLabel2.setText("CLAIM NUMBER");
+
+    jLabel3.setFont(labelFont);
+    jLabel3.setForeground(labelColor);
+    jLabel3.setText("PHONE NUMBER");
+
+    jLabel4.setFont(labelFont);
+    jLabel4.setForeground(labelColor);
+    jLabel4.setText("FULL NAME");
+
+    jLabel5.setFont(labelFont);
+    jLabel5.setForeground(labelColor);
+    jLabel5.setText("ADDRESS");
+
+    jLabel15.setFont(labelFont);
+    jLabel15.setForeground(labelColor);
+    jLabel15.setText("PROCESSED BY");
+
+    jLabel6.setFont(labelFont);
+    jLabel6.setForeground(labelColor);
+    jLabel6.setText("SERVICE TYPE");
+
+    jLabel7.setFont(labelFont);
+    jLabel7.setForeground(labelColor);
+    jLabel7.setText("WEIGHT");
+
+    jLabel8.setFont(labelFont);
+    jLabel8.setForeground(labelColor);
+    jLabel8.setText("CHANGE STATUS TO");
+
+    jLabel13.setFont(labelFont);
+    jLabel13.setForeground(labelColor);
+    jLabel13.setText("PAYMENT STATUS");
+
+    jLabel14.setFont(new java.awt.Font("Inter", java.awt.Font.ITALIC, 12));
+    jLabel14.setForeground(new Color(115, 118, 134));
+    jLabel14.setText("Note: Order cannot be Claimed unless Paid");
+
+    Font valueFont = new java.awt.Font("Inter", java.awt.Font.BOLD, 16);
+    Color valueColor = new Color(44, 62, 80);
+
+    lblClaimNumber.setFont(new java.awt.Font("Inter", java.awt.Font.BOLD, 18));
+    lblClaimNumber.setForeground(new Color(38, 85, 189));
+
+    lblFullName.setFont(valueFont);
+    lblFullName.setForeground(valueColor);
+
+    lblPhone.setFont(valueFont);
+    lblPhone.setForeground(valueColor);
+
+    lblAddress.setFont(valueFont);
+    lblAddress.setForeground(valueColor);
+
+    lblEmployee.setFont(valueFont);
+    lblEmployee.setForeground(new Color(38, 85, 189));
+
+    lblServiceType.setFont(valueFont);
+    lblServiceType.setForeground(valueColor);
+
+    lblWeight.setFont(valueFont);
+    lblWeight.setForeground(valueColor);
+
+    jComboBox1.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 14));
+    jComboBox1.setBackground(Color.WHITE);
+    jComboBox1.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(195, 198, 215), 1),
+            BorderFactory.createEmptyBorder(5, 10, 5, 10)
+    ));
+    jComboBox1.setPreferredSize(new java.awt.Dimension(200, 32));
+
+    jComboBox2.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 14));
+    jComboBox2.setBackground(Color.WHITE);
+    jComboBox2.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(195, 198, 215), 1),
+            BorderFactory.createEmptyBorder(5, 10, 5, 10)
+    ));
+    jComboBox2.setPreferredSize(new java.awt.Dimension(200, 32));
+
+    
+    btnUpdate.setBackground(new Color(38, 85, 189));
+    btnUpdate.setForeground(Color.WHITE);
+    btnUpdate.setFont(new java.awt.Font("Inter", java.awt.Font.BOLD, 14));
+    btnUpdate.setFocusPainted(false);
+    btnUpdate.setBorder(BorderFactory.createEmptyBorder(8, 20, 8, 20));
+    btnUpdate.setPreferredSize(new java.awt.Dimension(200, 38));
+
+    btnCancel.setBackground(new Color(226, 226, 226));
+    btnCancel.setForeground(new Color(67, 70, 84));
+    btnCancel.setFont(new java.awt.Font("Inter", java.awt.Font.BOLD, 14));
+    btnCancel.setFocusPainted(false);
+    btnCancel.setBorder(BorderFactory.createEmptyBorder(8, 20, 8, 20));
+    btnCancel.setPreferredSize(new java.awt.Dimension(200, 38));
+}
+     
+    
     public static void main(String[] args) {
         FlatLightLaf.setup();
 
@@ -651,7 +644,8 @@ private void refreshFilteredTableData() {
         updateSubContainer = new javax.swing.JPanel();
         cardTable = new javax.swing.JPanel();
         pnlHeader = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        lblPageTitle = new javax.swing.JLabel();
+        lblsubtile1 = new javax.swing.JLabel();
         pnlContent = new javax.swing.JPanel();
         filteredTable = new javax.swing.JScrollPane();
         tblOrders = new javax.swing.JTable();
@@ -659,6 +653,7 @@ private void refreshFilteredTableData() {
         cardEditor = new javax.swing.JPanel();
         pnlEditorHeader = new javax.swing.JPanel();
         jLabel9 = new javax.swing.JLabel();
+        lblsubtitle2 = new javax.swing.JLabel();
         pnlEditorContent = new javax.swing.JPanel();
         pnlCustomer = new javax.swing.JPanel();
         lblClaimNumber = new javax.swing.JLabel();
@@ -685,6 +680,8 @@ private void refreshFilteredTableData() {
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
+        jLabel15 = new javax.swing.JLabel();
+        lblEmployee = new javax.swing.JLabel();
         pnlEditorFooter = new javax.swing.JPanel();
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -704,29 +701,37 @@ private void refreshFilteredTableData() {
 
         cardTable.setLayout(new java.awt.BorderLayout());
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        jLabel1.setText("Update Order Status");
+        lblPageTitle.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        lblPageTitle.setText("Update Order Status");
+
+        lblsubtile1.setText("Select an order to update its current workflow progress.");
 
         javax.swing.GroupLayout pnlHeaderLayout = new javax.swing.GroupLayout(pnlHeader);
         pnlHeader.setLayout(pnlHeaderLayout);
         pnlHeaderLayout.setHorizontalGroup(
             pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlHeaderLayout.createSequentialGroup()
-                .addGap(73, 73, 73)
-                .addComponent(jLabel1)
-                .addContainerGap(944, Short.MAX_VALUE))
+                .addGap(20, 20, 20)
+                .addGroup(pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblsubtile1)
+                    .addComponent(lblPageTitle))
+                .addContainerGap(945, Short.MAX_VALUE))
         );
         pnlHeaderLayout.setVerticalGroup(
             pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlHeaderLayout.createSequentialGroup()
-                .addGap(36, 36, 36)
-                .addComponent(jLabel1)
+                .addGap(14, 14, 14)
+                .addComponent(lblPageTitle)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblsubtile1)
                 .addContainerGap(48, Short.MAX_VALUE))
         );
 
         cardTable.add(pnlHeader, java.awt.BorderLayout.PAGE_START);
 
         pnlContent.setLayout(new java.awt.BorderLayout());
+
+        filteredTable.setBackground(new java.awt.Color(249, 249, 249));
 
         tblOrders.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -779,21 +784,27 @@ private void refreshFilteredTableData() {
         jLabel9.setFont(new java.awt.Font("Segoe UI", 1, 28)); // NOI18N
         jLabel9.setText("Update Order Status");
 
+        lblsubtitle2.setText("View order specifics and modify the current processing stage.");
+
         javax.swing.GroupLayout pnlEditorHeaderLayout = new javax.swing.GroupLayout(pnlEditorHeader);
         pnlEditorHeader.setLayout(pnlEditorHeaderLayout);
         pnlEditorHeaderLayout.setHorizontalGroup(
             pnlEditorHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlEditorHeaderLayout.createSequentialGroup()
-                .addGap(62, 62, 62)
-                .addComponent(jLabel9)
-                .addContainerGap(915, Short.MAX_VALUE))
+                .addGap(25, 25, 25)
+                .addGroup(pnlEditorHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblsubtitle2)
+                    .addComponent(jLabel9))
+                .addContainerGap(1696, Short.MAX_VALUE))
         );
         pnlEditorHeaderLayout.setVerticalGroup(
             pnlEditorHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlEditorHeaderLayout.createSequentialGroup()
-                .addContainerGap(45, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addComponent(jLabel9)
-                .addGap(39, 39, 39))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblsubtitle2)
+                .addContainerGap(53, Short.MAX_VALUE))
         );
 
         cardEditor.add(pnlEditorHeader, java.awt.BorderLayout.PAGE_START);
@@ -960,7 +971,7 @@ private void refreshFilteredTableData() {
                                 .addGroup(pnlWorkflowLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel13)
                                     .addComponent(jLabel14))))))
-                .addContainerGap(23, Short.MAX_VALUE))
+                .addContainerGap(57, Short.MAX_VALUE))
         );
         pnlWorkflowLayout.setVerticalGroup(
             pnlWorkflowLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1010,6 +1021,10 @@ private void refreshFilteredTableData() {
         jLabel11.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel11.setText("Service Summary");
 
+        jLabel15.setText("Employee");
+
+        lblEmployee.setText("Nics");
+
         javax.swing.GroupLayout pnlServiceLayout = new javax.swing.GroupLayout(pnlService);
         pnlService.setLayout(pnlServiceLayout);
         pnlServiceLayout.setHorizontalGroup(
@@ -1017,32 +1032,38 @@ private void refreshFilteredTableData() {
             .addGroup(pnlServiceLayout.createSequentialGroup()
                 .addGroup(pnlServiceLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlServiceLayout.createSequentialGroup()
-                        .addGap(64, 64, 64)
+                        .addGap(79, 79, 79)
+                        .addGroup(pnlServiceLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel15)
+                            .addComponent(lblEmployee))
+                        .addGap(93, 93, 93)
                         .addGroup(pnlServiceLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel6)
                             .addComponent(lblServiceType))
-                        .addGap(261, 261, 261)
+                        .addGap(110, 110, 110)
                         .addGroup(pnlServiceLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lblWeight)
                             .addComponent(jLabel7)))
                     .addGroup(pnlServiceLayout.createSequentialGroup()
                         .addGap(38, 38, 38)
                         .addComponent(jLabel11)))
-                .addContainerGap(382, Short.MAX_VALUE))
+                .addContainerGap(1134, Short.MAX_VALUE))
         );
         pnlServiceLayout.setVerticalGroup(
             pnlServiceLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlServiceLayout.createSequentialGroup()
-                .addContainerGap(16, Short.MAX_VALUE)
+                .addContainerGap(36, Short.MAX_VALUE)
                 .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(pnlServiceLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel6)
-                    .addComponent(jLabel7))
+                    .addComponent(jLabel7)
+                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnlServiceLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblServiceType)
-                    .addComponent(lblWeight))
+                    .addComponent(lblWeight)
+                    .addComponent(lblEmployee))
                 .addGap(25, 25, 25))
         );
 
@@ -1073,20 +1094,22 @@ private void refreshFilteredTableData() {
         if (selectedRow != -1) {
 
             String claimNum = tblOrders.getValueAt(selectedRow, 0).toString();
-            String fullName = tblOrders.getValueAt(selectedRow, 1).toString();
-            String phone = tblOrders.getValueAt(selectedRow, 2).toString();
-            String address = tblOrders.getValueAt(selectedRow, 3).toString();
-            String service = tblOrders.getValueAt(selectedRow, 4).toString();
-            String weight = tblOrders.getValueAt(selectedRow, 5).toString();
-            String currentStatus = tblOrders.getValueAt(selectedRow, 6).toString();
-            String paymentStatus = tblOrders.getValueAt(selectedRow, 7).toString();
+            String employeeName = tblOrders.getValueAt(selectedRow, 1).toString();
+            String fullName = tblOrders.getValueAt(selectedRow, 2).toString();
+            String phone = tblOrders.getValueAt(selectedRow, 3).toString();
+            String address = tblOrders.getValueAt(selectedRow, 4).toString();
+            String service = tblOrders.getValueAt(selectedRow, 5).toString();
+            String weight = tblOrders.getValueAt(selectedRow, 6).toString();
+            String currentStatus = tblOrders.getValueAt(selectedRow, 7).toString();
+            String paymentStatus = tblOrders.getValueAt(selectedRow, 8).toString();
 
-            lblClaimNumber.setText(claimNum);
-            lblFullName.setText(fullName);
-            lblPhone.setText(phone);
-            lblAddress.setText(address);
-            lblServiceType.setText(service);
-            lblWeight.setText(weight);
+lblClaimNumber.setText(claimNum);
+lblEmployee.setText(employeeName);
+lblFullName.setText(fullName);
+lblPhone.setText(phone);
+lblAddress.setText(address);
+lblServiceType.setText(service);
+lblWeight.setText(weight);
 
             jComboBox1.removeAllItems();
             if ("Pending".equals(currentStatus)) {
@@ -1161,12 +1184,12 @@ private void refreshFilteredTableData() {
     private javax.swing.JScrollPane filteredTable;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JComboBox<String> jComboBox2;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -1178,10 +1201,14 @@ private void refreshFilteredTableData() {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel lblAddress;
     private javax.swing.JLabel lblClaimNumber;
+    private javax.swing.JLabel lblEmployee;
     private javax.swing.JLabel lblFullName;
+    private javax.swing.JLabel lblPageTitle;
     private javax.swing.JLabel lblPhone;
     private javax.swing.JLabel lblServiceType;
     private javax.swing.JLabel lblWeight;
+    private javax.swing.JLabel lblsubtile1;
+    private javax.swing.JLabel lblsubtitle2;
     private javax.swing.JPanel pnlContent;
     private javax.swing.JPanel pnlCustomer;
     private javax.swing.JPanel pnlEditorContent;
