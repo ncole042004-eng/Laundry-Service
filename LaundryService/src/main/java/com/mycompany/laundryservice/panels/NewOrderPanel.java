@@ -166,9 +166,7 @@ public class NewOrderPanel extends javax.swing.JPanel {
         jPanel4.setBorder(javax.swing.BorderFactory.createCompoundBorder(roundedBorder, padding));
         jPanel5.setBorder(javax.swing.BorderFactory.createCompoundBorder(roundedBorder, padding));
 
-        jPanel2.setBackground(java.awt.Color.WHITE);
-        jPanel4.setBackground(java.awt.Color.WHITE);
-        jPanel5.setBackground(java.awt.Color.WHITE);
+ 
         // ====== END ======
 
         // ====== APPLY INTER FONTS (MATCHING HTML DESIGN) ======

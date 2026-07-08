@@ -125,9 +125,6 @@ public class CustomerListDialog extends javax.swing.JDialog {
 
             jPanel1.setBorder(javax.swing.BorderFactory.createCompoundBorder(roundedBorder, padding));
             jPanel2.setBorder(javax.swing.BorderFactory.createCompoundBorder(roundedBorder, padding));
-
-            jPanel1.setBackground(java.awt.Color.WHITE);
-            jPanel2.setBackground(java.awt.Color.WHITE);
             // ====== END ======
          // ====== END ======
         
