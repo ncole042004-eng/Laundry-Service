@@ -35,6 +35,7 @@ public class UpdateStatusPanel extends javax.swing.JPanel {
         loadTableData();
         setupTableStyles();
         setupEnhancedLayout();
+        setupSearchFunctionality();
 
           SwingUtilities.invokeLater(() -> {
         applyStyles();  
@@ -193,10 +194,9 @@ public class UpdateStatusPanel extends javax.swing.JPanel {
     filteredTable.getViewport().setBackground(new Color(249, 249, 249));
     // ============================
 
-    // ====== REMOVE FLATLAF SCROLLPANE BORDER (client property is the only reliable way) ======
+    // ====== REMOVE FLATLAF SCROLLPANE BORDER ======
     filteredTable.putClientProperty("JScrollPane.showBorder", false);
-    // Restore the GUI builder's 24px padding border that we were accidentally overwriting with 0
-    filteredTable.setBorder(javax.swing.BorderFactory.createEmptyBorder(24, 0, 24, 24));
+    filteredTable.setBorder(javax.swing.BorderFactory.createEmptyBorder());
     filteredTable.setViewportBorder(javax.swing.BorderFactory.createEmptyBorder());
     tblOrders.setBorder(javax.swing.BorderFactory.createEmptyBorder());
     
@@ -653,11 +653,124 @@ public class UpdateStatusPanel extends javax.swing.JPanel {
     public static void main(String[] args) {
         FlatLightLaf.setup();
 
-        JFrame frame = new JFrame();
-        frame.add(new UpdateStatusPanel());
-        frame.pack();
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setVisible(true);
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                JFrame frame = new JFrame();
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.setSize(1000, 700);
+                frame.add(new UpdateStatusPanel());
+                frame.setVisible(true);
+            }
+        });
+    }
+
+    // --- Dynamic Search Injection ---
+    private javax.swing.JTextField txtSearch;
+    private javax.swing.JComboBox<String> cbFilter;
+    private javax.swing.JComboBox<String> cbPayment;
+    private javax.swing.JButton btnSearch;
+    private javax.swing.table.TableRowSorter<javax.swing.table.DefaultTableModel> rowSorter;
+
+    private void setupSearchFunctionality() {
+        txtSearch = new javax.swing.JTextField(20);
+        txtSearch.putClientProperty("JTextField.placeholderText", "Search Claim # or Customer");
+        txtSearch.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 14));
+        txtSearch.setPreferredSize(new java.awt.Dimension(320, 44));
+        
+        cbFilter = new javax.swing.JComboBox<>(new String[]{"All", "Pending", "Processing", "Ready"});
+        cbFilter.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 14));
+        cbFilter.setPreferredSize(new java.awt.Dimension(160, 44));
+        
+        cbPayment = new javax.swing.JComboBox<>(new String[]{"All", "Paid", "Unpaid"});
+        cbPayment.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 14));
+        cbPayment.setPreferredSize(new java.awt.Dimension(160, 44));
+        
+        btnSearch = new javax.swing.JButton("Search");
+        btnSearch.setBackground(new java.awt.Color(38, 85, 189));
+        btnSearch.setForeground(java.awt.Color.WHITE);
+        btnSearch.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 14));
+        btnSearch.setPreferredSize(new java.awt.Dimension(90, 44));
+        btnSearch.putClientProperty("JButton.buttonType", "roundRect");
+        btnSearch.setFocusPainted(false);
+        
+        javax.swing.JPanel pnlSearch = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 15, 10));
+        pnlSearch.setBackground(new java.awt.Color(249, 249, 249));
+        pnlSearch.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 10, 10, 10));
+        
+        javax.swing.JLabel lblFilter = new javax.swing.JLabel("Filter by Status:");
+        lblFilter.setFont(new java.awt.Font("Inter", java.awt.Font.BOLD, 12));
+        lblFilter.setForeground(new java.awt.Color(67, 70, 84));
+        
+        javax.swing.JLabel lblPayment = new javax.swing.JLabel("Filter by Payment:");
+        lblPayment.setFont(new java.awt.Font("Inter", java.awt.Font.BOLD, 12));
+        lblPayment.setForeground(new java.awt.Color(67, 70, 84));
+        
+        javax.swing.JLabel lblSearch = new javax.swing.JLabel(" Search:");
+        lblSearch.setFont(new java.awt.Font("Inter", java.awt.Font.BOLD, 12));
+        lblSearch.setForeground(new java.awt.Color(67, 70, 84));
+        
+        pnlSearch.add(lblFilter);
+        pnlSearch.add(cbFilter);
+        pnlSearch.add(lblPayment);
+        pnlSearch.add(cbPayment);
+        pnlSearch.add(lblSearch);
+        pnlSearch.add(txtSearch);
+        pnlSearch.add(btnSearch);
+        
+        // Safe injection into GUI Builder layout
+        cardTable.remove(pnlHeader);
+        javax.swing.JPanel topContainer = new javax.swing.JPanel(new java.awt.BorderLayout());
+        topContainer.setBackground(new java.awt.Color(249, 249, 249));
+        topContainer.add(pnlHeader, java.awt.BorderLayout.NORTH);
+        topContainer.add(pnlSearch, java.awt.BorderLayout.SOUTH);
+        cardTable.add(topContainer, java.awt.BorderLayout.PAGE_START);
+        
+        // Table filtering wiring
+        javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) tblOrders.getModel();
+        rowSorter = new javax.swing.table.TableRowSorter<>(model);
+        tblOrders.setRowSorter(rowSorter);
+        
+        java.awt.event.ActionListener searchAction = e -> executeSearch();
+        btnSearch.addActionListener(searchAction);
+        cbFilter.addActionListener(searchAction);
+        cbPayment.addActionListener(searchAction);
+        
+        txtSearch.addKeyListener(new java.awt.event.KeyAdapter() {
+            @Override
+            public void keyPressed(java.awt.event.KeyEvent e) {
+                if (e.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER) {
+                    executeSearch();
+                }
+            }
+        });
+    }
+
+    private void executeSearch() {
+        if (rowSorter == null) return;
+        
+        String text = txtSearch.getText().trim();
+        String status = (String) cbFilter.getSelectedItem();
+        String payment = (String) cbPayment.getSelectedItem();
+        
+        java.util.List<javax.swing.RowFilter<Object, Object>> filters = new java.util.ArrayList<>();
+        
+        if (!text.isEmpty()) {
+            filters.add(javax.swing.RowFilter.regexFilter("(?i)" + java.util.regex.Pattern.quote(text), 0, 2));
+        }
+        
+        if (!"All".equals(status)) {
+            filters.add(javax.swing.RowFilter.regexFilter("(?i)^" + status + "$", 7));
+        }
+        
+        if (!"All".equals(payment)) {
+            filters.add(javax.swing.RowFilter.regexFilter("(?i)^" + payment + "$", 8));
+        }
+        
+        if (filters.isEmpty()) {
+            rowSorter.setRowFilter(null);
+        } else {
+            rowSorter.setRowFilter(javax.swing.RowFilter.andFilter(filters));
+        }
     }
 
     /**
