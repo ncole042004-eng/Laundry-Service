@@ -52,6 +52,7 @@ public class OrderListPanel extends JPanel {
 	private JComboBox<String> cboSearchBy;
 	private JButton btnSearch;
 	private JButton btnRefresh;
+	private JComboBox<String> cboOrderState; // Added for Active/Cancelled view
 	private JLabel lblSortBy;
 	private JComboBox<String> cboSortBy;
 	private JButton btnSort;
@@ -81,28 +82,28 @@ public class OrderListPanel extends JPanel {
 		setBackground(new Color(249, 249, 249));
 		setLayout(new BorderLayout());
 
-		// ── Main wrapper ──────────────────────────────────────────────────────
-		JPanel pnlMain = new JPanel(new BorderLayout());
-		pnlMain.setBackground(new Color(249, 249, 249));
-		add(pnlMain, BorderLayout.CENTER);
-
-		// ── Top section (header + controls stacked) ───────────────────────────
-		JPanel pnlTopSection = new JPanel();
-		pnlTopSection.setBackground(new Color(249, 249, 249));
-		pnlTopSection.setLayout(new BoxLayout(pnlTopSection, BoxLayout.Y_AXIS));
-		pnlMain.add(pnlTopSection, BorderLayout.NORTH);
-
-		// Page header
+		// ── Page header (matches HomePanel spacing) ───────────────────────────
 		JPanel pnlHeader = new JPanel();
 		pnlHeader.setBackground(new Color(249, 249, 249));
 		pnlHeader.setLayout(new BoxLayout(pnlHeader, BoxLayout.Y_AXIS));
-		pnlHeader.setBorder(BorderFactory.createEmptyBorder(24, 24, 8, 24));
+		pnlHeader.setBorder(BorderFactory.createEmptyBorder(24, 24, 24, 24));
 
 		lblTitle = new JLabel("Order List");
 		lblSubtitle = new JLabel("Manage and track all laundry service orders.");
 		pnlHeader.add(lblTitle);
 		pnlHeader.add(lblSubtitle);
-		pnlTopSection.add(pnlHeader);
+		add(pnlHeader, BorderLayout.NORTH);
+
+		// ── Body wrapper (matches HomePanel spacing) ──────────────────────────
+		JPanel pnlBody = new JPanel(new BorderLayout());
+		pnlBody.setBackground(new Color(249, 249, 249));
+		pnlBody.setBorder(BorderFactory.createEmptyBorder(0, 24, 24, 24));
+		add(pnlBody, BorderLayout.CENTER);
+
+		// White container for controls, table, and footer
+		JPanel pnlContent = new JPanel(new BorderLayout());
+		pnlContent.setBackground(Color.WHITE);
+		pnlBody.add(pnlContent, BorderLayout.CENTER);
 
 		// Control bar
 		pnlControls = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 8));
@@ -111,11 +112,12 @@ public class OrderListPanel extends JPanel {
 		lblSearchOrders = new JLabel("Search Orders");
 		txtSearch = new JTextField(28);
 		lblSearchBy = new JLabel("Search By");
-		cboSearchBy = new JComboBox<>(new String[]{"Customer Name", "Claim Number", "Status"});
+		cboSearchBy = new JComboBox<>(new String[] { "Customer Name", "Claim Number", "Status" });
 		btnSearch = new JButton("Search");
 		btnRefresh = new JButton();
+		cboOrderState = new JComboBox<>(new String[] { "Active Orders", "Cancelled Orders", "All Orders" });
 		lblSortBy = new JLabel("Sort By");
-		cboSortBy = new JComboBox<>(new String[]{"Order Date", "Status", "Amount"});
+		cboSortBy = new JComboBox<>(new String[] { "Order Date", "Status", "Amount" });
 		btnSort = new JButton("Sort");
 
 		pnlControls.add(lblSearchOrders);
@@ -124,19 +126,20 @@ public class OrderListPanel extends JPanel {
 		pnlControls.add(cboSearchBy);
 		pnlControls.add(btnSearch);
 		pnlControls.add(btnRefresh);
+		pnlControls.add(cboOrderState);
 		pnlControls.add(lblSortBy);
 		pnlControls.add(cboSortBy);
 		pnlControls.add(btnSort);
-		pnlTopSection.add(pnlControls);
+		pnlContent.add(pnlControls, BorderLayout.NORTH);
 
 		// ── Table ─────────────────────────────────────────────────────────────
 		JPanel pnlTableWrapper = new JPanel(new BorderLayout());
 		pnlTableWrapper.setBackground(Color.WHITE);
-		pnlMain.add(pnlTableWrapper, BorderLayout.CENTER);
+		pnlContent.add(pnlTableWrapper, BorderLayout.CENTER);
 
 		String[] columns = {
-			"Order ID", "Claim Number", "Customer", "Phone", "Address",
-			"Weight (kg)", "Status", "Payment", "Processed By", "Notes", "Total Amount"
+				"Order ID", "Claim Number", "Employee", "Customer", "Phone", "Address",
+				"Weight (kg)", "Status", "Payment", "Notes", "Total Amount"
 		};
 
 		DefaultTableModel model = new DefaultTableModel(columns, 0) {
@@ -147,14 +150,16 @@ public class OrderListPanel extends JPanel {
 		};
 
 		tblOrders = new JTable(model);
+		tblOrders.setBackground(new Color(249, 249, 249));
 		jScrollPane1 = new JScrollPane(tblOrders);
+		jScrollPane1.getViewport().setBackground(new Color(249, 249, 249));
 		jScrollPane1.setBorder(BorderFactory.createEmptyBorder());
 		pnlTableWrapper.add(jScrollPane1, BorderLayout.CENTER);
 
 		// ── Footer ────────────────────────────────────────────────────────────
 		pnlFooter = new JPanel(new BorderLayout());
 		pnlFooter.setBackground(Color.WHITE);
-		pnlMain.add(pnlFooter, BorderLayout.SOUTH);
+		pnlContent.add(pnlFooter, BorderLayout.SOUTH);
 
 		lblTotalOrders = new JLabel("Total Orders: 0");
 		pnlFooter.add(lblTotalOrders, BorderLayout.WEST);
@@ -169,7 +174,9 @@ public class OrderListPanel extends JPanel {
 
 		// ── Wire events ───────────────────────────────────────────────────────
 		btnSearch.addActionListener(evt -> btnSearchActionPerformed());
+		txtSearch.addActionListener(evt -> btnSearchActionPerformed()); // Search on Enter
 		btnRefresh.addActionListener(evt -> btnRefreshActionPerformed());
+		cboOrderState.addActionListener(evt -> loadTableData()); // Reload when view changes
 		btnSort.addActionListener(evt -> btnSortActionPerformed());
 		btnCancelOrder.addActionListener(evt -> btnCancelOrderActionPerformed());
 		btnViewDetails.addActionListener(evt -> btnViewDetailsActionPerformed());
@@ -180,7 +187,7 @@ public class OrderListPanel extends JPanel {
 	// -------------------------------------------------------------------------
 	private void setupStyles() {
 		// Page header labels
-		lblTitle.setFont(new Font("Inter 18pt", Font.BOLD, 32));
+		lblTitle.setFont(new Font("Inter 18pt", Font.BOLD, 28)); // Adjusted to match HomePanel (28pt)
 		lblTitle.setForeground(new Color(26, 28, 28));
 
 		lblSubtitle.setFont(new Font("Inter 18pt", Font.PLAIN, 14));
@@ -188,9 +195,8 @@ public class OrderListPanel extends JPanel {
 
 		// Control bar
 		pnlControls.setBorder(BorderFactory.createCompoundBorder(
-			BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(195, 198, 215)),
-			BorderFactory.createEmptyBorder(8, 24, 8, 24)
-		));
+				BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(195, 198, 215)),
+				BorderFactory.createEmptyBorder(8, 24, 8, 24)));
 
 		lblSearchOrders.setFont(new Font("Inter 18pt", Font.BOLD, 12));
 		lblSearchOrders.setForeground(new Color(67, 70, 84));
@@ -208,6 +214,9 @@ public class OrderListPanel extends JPanel {
 		cboSearchBy.setPreferredSize(new Dimension(160, 44));
 		cboSearchBy.setFont(new Font("Inter 18pt", Font.PLAIN, 14));
 
+		cboOrderState.setPreferredSize(new Dimension(160, 44));
+		cboOrderState.setFont(new Font("Inter 18pt", Font.PLAIN, 14));
+
 		cboSortBy.setPreferredSize(new Dimension(160, 44));
 		cboSortBy.setFont(new Font("Inter 18pt", Font.PLAIN, 14));
 
@@ -224,7 +233,9 @@ public class OrderListPanel extends JPanel {
 		btnRefresh.putClientProperty("JButton.buttonType", "roundRect");
 		btnRefresh.setFocusPainted(false);
 		try {
-			btnRefresh.setIcon(new FlatSVGIcon("icons/refresh.svg", 20, 20));
+			FlatSVGIcon refreshIcon = new FlatSVGIcon("icons/published_with_changes.svg", 20, 20);
+			refreshIcon.setColorFilter(new FlatSVGIcon.ColorFilter(c -> new Color(67, 70, 84)));
+			btnRefresh.setIcon(refreshIcon);
 		} catch (Exception ignored) {
 			btnRefresh.setText("↺");
 		}
@@ -235,15 +246,16 @@ public class OrderListPanel extends JPanel {
 		btnSort.putClientProperty("JButton.buttonType", "roundRect");
 		btnSort.setFocusPainted(false);
 		try {
-			btnSort.setIcon(new FlatSVGIcon("icons/sort.svg", 16, 16));
+			FlatSVGIcon sortIcon = new FlatSVGIcon("icons/filter_list.svg", 16, 16);
+			sortIcon.setColorFilter(new FlatSVGIcon.ColorFilter(c -> new Color(26, 28, 28)));
+			btnSort.setIcon(sortIcon);
 		} catch (Exception ignored) {
 		}
 
 		// Footer
 		pnlFooter.setBorder(BorderFactory.createCompoundBorder(
-			BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(195, 198, 215)),
-			BorderFactory.createEmptyBorder(12, 24, 12, 24)
-		));
+				BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(195, 198, 215)),
+				BorderFactory.createEmptyBorder(12, 24, 12, 24)));
 
 		lblTotalOrders.setFont(new Font("Inter 18pt", Font.PLAIN, 14));
 		lblTotalOrders.setForeground(new Color(67, 70, 84));
@@ -270,6 +282,8 @@ public class OrderListPanel extends JPanel {
 		tblOrders.getTableHeader().setBackground(new Color(0x45, 0x6f, 0xd7));
 		tblOrders.getTableHeader().setForeground(Color.WHITE);
 		tblOrders.getTableHeader().setFont(new Font("Inter 18pt", Font.BOLD, 12));
+		((DefaultTableCellRenderer) tblOrders.getTableHeader().getDefaultRenderer())
+				.setHorizontalAlignment(JLabel.CENTER);
 
 		// Rows
 		tblOrders.setRowHeight(48);
@@ -278,43 +292,47 @@ public class OrderListPanel extends JPanel {
 		tblOrders.setShowHorizontalLines(true);
 		tblOrders.setGridColor(new Color(195, 198, 215));
 
-		// Column 1 — Claim Number: bold blue
+		// Default center renderer for all columns
+		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+		centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+		for (int i = 0; i < tblOrders.getColumnCount(); i++) {
+			tblOrders.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+		}
+
+		// Column 1 — Claim Number: bold blue and centered
 		DefaultTableCellRenderer claimRenderer = new DefaultTableCellRenderer() {
 			@Override
 			public Component getTableCellRendererComponent(JTable table, Object value,
-				boolean isSelected, boolean hasFocus, int row, int column) {
+					boolean isSelected, boolean hasFocus, int row, int column) {
 				super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 				setForeground(isSelected ? Color.WHITE : new Color(38, 85, 189));
 				setFont(new Font("Inter 18pt", Font.BOLD, 14));
+				setHorizontalAlignment(JLabel.CENTER);
 				return this;
 			}
 		};
 		tblOrders.getColumnModel().getColumn(1).setCellRenderer(claimRenderer);
 
-		// Column 6 — Status chip
-		tblOrders.getColumnModel().getColumn(6).setCellRenderer(new ChipCellRenderer());
-		// Column 7 — Payment chip
+		// Column 7 — Status chip
 		tblOrders.getColumnModel().getColumn(7).setCellRenderer(new ChipCellRenderer());
+		// Column 8 — Payment chip
+		tblOrders.getColumnModel().getColumn(8).setCellRenderer(new ChipCellRenderer());
 
-		// Column 9 — Notes: italic, muted
+		// Column 9 — Notes: italic, muted, and LEFT aligned (only column not centered)
 		DefaultTableCellRenderer notesRenderer = new DefaultTableCellRenderer() {
 			@Override
 			public Component getTableCellRendererComponent(JTable table, Object value,
-				boolean isSelected, boolean hasFocus, int row, int column) {
+					boolean isSelected, boolean hasFocus, int row, int column) {
 				super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 				setFont(new Font("Inter 18pt", Font.ITALIC, 12));
 				if (!isSelected) {
 					setForeground(new Color(67, 70, 84));
 				}
+				setHorizontalAlignment(JLabel.LEFT);
 				return this;
 			}
 		};
 		tblOrders.getColumnModel().getColumn(9).setCellRenderer(notesRenderer);
-
-		// Column 10 — Total Amount: right-aligned
-		DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
-		rightRenderer.setHorizontalAlignment(JLabel.RIGHT);
-		tblOrders.getColumnModel().getColumn(10).setCellRenderer(rightRenderer);
 	}
 
 	// -------------------------------------------------------------------------
@@ -331,7 +349,7 @@ public class OrderListPanel extends JPanel {
 
 		@Override
 		public Component getTableCellRendererComponent(JTable table, Object value,
-			boolean isSelected, boolean hasFocus, int row, int column) {
+				boolean isSelected, boolean hasFocus, int row, int column) {
 			super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 			String text = value != null ? value.toString() : "";
 			setFont(new Font("Inter 18pt", Font.BOLD, 12));
@@ -373,7 +391,7 @@ public class OrderListPanel extends JPanel {
 		protected void paintComponent(java.awt.Graphics g) {
 			java.awt.Graphics2D g2 = (java.awt.Graphics2D) g.create();
 			g2.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING,
-				java.awt.RenderingHints.VALUE_ANTIALIAS_ON);
+					java.awt.RenderingHints.VALUE_ANTIALIAS_ON);
 
 			java.awt.FontMetrics fm = g2.getFontMetrics(getFont());
 			int textWidth = fm.stringWidth(getText());
@@ -393,59 +411,75 @@ public class OrderListPanel extends JPanel {
 	// -------------------------------------------------------------------------
 	// Data
 	// -------------------------------------------------------------------------
-	public void loadTableData() {
+	public void refreshData() {
+		loadTableData();
+	}
+
+	private void loadTableData() {
 		DefaultTableModel model = (DefaultTableModel) tblOrders.getModel();
 		model.setRowCount(0);
 
-		String query
-			= "SELECT "
-			+ "  o.order_id, "
-			+ "  o.claim_number, "
-			+ "  c.name        AS customer_name, "
-			+ "  c.phone, "
-			+ "  c.address, "
-			+ "  o.weight_kg, "
-			+ "  o.order_status, "
-			+ "  o.payment_status, "
-			+ "  e.name        AS employee_name, "
-			+ "  o.notes, "
-			+ "  o.total_amount "
-			+ "FROM Orders o "
-			+ "JOIN Customers c   ON o.customer_id  = c.customer_id "
-			+ "LEFT JOIN Employees e ON o.employee_id = e.employee_id "
-			+ "ORDER BY o.order_date DESC";
+		String searchBy = cboSearchBy.getSelectedItem() != null ? cboSearchBy.getSelectedItem().toString() : "";
+		String searchTxt = txtSearch.getText().trim();
+		String stateFilter = cboOrderState.getSelectedItem() != null ? cboOrderState.getSelectedItem().toString() : "";
 
-		try (Connection conn = DBConnection.getConnection(); PreparedStatement pstmt = conn.prepareStatement(query); ResultSet rs = pstmt.executeQuery()) {
+		StringBuilder sql = new StringBuilder(
+				"SELECT o.order_id, o.claim_number, c.name as customer_name, c.phone as customer_phone, "
+						+ "c.address as customer_address, o.weight_kg, o.order_status, o.payment_status, "
+						+ "e.name as employee_name, o.notes, o.total_amount "
+						+ "FROM Orders o "
+						+ "JOIN Customers c ON o.customer_id = c.customer_id "
+						+ "LEFT JOIN Employees e ON o.employee_id = e.employee_id "
+						+ "WHERE 1=1 ");
 
-			int count = 0;
-			while (rs.next()) {
-				model.addRow(new Object[]{
-					"ORD-" + String.format("%04d", rs.getInt("order_id")),
-					rs.getString("claim_number"),
-					rs.getString("customer_name"),
-					rs.getString("phone"),
-					rs.getString("address") != null ? rs.getString("address") : "",
-					rs.getDouble("weight_kg"),
-					rs.getString("order_status"),
-					rs.getString("payment_status"),
-					rs.getString("employee_name") != null ? rs.getString("employee_name") : "",
-					rs.getString("notes") != null ? rs.getString("notes") : "",
-					"\u20b1" + String.format("%,.2f", rs.getDouble("total_amount"))
-				});
-				count++;
-			}
-			lblTotalOrders.setText("Total Orders: " + count);
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this,
-				"Error loading orders: " + e.getMessage(),
-				"Database Error", JOptionPane.ERROR_MESSAGE);
+		if (stateFilter.equals("Active Orders")) {
+			sql.append("AND o.order_status != 'Cancelled' ");
+		} else if (stateFilter.equals("Cancelled Orders")) {
+			sql.append("AND o.order_status = 'Cancelled' ");
 		}
-	}
 
-	public void refreshData() {
-		loadTableData();
+		if (!searchTxt.isEmpty()) {
+			if (searchBy.equals("Customer Name")) {
+				sql.append("AND c.name LIKE ? ");
+			} else if (searchBy.equals("Claim Number")) {
+				sql.append("AND o.claim_number LIKE ? ");
+			} else if (searchBy.equals("Status")) {
+				sql.append("AND o.order_status LIKE ? ");
+			}
+		}
+
+		sql.append("ORDER BY o.order_date DESC");
+
+		try (Connection conn = DBConnection.getConnection();
+				PreparedStatement stmt = conn.prepareStatement(sql.toString())) {
+			if (!searchTxt.isEmpty()) {
+				stmt.setString(1, "%" + searchTxt + "%");
+			}
+
+			try (ResultSet rs = stmt.executeQuery()) {
+				int count = 0;
+				while (rs.next()) {
+					String orderIdFormat = "ORD-" + String.format("%04d", rs.getInt("order_id"));
+					model.addRow(new Object[] {
+							orderIdFormat,
+							rs.getString("claim_number"),
+							rs.getString("employee_name") != null ? rs.getString("employee_name") : "",
+							rs.getString("customer_name"),
+							rs.getString("customer_phone") != null ? rs.getString("customer_phone") : "",
+							rs.getString("customer_address") != null ? rs.getString("customer_address") : "",
+							rs.getDouble("weight_kg"),
+							rs.getString("order_status"),
+							rs.getString("payment_status"),
+							rs.getString("notes") != null ? rs.getString("notes") : "",
+							"\u20b1" + String.format("%,.2f", rs.getDouble("total_amount"))
+					});
+					count++;
+				}
+				lblTotalOrders.setText("Total Orders: " + count);
+			}
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(this, "Error loading data: " + e.getMessage());
+		}
 	}
 
 	// -------------------------------------------------------------------------
@@ -466,11 +500,11 @@ public class OrderListPanel extends JPanel {
 		for (int i = model.getRowCount() - 1; i >= 0; i--) {
 			String cell = switch (searchType) {
 				case "Customer Name" ->
-					model.getValueAt(i, 2).toString().toLowerCase();
+					model.getValueAt(i, 3).toString().toLowerCase();
 				case "Claim Number" ->
 					model.getValueAt(i, 1).toString().toLowerCase();
 				case "Status" ->
-					model.getValueAt(i, 6).toString().toLowerCase();
+					model.getValueAt(i, 7).toString().toLowerCase();
 				default ->
 					"";
 			};
@@ -498,7 +532,7 @@ public class OrderListPanel extends JPanel {
 
 		rows.sort((a, b) -> switch (sortBy) {
 			case "Status" ->
-				a.get(6).toString().compareTo(b.get(6).toString());
+				a.get(7).toString().compareTo(b.get(7).toString());
 			case "Amount" -> {
 				double da = Double.parseDouble(a.get(10).toString().replace("\u20b1", "").replace(",", ""));
 				double db = Double.parseDouble(b.get(10).toString().replace("\u20b1", "").replace(",", ""));
@@ -518,36 +552,37 @@ public class OrderListPanel extends JPanel {
 		int selectedRow = tblOrders.getSelectedRow();
 		if (selectedRow == -1) {
 			JOptionPane.showMessageDialog(this,
-				"Please select an order to cancel.",
-				"No Selection", JOptionPane.WARNING_MESSAGE);
+					"Please select an order to cancel.",
+					"No Selection", JOptionPane.WARNING_MESSAGE);
 			return;
 		}
 
 		String claimNumber = tblOrders.getValueAt(selectedRow, 1).toString();
-		String currentStatus = tblOrders.getValueAt(selectedRow, 6).toString();
+		String currentStatus = tblOrders.getValueAt(selectedRow, 7).toString();
 
 		if (currentStatus.equalsIgnoreCase("Claimed") || currentStatus.equalsIgnoreCase("Cancelled")) {
 			JOptionPane.showMessageDialog(this,
-				"Cannot cancel an order that is already " + currentStatus + ".",
-				"Action Not Allowed", JOptionPane.ERROR_MESSAGE);
+					"Cannot cancel an order that is already " + currentStatus + ".",
+					"Action Not Allowed", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 
 		int confirm = JOptionPane.showConfirmDialog(this,
-			"Are you sure you want to cancel order: " + claimNumber + "?",
-			"Confirm Cancellation", JOptionPane.YES_NO_OPTION);
+				"Are you sure you want to cancel order: " + claimNumber + "?",
+				"Confirm Cancellation", JOptionPane.YES_NO_OPTION);
 
 		if (confirm == JOptionPane.YES_OPTION) {
 			String query = "UPDATE Orders SET order_status = 'Cancelled', cancelled_at = NOW() WHERE claim_number = ?";
-			try (Connection conn = DBConnection.getConnection(); PreparedStatement pstmt = conn.prepareStatement(query)) {
+			try (Connection conn = DBConnection.getConnection();
+					PreparedStatement pstmt = conn.prepareStatement(query)) {
 				pstmt.setString(1, claimNumber);
 				pstmt.executeUpdate();
 				loadTableData();
 			} catch (SQLException e) {
 				e.printStackTrace();
 				JOptionPane.showMessageDialog(this,
-					"Error cancelling order: " + e.getMessage(),
-					"Database Error", JOptionPane.ERROR_MESSAGE);
+						"Error cancelling order: " + e.getMessage(),
+						"Database Error", JOptionPane.ERROR_MESSAGE);
 			}
 		}
 	}
@@ -564,13 +599,13 @@ public class OrderListPanel extends JPanel {
 		String details
 			= "Order ID:      " + tblOrders.getValueAt(selectedRow, 0) + "\n"
 			+ "Claim Number:  " + tblOrders.getValueAt(selectedRow, 1) + "\n"
-			+ "Customer:      " + tblOrders.getValueAt(selectedRow, 2) + "\n"
-			+ "Phone:         " + tblOrders.getValueAt(selectedRow, 3) + "\n"
-			+ "Address:       " + tblOrders.getValueAt(selectedRow, 4) + "\n"
-			+ "Weight (kg):   " + tblOrders.getValueAt(selectedRow, 5) + "\n"
-			+ "Status:        " + tblOrders.getValueAt(selectedRow, 6) + "\n"
-			+ "Payment:       " + tblOrders.getValueAt(selectedRow, 7) + "\n"
-			+ "Processed By:  " + tblOrders.getValueAt(selectedRow, 8) + "\n"
+			+ "Employee:      " + tblOrders.getValueAt(selectedRow, 2) + "\n"
+			+ "Customer:      " + tblOrders.getValueAt(selectedRow, 3) + "\n"
+			+ "Phone:         " + tblOrders.getValueAt(selectedRow, 4) + "\n"
+			+ "Address:       " + tblOrders.getValueAt(selectedRow, 5) + "\n"
+			+ "Weight (kg):   " + tblOrders.getValueAt(selectedRow, 6) + "\n"
+			+ "Status:        " + tblOrders.getValueAt(selectedRow, 7) + "\n"
+			+ "Payment:       " + tblOrders.getValueAt(selectedRow, 8) + "\n"
 			+ "Notes:         " + tblOrders.getValueAt(selectedRow, 9) + "\n"
 			+ "Total Amount:  " + tblOrders.getValueAt(selectedRow, 10);
 

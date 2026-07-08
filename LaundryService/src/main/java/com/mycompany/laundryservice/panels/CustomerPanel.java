@@ -45,6 +45,10 @@ public class CustomerPanel extends javax.swing.JPanel {
                 lblTotalCustomersValue.setIcon(loadIcon("group.svg", 18, 0x2655BD));
                 lblTotalCustomersValue.setIconTextGap(6);
         }
+        public void refreshData() {
+            loadCustomers(txtSearch.getText());
+            updateCustomerCount();
+        }
         
         private javax.swing.Icon loadIcon(String iconName, int size, int colorHex) {
             com.formdev.flatlaf.extras.FlatSVGIcon icon =

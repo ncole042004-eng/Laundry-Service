@@ -56,14 +56,14 @@ public class MainJFrame extends javax.swing.JFrame {
 				loginPanel1.refreshData();
 			case AppConstants.CARD_NEW_ORDER ->
 				newOrderPanel1.refreshData();
-//			case AppConstants.CARD_CUSTOMERS ->
-//				customerPanel1.refreshData();
-//			case AppConstants.CARD_ORDER_LIST ->
-//				orderListPanel1.refreshData();
-//			case AppConstants.CARD_UPDATE_STATUS ->
-//				updateStatusPanel1.refreshData();
-//			case AppConstants.CARD_REPORTS ->
-//				reportsPanel1.refreshData();
+			case AppConstants.CARD_CUSTOMERS ->
+				customerPanel1.refreshData();
+			case AppConstants.CARD_ORDER_LIST ->
+				orderListPanel1.refreshData();
+			case AppConstants.CARD_UPDATE_STATUS ->
+				updateStatusPanel1.refreshData();
+			case AppConstants.CARD_REPORTS ->
+				reportsPanel1.refreshData();
 		}
 
 		boolean showButton = (!cardName.equals(AppConstants.CARD_NEW_ORDER) && !cardName.equals(AppConstants.CARD_ORDER_LIST) && !cardName.equals(AppConstants.CARD_REPORTS) && !cardName.equals(AppConstants.CARD_LOGIN));
