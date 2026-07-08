@@ -93,6 +93,18 @@ public class CustomerListDialog extends javax.swing.JDialog {
         sorter = new TableRowSorter<>(tableModel);
         scrCustomer.setRowSorter(sorter);
         
+                    // ====== CENTER CUSTOMER ID COLUMN ======
+                scrCustomer.getColumnModel().getColumn(0).setCellRenderer(new javax.swing.table.DefaultTableCellRenderer() {
+                    @Override
+                    public java.awt.Component getTableCellRendererComponent(javax.swing.JTable table, Object value,
+                            boolean isSelected, boolean hasFocus, int row, int column) {
+                        javax.swing.JLabel label = (javax.swing.JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                        label.setHorizontalAlignment(javax.swing.JLabel.CENTER);
+                        return label;
+                    }
+                });
+                // ====== END ======
+        
       
         
         
