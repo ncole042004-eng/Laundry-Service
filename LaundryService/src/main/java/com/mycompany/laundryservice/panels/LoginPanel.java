@@ -97,19 +97,13 @@ LAUNDRYSERVICEPOS.setText("Laundry Service");
     // FlatLaf Icons
     //-------------------------
 
-    txtUsername.putClientProperty(
-            "JTextField.leadingIcon",
-            new FlatSVGIcon(
-                    "icons/account_circle.svg",
-                    20,
-                    20));
+    FlatSVGIcon userIcon = new FlatSVGIcon("icons/account_circle.svg", 20, 20);
+    userIcon.setColorFilter(new FlatSVGIcon.ColorFilter(c -> new Color(0x73, 0x76, 0x86)));
+    txtUsername.putClientProperty("JTextField.leadingIcon", userIcon);
 
-    txtPassword.putClientProperty(
-            "JTextField.leadingIcon",
-            new FlatSVGIcon(
-                    "icons/lock.svg",
-                    20,
-                    20));
+    FlatSVGIcon lockIcon = new FlatSVGIcon("icons/lock.svg", 20, 20);
+    lockIcon.setColorFilter(new FlatSVGIcon.ColorFilter(c -> new Color(0x73, 0x76, 0x86)));
+    txtPassword.putClientProperty("JTextField.leadingIcon", lockIcon);
 
 
     //-------------------------
@@ -142,19 +136,25 @@ LAUNDRYSERVICEPOS.setText("Laundry Service");
     // Location Icon
     //-------------------------
 
-    lblLocation.setIcon(
-            new FlatSVGIcon(
-                    "icons/location_on.svg",
-                    16,
-                    16));
+    FlatSVGIcon locationIcon = new FlatSVGIcon("icons/location_on.svg", 16, 16);
+    locationIcon.setColorFilter(new FlatSVGIcon.ColorFilter(c -> new Color(0x73, 0x76, 0x86)));
+    lblLocation.setIcon(locationIcon);
 
 
     //-------------------------
     // Status
     //-------------------------
 
-    lblStatus.setText(
-            "<html><span style='color:#22c55e;'>●</span> SYSTEM OPERATIONAL</html>");
+    updateSystemStatus();
+}
+
+private void updateSystemStatus() {
+    boolean isOperational = com.mycompany.laundryservice.database.DBConnection.canConnectToDB();
+    if (isOperational) {
+        lblStatus.setText("<html><span style='color:#22c55e;'>●</span> SYSTEM OPERATIONAL</html>");
+    } else {
+        lblStatus.setText("<html><span style='color:#ba1a1a;'>●</span> SYSTEM OFFLINE</html>");
+    }
 }
 
     private void initializeLogo() {
@@ -249,11 +249,9 @@ background.setLayout(new BorderLayout());
     public void refreshData() {
 
         txtUsername.setText("");
-
         txtPassword.setText("");
-
         txtPassword.setEchoChar('•');
-
+        updateSystemStatus();
     }
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
