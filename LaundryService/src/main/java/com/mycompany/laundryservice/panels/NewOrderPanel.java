@@ -38,6 +38,11 @@ public class NewOrderPanel extends javax.swing.JPanel {
     private int selectedCustomerId = -1;
     private double servicePrice = 0.0;
     private int selectedServiceId = -1;
+    
+    // ====== EMPLOYEE TRACKING ======
+    private int currentEmployeeId = -1;
+    private String currentEmployeeName = "";
+    // ====== END ======
 
     /**
      * Creates new form NewOrderPanel
@@ -47,37 +52,59 @@ public class NewOrderPanel extends javax.swing.JPanel {
     public NewOrderPanel(MainJFrame mainFrame) {
         this.mainFrame = mainFrame;
         initComponents();
+        
+        // ====== GET CURRENT EMPLOYEE ======
+        try {
+            currentEmployeeId = mainFrame.getCurrentEmployeeId();
+            if (currentEmployeeId != -1) {
+                currentEmployeeName = com.mycompany.laundryservice.database.DBConnection.getUserName(currentEmployeeId);
+            }
+        } catch (Exception e) {
+            currentEmployeeId = 1;
+            currentEmployeeName = "Unknown";
+        }
+        if (currentEmployeeId == -1) {
+            currentEmployeeId = 1;
+            currentEmployeeName = "System";
+        }
+        // ====== END ======
+        
         initializePanel();
     }
-                private static class RoundedBorder extends javax.swing.border.AbstractBorder {
-                         private final int radius;
-                        private final Color color;
-                        private final int thickness;
 
-                RoundedBorder(int radius, Color color, int thickness) {
-                    this.radius = radius;
-                    this.color = color;
-                    this.thickness = thickness;
-                }
+    private void setPreferredSize(int i, int i0) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+    
+    private static class RoundedBorder extends javax.swing.border.AbstractBorder {
+        private final int radius;
+        private final Color color;
+        private final int thickness;
 
-                @Override
-                public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
-                    Graphics2D g2 = (Graphics2D) g.create();
-                    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                    g2.setColor(color);
-                    g2.setStroke(new java.awt.BasicStroke(thickness));
-                    g2.drawRoundRect(x + thickness/2, y + thickness/2, width - thickness, height - thickness, radius, radius);
-                    g2.dispose();
-                }
+        RoundedBorder(int radius, Color color, int thickness) {
+            this.radius = radius;
+            this.color = color;
+            this.thickness = thickness;
+        }
 
-                @Override
-                public Insets getBorderInsets(Component c) {
-                    return new Insets(radius/2, radius/2, radius/2, radius/2);
-                }
-            }
+        @Override
+        public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2.setColor(color);
+            g2.setStroke(new java.awt.BasicStroke(thickness));
+            g2.drawRoundRect(x + thickness/2, y + thickness/2, width - thickness, height - thickness, radius, radius);
+            g2.dispose();
+        }
 
+        @Override
+        public Insets getBorderInsets(Component c) {
+            return new Insets(radius/2, radius/2, radius/2, radius/2);
+        }
+    }
 
     private void initializePanel() {
+     
         loadServices();
         clearForm();
         setupListeners();
@@ -85,117 +112,121 @@ public class NewOrderPanel extends javax.swing.JPanel {
         updateTotalAmount();
         btnSaveOrder.setEnabled(false);
         
+        // ====== SHOW EMPLOYEE INFO ======
+        System.out.println("Current Employee: " + currentEmployeeName + " (ID: " + currentEmployeeId + ")");
+        // ====== END ======
         
+        // ====== CONFIGURE SPINNER MODELS ======
+        spnWeightKg.setModel(new javax.swing.SpinnerNumberModel(0.0, 0.0, 7.0, 0.1));
+        spnAdditionalCharges.setModel(new javax.swing.SpinnerNumberModel(0.0, 0.0, 9999.0, 0.1));
+        // ====== END ======
+
+        // ====== LEFT ALIGN SPINNER TEXT ======
+        Color spinnerBg = new java.awt.Color(231, 228, 228);
+
+        spnWeightKg.setBackground(spinnerBg);
+        JComponent editor1 = spnWeightKg.getEditor();
+        if (editor1 instanceof javax.swing.JSpinner.DefaultEditor defaultEditor) {
+            JTextField tf1 = defaultEditor.getTextField();
+            tf1.setHorizontalAlignment(JTextField.LEFT);
+            tf1.setBackground(spinnerBg);
+            tf1.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 14));
+        }
+
+        spnAdditionalCharges.setBackground(spinnerBg);
+        JComponent editor2 = spnAdditionalCharges.getEditor();
+        if (editor2 instanceof javax.swing.JSpinner.DefaultEditor defaultEditor) {
+            JTextField tf2 = defaultEditor.getTextField();
+            tf2.setHorizontalAlignment(JTextField.LEFT);
+            tf2.setBackground(spinnerBg);
+            tf2.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 14));
+        }
+        // ====== END ======
+                
+        // ====== ROUNDED PANEL BORDERS (BLUE) ======
+        int arc = 12;
+        Color borderColor = new java.awt.Color(38, 85, 189);
+
+        // Padding to prevent clipping
+        javax.swing.border.Border padding = javax.swing.BorderFactory.createEmptyBorder(2, 2, 2, 2);
+        javax.swing.border.Border roundedBorder = new RoundedBorder(arc, borderColor, 1);
+
+        jPanel2.setBorder(javax.swing.BorderFactory.createCompoundBorder(roundedBorder, padding));
+        jPanel4.setBorder(javax.swing.BorderFactory.createCompoundBorder(roundedBorder, padding));
+        jPanel5.setBorder(javax.swing.BorderFactory.createCompoundBorder(roundedBorder, padding));
+
+        jPanel2.setBackground(java.awt.Color.WHITE);
+        jPanel4.setBackground(java.awt.Color.WHITE);
+        jPanel5.setBackground(java.awt.Color.WHITE);
+        // ====== END ======
+
+        // ====== APPLY INTER FONTS (MATCHING HTML DESIGN) ======
+        // Title
+        lblTitle.setFont(new java.awt.Font("Inter 28pt", java.awt.Font.BOLD, 28));
+        lblTitle.setForeground(new java.awt.Color(26, 28, 28));
+
+        // Subtitle
+        lblSubtitle.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 16));
+        lblSubtitle.setForeground(new java.awt.Color(67, 70, 84));
+
+        // Section Headers
+        jLabel3.setFont(new java.awt.Font("Inter 18pt", java.awt.Font.BOLD, 18));
+        jLabel3.setForeground(new java.awt.Color(26, 28, 28));
+
+        jLabel9.setFont(new java.awt.Font("Inter 18pt", java.awt.Font.BOLD, 18));
+        jLabel9.setForeground(new java.awt.Color(26, 28, 28));
+
+        jLabel15.setFont(new java.awt.Font("Inter 18pt", java.awt.Font.BOLD, 24 ));
+        jLabel15.setForeground(new java.awt.Color(38, 85, 189));
+
+        jLabel4.setFont(new java.awt.Font("Inter 18pt", java.awt.Font.BOLD, 18));
+        jLabel4.setForeground(new java.awt.Color(26, 28, 28));
+
+        // Field Labels
+        jLabel5.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 14));
+        jLabel7.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 14));
+        jLabel2.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 14));
+        jLabel10.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 14));
+        jLabel11.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 14));
+        jLabel12.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 14));
+        jLabel14.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 14));
+
+        // Small Label - Max 7kg
+        jLabel1.setFont(new java.awt.Font("Inter", java.awt.Font.BOLD, 12));
+        jLabel1.setForeground(new java.awt.Color(116, 116, 116));
+
+        // Customer Values
+        lblCustomerValue.setFont(new java.awt.Font("Inter", java.awt.Font.BOLD, 16));
+        lblCustomerValue.setForeground(new java.awt.Color(44, 62, 80));
+
+        lblPhoneValue.setFont(new java.awt.Font("Inter", java.awt.Font.BOLD, 16));
+        lblPhoneValue.setForeground(new java.awt.Color(44, 62, 80));
+
+        lblAddressValue.setFont(new java.awt.Font("Inter", java.awt.Font.BOLD, 16));
+        lblAddressValue.setForeground(new java.awt.Color(44, 62, 80));
+
+        // Order Summary
+        lblService1.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 16));
+        lblServiceAmount.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 16));
+        lblService.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 16));
+        lblAdditonalChargesAmount.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 16));
         
-                // ====== CONFIGURE SPINNER MODELS ======
-            spnWeightKg.setModel(new javax.swing.SpinnerNumberModel(0.0, 0.0, 7.0, 0.1));
-            spnAdditionalCharges.setModel(new javax.swing.SpinnerNumberModel(0.0, 0.0, 9999.0, 0.1));
-            // ====== END ======
+        // ====== FIX: SERVICE TYPE LABEL FONT STYLING ======
+        lblServiceType.setFont(new java.awt.Font("Inter", java.awt.Font.BOLD, 16));
+        lblServiceType.setForeground(new java.awt.Color(44, 62, 80));
+        // ===================================================
 
-            // ====== LEFT ALIGN SPINNER TEXT ======
-            Color spinnerBg = new java.awt.Color(231, 228, 228);
+        // Total Amount - Display Large
+        lblTotalAmount.setFont(new java.awt.Font("Inter 28pt", java.awt.Font.BOLD, 36));
+        lblTotalAmount.setForeground(new java.awt.Color(38, 85, 189));
 
-            spnWeightKg.setBackground(spinnerBg);
-            JComponent editor1 = spnWeightKg.getEditor();
-            if (editor1 instanceof javax.swing.JSpinner.DefaultEditor defaultEditor) {
-                JTextField tf1 = defaultEditor.getTextField();
-                tf1.setHorizontalAlignment(JTextField.LEFT);
-                tf1.setBackground(spinnerBg);
-                tf1.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 14));
-            }
+        // Buttons
+        btnCustomerList.setFont(new java.awt.Font("Inter", java.awt.Font.BOLD, 14));
+        btnManageCustomers.setFont(new java.awt.Font("Inter", java.awt.Font.BOLD, 14));
+        btnSaveOrder.setFont(new java.awt.Font("Inter", java.awt.Font.BOLD, 14));
+        btnCancel.setFont(new java.awt.Font("Inter", java.awt.Font.BOLD, 14));
+        // ====== END FONT STYLING ======
 
-            spnAdditionalCharges.setBackground(spinnerBg);
-            JComponent editor2 = spnAdditionalCharges.getEditor();
-            if (editor2 instanceof javax.swing.JSpinner.DefaultEditor defaultEditor) {
-                JTextField tf2 = defaultEditor.getTextField();
-                tf2.setHorizontalAlignment(JTextField.LEFT);
-                tf2.setBackground(spinnerBg);
-                tf2.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 14));
-            }
-            // ====== END ======
-                    
-            // ====== ROUNDED PANEL BORDERS (BLUE) ======
-            int arc = 12;
-            Color borderColor = new java.awt.Color(38, 85, 189);
-
-            // Padding to prevent clipping
-            javax.swing.border.Border padding = javax.swing.BorderFactory.createEmptyBorder(2, 2, 2, 2);
-            javax.swing.border.Border roundedBorder = new RoundedBorder(arc, borderColor, 1);
-
-            jPanel2.setBorder(javax.swing.BorderFactory.createCompoundBorder(roundedBorder, padding));
-            jPanel4.setBorder(javax.swing.BorderFactory.createCompoundBorder(roundedBorder, padding));
-            jPanel5.setBorder(javax.swing.BorderFactory.createCompoundBorder(roundedBorder, padding));
-
-            jPanel2.setBackground(java.awt.Color.WHITE);
-            jPanel4.setBackground(java.awt.Color.WHITE);
-            jPanel5.setBackground(java.awt.Color.WHITE);
-            // ====== END ======
-
-            
-            
-            // ====== APPLY INTER FONTS (MATCHING HTML DESIGN) ======
-            // Title
-            lblTitle.setFont(new java.awt.Font("Inter 28pt", java.awt.Font.BOLD, 28));
-            lblTitle.setForeground(new java.awt.Color(26, 28, 28));
-
-            // Subtitle
-            lblSubtitle.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 16));
-            lblSubtitle.setForeground(new java.awt.Color(67, 70, 84));
-
-            // Section Headers
-            jLabel3.setFont(new java.awt.Font("Inter 18pt", java.awt.Font.BOLD, 18));
-            jLabel3.setForeground(new java.awt.Color(26, 28, 28));
-
-            jLabel9.setFont(new java.awt.Font("Inter 18pt", java.awt.Font.BOLD, 18));
-            jLabel9.setForeground(new java.awt.Color(26, 28, 28));
-
-            jLabel15.setFont(new java.awt.Font("Inter 18pt", java.awt.Font.BOLD, 24 ));
-            jLabel15.setForeground(new java.awt.Color(38, 85, 189));
-
-            jLabel4.setFont(new java.awt.Font("Inter 18pt", java.awt.Font.BOLD, 18));
-            jLabel4.setForeground(new java.awt.Color(26, 28, 28));
-
-            // Field Labels
-            jLabel5.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 14));
-            jLabel7.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 14));
-            jLabel2.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 14));
-            jLabel10.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 14));
-            jLabel11.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 14));
-            jLabel12.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 14));
-            jLabel14.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 14));
-
-            // Small Label - Max 7kg
-            jLabel1.setFont(new java.awt.Font("Inter", java.awt.Font.BOLD, 12));
-            jLabel1.setForeground(new java.awt.Color(116, 116, 116));
-
-            // Customer Values
-            lblCustomerValue.setFont(new java.awt.Font("Inter", java.awt.Font.BOLD, 16));
-            lblCustomerValue.setForeground(new java.awt.Color(44, 62, 80));
-
-            lblPhoneValue.setFont(new java.awt.Font("Inter", java.awt.Font.BOLD, 16));
-            lblPhoneValue.setForeground(new java.awt.Color(44, 62, 80));
-
-            lblAddressValue.setFont(new java.awt.Font("Inter", java.awt.Font.BOLD, 16));
-            lblAddressValue.setForeground(new java.awt.Color(44, 62, 80));
-
-            // Order Summary
-            lblService1.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 16));
-            lblServiceAmount.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 16));
-            lblService.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 16));
-            lblAdditonalChargesAmount.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 16));
-
-            // Total Amount - Display Large
-            lblTotalAmount.setFont(new java.awt.Font("Inter 28pt", java.awt.Font.BOLD, 36));
-            lblTotalAmount.setForeground(new java.awt.Color(38, 85, 189));
-
-            // Buttons
-            btnCustomerList.setFont(new java.awt.Font("Inter", java.awt.Font.BOLD, 14));
-            btnManageCustomers.setFont(new java.awt.Font("Inter", java.awt.Font.BOLD, 14));
-            btnSaveOrder.setFont(new java.awt.Font("Inter", java.awt.Font.BOLD, 14));
-            btnCancel.setFont(new java.awt.Font("Inter", java.awt.Font.BOLD, 14));
-            // ====== END FONT STYLING ======
-    
-        
         // ====== BUTTON ROUNDED CORNERS ======
         int buttonArc = 8;
         btnCustomerList.putClientProperty("JButton.arc", buttonArc);
@@ -211,7 +242,6 @@ public class NewOrderPanel extends javax.swing.JPanel {
         btnCancel.putClientProperty("JButton.buttonType", "roundRect");
         // ====== END ======
 
-    
         // ====== ADD SVG ICONS ======
         // 1. Customer Info Label (jLabel3) - person_search.svg
         jLabel3.setIcon(loadIcon("person_search.svg", 18, 0x2655bd));
@@ -279,6 +309,12 @@ public class NewOrderPanel extends javax.swing.JPanel {
 
             if (cboService.getItemCount() > 0) {
                 cboService.setSelectedIndex(0);
+                // ====== FIX: UPDATE SERVICE TYPE LABEL INITIALLY ======
+                ServiceItem firstItem = (ServiceItem) cboService.getSelectedItem();
+                if (firstItem != null) {
+                    lblServiceType.setText(firstItem.serviceName);
+                }
+                // ======================================================
                 updateTotalAmount();
             }
 
@@ -313,6 +349,11 @@ public class NewOrderPanel extends javax.swing.JPanel {
             servicePrice = selected.price;
             selectedServiceId = selected.serviceId;
             lblServiceAmount.setText(String.format("₱ %.2f", servicePrice));
+            
+            // ====== FIX: UPDATE SERVICE TYPE LABEL ======
+            lblServiceType.setText(selected.serviceName);
+            // ============================================
+            
             calculateTotal();
         }
     }
@@ -463,18 +504,6 @@ public class NewOrderPanel extends javax.swing.JPanel {
             return;
         }
 
-        // ====== EMPLOYEE ID HANDLING ======
-        int employeeId;
-        try {
-            employeeId = mainFrame.getCurrentEmployeeId();
-        } catch (Exception e) {
-            employeeId = 1; // Default employee ID for testing
-        }
-        if (employeeId == -1) {
-            employeeId = 1; // Default employee ID for testing
-        }
-        // ====== END EMPLOYEE ID HANDLING ======
-
         // Check service selection
         if (selectedServiceId == -1) {
             JOptionPane.showMessageDialog(this,
@@ -503,11 +532,11 @@ public class NewOrderPanel extends javax.swing.JPanel {
 
             pstmt.setString(1, claimNumber);
             pstmt.setInt(2, selectedCustomerId);
-            pstmt.setInt(3, employeeId);
+            pstmt.setInt(3, currentEmployeeId);  // Use the captured employee ID
             pstmt.setInt(4, selectedServiceId);
             pstmt.setDouble(5, weight);
-            pstmt.setDouble(6, servicePrice);      // price_at_order
-            pstmt.setDouble(7, total);             // total_amount
+            pstmt.setDouble(6, servicePrice);
+            pstmt.setDouble(7, total);
             pstmt.setString(8, notes);
 
             int affected = pstmt.executeUpdate();
@@ -515,6 +544,7 @@ public class NewOrderPanel extends javax.swing.JPanel {
                 JOptionPane.showMessageDialog(this,
                     "Order saved successfully!\n\nClaim Number: " + claimNumber
                     + "\nCustomer: " + lblCustomerValue.getText()
+                    + "\nEmployee: " + currentEmployeeName
                     + "\nTotal: ₱ " + String.format("%.2f", total),
                     "Success",
                     JOptionPane.INFORMATION_MESSAGE);
@@ -569,6 +599,9 @@ public class NewOrderPanel extends javax.swing.JPanel {
         lblServiceAmount.setText("₱ 0.00");
         lblAdditonalChargesAmount.setText("₱ 0.00");
         lblTotalAmount.setText("₱ 0.00");
+        // ====== FIX: CLEAR SERVICE TYPE LABEL ======
+        lblServiceType.setText("");
+        // ===========================================
         btnSaveOrder.setEnabled(false);
 
         if (cboService.getItemCount() > 0) {
@@ -587,6 +620,21 @@ public class NewOrderPanel extends javax.swing.JPanel {
     public void refreshData() {
         loadServices();
         clearForm();
+        // ====== REFRESH EMPLOYEE INFO ======
+        try {
+            currentEmployeeId = mainFrame.getCurrentEmployeeId();
+            if (currentEmployeeId != -1) {
+                currentEmployeeName = com.mycompany.laundryservice.database.DBConnection.getUserName(currentEmployeeId);
+            }
+        } catch (Exception e) {
+            currentEmployeeId = 1;
+            currentEmployeeName = "Unknown";
+        }
+        if (currentEmployeeId == -1) {
+            currentEmployeeId = 1;
+            currentEmployeeName = "System";
+        }
+        // ====== END ======
     }
 
     // ==================== SETUP LISTENERS ====================
@@ -614,7 +662,8 @@ public class NewOrderPanel extends javax.swing.JPanel {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
     }
-	/**
+    
+    	/**
 	 * This method is called from within the constructor to initialize the
 	 * form. WARNING: Do NOT modify this code. The content of this method is
 	 * always regenerated by the Form Editor.
@@ -649,6 +698,7 @@ public class NewOrderPanel extends javax.swing.JPanel {
         lblAdditonalChargesAmount = new javax.swing.JLabel();
         lblServiceAmount = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
+        lblServiceType = new javax.swing.JLabel();
         jPanel5 = new javax.swing.JPanel();
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
@@ -700,6 +750,8 @@ public class NewOrderPanel extends javax.swing.JPanel {
         btnCustomerList.setText("Customer List");
         btnCustomerList.addActionListener(this::btnCustomerListActionPerformed);
 
+        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
+
         jLabel4.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         jLabel4.setText("CUSTOMER DETAILS");
 
@@ -731,27 +783,23 @@ public class NewOrderPanel extends javax.swing.JPanel {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(24, 24, 24)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel4)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel4)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 273, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addComponent(lblCustomerValue, javax.swing.GroupLayout.PREFERRED_SIZE, 273, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 84, Short.MAX_VALUE)
-                                .addComponent(lblPhoneValue, javax.swing.GroupLayout.PREFERRED_SIZE, 273, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(lblAddressValue, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(39, 39, 39))))
+                            .addComponent(lblCustomerValue, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 192, Short.MAX_VALUE))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 273, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblPhoneValue, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblAddressValue, javax.swing.GroupLayout.PREFERRED_SIZE, 323, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(19, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(19, 19, 19)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -761,11 +809,11 @@ public class NewOrderPanel extends javax.swing.JPanel {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblCustomerValue, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblPhoneValue, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(lblAddressValue, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblAddressValue, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(61, 61, 61))
         );
 
         btnManageCustomers.setBackground(new java.awt.Color(52, 152, 219));
@@ -780,30 +828,27 @@ public class NewOrderPanel extends javax.swing.JPanel {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(36, 36, 36)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(btnCustomerList, javax.swing.GroupLayout.PREFERRED_SIZE, 311, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnManageCustomers, javax.swing.GroupLayout.PREFERRED_SIZE, 311, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(btnCustomerList, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(97, 97, 97)
+                        .addComponent(btnManageCustomers, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(24, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(23, 23, 23)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel3)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(17, 17, 17)
-                        .addComponent(btnCustomerList, javax.swing.GroupLayout.DEFAULT_SIZE, 41, Short.MAX_VALUE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(16, 16, 16)
-                        .addComponent(btnManageCustomers, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGap(17, 17, 17)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnCustomerList, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnManageCustomers, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(71, 71, 71))
         );
 
         jLabel13.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
@@ -838,6 +883,9 @@ public class NewOrderPanel extends javax.swing.JPanel {
         jLabel15.setForeground(new java.awt.Color(51, 51, 255));
         jLabel15.setText("Order Summary");
 
+        lblServiceType.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
+        lblServiceType.setText("Service Type");
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -845,6 +893,9 @@ public class NewOrderPanel extends javax.swing.JPanel {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addGap(20, 20, 20)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(lblService1, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(btnCancel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -856,9 +907,12 @@ public class NewOrderPanel extends javax.swing.JPanel {
                             .addComponent(btnSaveOrder, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(jPanel4Layout.createSequentialGroup()
                                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(lblService1, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(lblService, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addGroup(jPanel4Layout.createSequentialGroup()
+                                        .addComponent(lblService, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addGroup(jPanel4Layout.createSequentialGroup()
+                                        .addComponent(lblServiceType, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addGap(63, 63, 63)))
                                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(lblAdditonalChargesAmount, javax.swing.GroupLayout.DEFAULT_SIZE, 74, Short.MAX_VALUE)
                                     .addComponent(lblServiceAmount, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
@@ -872,15 +926,17 @@ public class NewOrderPanel extends javax.swing.JPanel {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addGap(21, 21, 21)
                 .addComponent(jLabel15)
-                .addGap(30, 30, 30)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(lblService1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblService1)
-                    .addComponent(lblServiceAmount))
-                .addGap(33, 33, 33)
+                    .addComponent(lblServiceAmount)
+                    .addComponent(lblServiceType))
+                .addGap(34, 34, 34)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblService, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblAdditonalChargesAmount))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 100, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 94, Short.MAX_VALUE)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblTotalAmount, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -946,7 +1002,7 @@ public class NewOrderPanel extends javax.swing.JPanel {
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel5Layout.createSequentialGroup()
                                 .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 117, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jLabel1))
                             .addComponent(spnWeightKg))))
                 .addGap(66, 66, 66))
@@ -954,7 +1010,7 @@ public class NewOrderPanel extends javax.swing.JPanel {
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGap(15, 15, 15)
+                .addGap(20, 20, 20)
                 .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -964,7 +1020,7 @@ public class NewOrderPanel extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(cboService)
-                    .addComponent(spnWeightKg, javax.swing.GroupLayout.DEFAULT_SIZE, 44, Short.MAX_VALUE))
+                    .addComponent(spnWeightKg))
                 .addGap(28, 28, 28)
                 .addComponent(jLabel14)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -972,7 +1028,7 @@ public class NewOrderPanel extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel12)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(spnAdditionalCharges, javax.swing.GroupLayout.DEFAULT_SIZE, 44, Short.MAX_VALUE)
+                .addComponent(spnAdditionalCharges)
                 .addGap(22, 22, 22))
         );
 
@@ -984,30 +1040,35 @@ public class NewOrderPanel extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(43, 43, 43)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(lblTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 571, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblSubtitle)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(44, 44, 44)
-                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(45, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 571, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblSubtitle))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 54, Short.MAX_VALUE)
+                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(41, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(15, 15, 15)
+                .addContainerGap()
                 .addComponent(lblTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(lblSubtitle)
-                .addGap(29, 29, 29)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(29, Short.MAX_VALUE))
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(23, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -1074,6 +1135,7 @@ public class NewOrderPanel extends javax.swing.JPanel {
     private javax.swing.JLabel lblService;
     private javax.swing.JLabel lblService1;
     private javax.swing.JLabel lblServiceAmount;
+    private javax.swing.JLabel lblServiceType;
     private javax.swing.JLabel lblSubtitle;
     private javax.swing.JLabel lblTitle;
     private javax.swing.JLabel lblTotalAmount;
