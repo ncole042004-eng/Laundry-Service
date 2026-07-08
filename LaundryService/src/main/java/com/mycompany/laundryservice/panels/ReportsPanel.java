@@ -469,22 +469,25 @@ public class ReportsPanel extends javax.swing.JPanel {
         lblDailyYesterdayValue.setText(String.format("\u20B1%,.2f", yesterdayRev));
         setTrendLabel(lblDailyTrend, todayRev, yesterdayRev);
 
-        // Weekly
-        java.time.LocalDate startOfThisWeek = today.minusDays(6);
-        java.time.LocalDate startOfLastWeek = today.minusDays(13);
-        java.time.LocalDate endOfLastWeek = today.minusDays(7);
-        java.math.BigDecimal thisWeekRev = getRevenueForRange(startOfThisWeek.atStartOfDay(), today.atTime(23,59,59));
-        java.math.BigDecimal lastWeekRev = getRevenueForRange(startOfLastWeek.atStartOfDay(), endOfLastWeek.atTime(23,59,59));
+        // Weekly (matches "This Week" filter definition exactly)
+        java.time.LocalDateTime thisWeekStart = today.minusDays(7).atStartOfDay();
+        java.time.LocalDateTime thisWeekEnd = java.time.LocalDateTime.now();
+        java.time.LocalDateTime lastWeekStart = today.minusDays(14).atStartOfDay();
+        java.time.LocalDateTime lastWeekEnd = today.minusDays(7).atStartOfDay();
+        java.math.BigDecimal thisWeekRev = getRevenueForRange(thisWeekStart, thisWeekEnd);
+        java.math.BigDecimal lastWeekRev = getRevenueForRange(lastWeekStart, lastWeekEnd);
         lblWeeklyThisValue.setText(String.format("\u20B1%,.2f", thisWeekRev));
         lblWeeklyLastValue.setText(String.format("\u20B1%,.2f", lastWeekRev));
         setTrendLabel(lblWeeklyTrend, thisWeekRev, lastWeekRev);
 
         // Monthly
-        java.time.LocalDate startOfThisMonth = today.withDayOfMonth(1);
-        java.time.LocalDate startOfLastMonth = startOfThisMonth.minusMonths(1);
-        java.time.LocalDate endOfLastMonth = startOfThisMonth.minusDays(1);
-        java.math.BigDecimal thisMonthRev = getRevenueForRange(startOfThisMonth.atStartOfDay(), today.atTime(23,59,59));
-        java.math.BigDecimal lastMonthRev = getRevenueForRange(startOfLastMonth.atStartOfDay(), endOfLastMonth.atTime(23,59,59));
+        // Monthly (matches "This Month" filter definition exactly)
+        java.time.LocalDateTime thisMonthStart = today.withDayOfMonth(1).atStartOfDay();
+        java.time.LocalDateTime thisMonthEnd = java.time.LocalDateTime.now();
+        java.time.LocalDateTime lastMonthStart = today.withDayOfMonth(1).minusMonths(1).atStartOfDay();
+        java.time.LocalDateTime lastMonthEnd = today.withDayOfMonth(1).atStartOfDay();
+        java.math.BigDecimal thisMonthRev = getRevenueForRange(thisMonthStart, thisMonthEnd);
+        java.math.BigDecimal lastMonthRev = getRevenueForRange(lastMonthStart, lastMonthEnd);
         lblMonthlyThisValue.setText(String.format("\u20B1%,.2f", thisMonthRev));
         lblMonthlyLastValue.setText(String.format("\u20B1%,.2f", lastMonthRev));
         setTrendLabel(lblMonthlyTrend, thisMonthRev, lastMonthRev);
