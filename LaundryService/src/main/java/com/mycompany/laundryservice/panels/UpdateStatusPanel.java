@@ -1287,12 +1287,15 @@ lblWeight.setText(weight);
         }
     }//GEN-LAST:event_tblOrdersMouseClicked
 
-    private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
+    private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {
         String newStatus = jComboBox1.getSelectedItem().toString();
         String newPaymentStatus = jComboBox2.getSelectedItem().toString();
         String claimId = lblClaimNumber.getText();
 
-        String query = "UPDATE orders SET order_status = ?, payment_status = ? WHERE claim_number = ?";
+        boolean isClaimed = "Claimed".equals(newStatus);
+        String query = isClaimed 
+            ? "UPDATE orders SET order_status = ?, payment_status = ?, claimed_at = CURRENT_TIMESTAMP WHERE claim_number = ?"
+            : "UPDATE orders SET order_status = ?, payment_status = ? WHERE claim_number = ?";
 
         try (Connection conn = DBConnection.getConnection(); PreparedStatement pstmt = conn.prepareStatement(query)) {
 
