@@ -88,10 +88,17 @@ public class CustomerListDialog extends javax.swing.JDialog {
     }
 
     private void initializeDialog() {
-        // Set up table model - using scrCustomer (matches generated code)
-        tableModel = (DefaultTableModel) scrCustomer.getModel();
-        sorter = new TableRowSorter<>(tableModel);
-        scrCustomer.setRowSorter(sorter);
+       // Set up table model - using scrCustomer (matches generated code)
+    tableModel = (DefaultTableModel) scrCustomer.getModel();
+    sorter = new TableRowSorter<>(tableModel);
+    scrCustomer.setRowSorter(sorter);
+    
+    // ====== SET BACKGROUND COLOR FOR ALL PANELS ======
+    Color bgColor = new java.awt.Color(249, 249, 249);
+    this.getContentPane().setBackground(bgColor);
+    jPanel1.setBackground(bgColor);
+    jPanel2.setBackground(bgColor);
+    // ====== END ======
         
                     // ====== CENTER CUSTOMER ID COLUMN ======
                 scrCustomer.getColumnModel().getColumn(0).setCellRenderer(new javax.swing.table.DefaultTableCellRenderer() {

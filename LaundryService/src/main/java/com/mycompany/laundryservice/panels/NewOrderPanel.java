@@ -104,7 +104,18 @@ public class NewOrderPanel extends javax.swing.JPanel {
     }
 
     private void initializePanel() {
-     
+        
+
+                        // ====== SET BACKGROUND COLOR FOR ALL PANELS ======
+                Color bgColor = new java.awt.Color(249, 249, 249);
+                this.setBackground(bgColor);
+                jPanel2.setBackground(bgColor);
+                jPanel3.setBackground(bgColor);
+                jPanel4.setBackground(bgColor);
+                jPanel5.setBackground(bgColor);
+                // ====== END ======
+                
+                
         loadServices();
         clearForm();
         setupListeners();
@@ -850,6 +861,8 @@ public class NewOrderPanel extends javax.swing.JPanel {
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(71, 71, 71))
         );
+
+        jPanel4.setBackground(new java.awt.Color(249, 249, 249));
 
         jLabel13.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         jLabel13.setText("TOTAL ");
