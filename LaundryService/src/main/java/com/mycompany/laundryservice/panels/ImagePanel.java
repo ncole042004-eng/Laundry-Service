@@ -1,5 +1,6 @@
 package com.mycompany.laundryservice.panels;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -10,8 +11,14 @@ import javax.swing.JPanel;
 
 public class ImagePanel extends JPanel {
     private Image image;
-    private Dimension preferredSize;
-
+     private Color overlayColor = null;    
+     private Dimension preferredSize;
+     
+     
+public void setOverlayColor(Color overlayColor) {
+    this.overlayColor = overlayColor;
+    repaint();
+}
     /**
      * Creates an ImagePanel that displays a multi-resolution image,
      * using a default preferred size.
@@ -52,6 +59,7 @@ public class ImagePanel extends JPanel {
     public Dimension getPreferredSize() {
         return preferredSize;
     }
+    
 
     @Override
     protected void paintComponent(Graphics g) {
@@ -71,6 +79,13 @@ public class ImagePanel extends JPanel {
         int newH = (int) (imgH * scale);
         int x = (panelW - newW) / 2;
         int y = (panelH - newH) / 2;
-        g.drawImage(image, x, y, newW, newH, this);
+       g2.drawImage(image, x, y, newW, newH, this);
+
+// Only draw overlay if one was set
+if (overlayColor != null) {
+    g2.setColor(overlayColor);
+    g2.fillRect(0, 0, panelW, panelH);
+
+}
     }
 }
