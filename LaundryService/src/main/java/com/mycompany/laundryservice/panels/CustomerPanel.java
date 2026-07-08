@@ -13,20 +13,29 @@ import javax.swing.JOptionPane;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.ListSelectionModel;
+import java.awt.Font;
+import java.awt.Component;
+import javax.swing.JTable;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
 
 public class CustomerPanel extends javax.swing.JPanel {
         private int selectedCustomerId = -1;
+        private boolean editMode = false;
         private boolean selectedIsActive = true;
 	public CustomerPanel() {
 		initComponents();
                 applyDesignStyling();
+                formatCustomerTable();
                 loadCustomers("");
+                updateCustomerCount();
                 attachTableSelectionListener();
                 txtName.putClientProperty("JTextField.placeholderText", "Enter Customer Name");
                 txtPhone.putClientProperty("JTextField.placeholderText", "+63 900 000 0000");
                 txtAddress.putClientProperty("JTextField.placeholderText", "Street, Barangay, City");
                 txtSearch.putClientProperty("JTextField.placeholderText", "Search by name, ID, or phone number...");
-                btnSave.setIcon(loadIcon("save.svg", 18, 0xFFFFFF));
+                btnSave.setIcon(loadIcon("save.svg", 18, 0x1A1C1C));
                 btnUpdate.setIcon(loadIcon("edit.svg", 18, 0xFFFFFF));
                 btnDeactivate.setIcon(loadIcon("person_off.svg", 18, 0xFFFFFF));
                 btnFilter.setIcon(loadIcon("filter_list.svg", 18, 0x434654));
@@ -51,8 +60,17 @@ public class CustomerPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        pnlHeader = new javax.swing.JPanel();
         lblTitle = new javax.swing.JLabel();
         lblSubtitle = new javax.swing.JLabel();
+        pnlBody = new javax.swing.JPanel();
+        pnlStats = new javax.swing.JPanel();
+        lblTotalCustomersCaption = new javax.swing.JLabel();
+        lblTotalCustomersValue = new javax.swing.JLabel();
+        lblStatus = new javax.swing.JLabel();
+        pnlSearchBar = new javax.swing.JPanel();
+        txtSearch = new javax.swing.JTextField();
+        btnFilter = new javax.swing.JButton();
         pnlRegisterCard = new javax.swing.JPanel();
         lblRegisterHeader = new javax.swing.JLabel();
         lblNameCaption = new javax.swing.JLabel();
@@ -62,22 +80,17 @@ public class CustomerPanel extends javax.swing.JPanel {
         lblAddressCaption = new javax.swing.JLabel();
         txtAddress = new javax.swing.JTextField();
         btnSave = new javax.swing.JButton();
-        pnlSearchBar = new javax.swing.JPanel();
-        txtSearch = new javax.swing.JTextField();
-        btnFilter = new javax.swing.JButton();
+        lblRegisterHint = new javax.swing.JLabel();
         pnlTableCard = new javax.swing.JPanel();
         scrollCustomers = new javax.swing.JScrollPane();
         tblCustomers = new javax.swing.JTable();
         lblRecordCount = new javax.swing.JLabel();
         btnUpdate = new javax.swing.JButton();
         btnDeactivate = new javax.swing.JButton();
-        pnlStats = new javax.swing.JPanel();
-        lblTotalCustomersCaption = new javax.swing.JLabel();
-        lblTotalCustomersValue = new javax.swing.JLabel();
-        lblStatus = new javax.swing.JLabel();
-        btnDeactivate1 = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(249, 249, 249));
+
+        pnlHeader.setBackground(new java.awt.Color(249, 249, 249));
 
         lblTitle.setFont(new java.awt.Font("Inter 28pt", 0, 22)); // NOI18N
         lblTitle.setForeground(new java.awt.Color(26, 28, 28));
@@ -87,163 +100,28 @@ public class CustomerPanel extends javax.swing.JPanel {
         lblSubtitle.setForeground(new java.awt.Color(67, 70, 84));
         lblSubtitle.setText("Register, search, and manage customer records for your laundry service.");
 
-        pnlRegisterCard.setBackground(new java.awt.Color(255, 255, 255));
-        pnlRegisterCard.setPreferredSize(new java.awt.Dimension(269, 351));
-
-        lblRegisterHeader.setFont(new java.awt.Font("Inter 28pt", 0, 18)); // NOI18N
-        lblRegisterHeader.setText("Register New Customer");
-
-        lblNameCaption.setFont(new java.awt.Font("Inter 18pt SemiBold", 0, 11)); // NOI18N
-        lblNameCaption.setText("Full Name");
-
-        txtName.setFont(new java.awt.Font("Inter 18pt", 0, 12)); // NOI18N
-        txtName.setForeground(new java.awt.Color(0, 0, 0));
-
-        lblPhoneCaption.setFont(new java.awt.Font("Inter 18pt SemiBold", 0, 11)); // NOI18N
-        lblPhoneCaption.setText("Phone Number");
-
-        txtPhone.setFont(new java.awt.Font("Inter 18pt", 0, 12)); // NOI18N
-        txtPhone.setForeground(new java.awt.Color(0, 0, 0));
-        txtPhone.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtPhoneKeyTyped(evt);
-            }
-        });
-
-        lblAddressCaption.setFont(new java.awt.Font("Inter 18pt SemiBold", 0, 11)); // NOI18N
-        lblAddressCaption.setText("Home Address");
-
-        txtAddress.setFont(new java.awt.Font("Inter 18pt", 0, 12)); // NOI18N
-        txtAddress.setForeground(new java.awt.Color(0, 0, 0));
-
-        btnSave.setBackground(new java.awt.Color(51, 204, 249));
-        btnSave.setFont(new java.awt.Font("Inter 18pt SemiBold", 0, 12)); // NOI18N
-        btnSave.setForeground(new java.awt.Color(255, 255, 255));
-        btnSave.setText("Save Customer");
-        btnSave.addActionListener(this::btnSaveActionPerformed);
-
-        javax.swing.GroupLayout pnlRegisterCardLayout = new javax.swing.GroupLayout(pnlRegisterCard);
-        pnlRegisterCard.setLayout(pnlRegisterCardLayout);
-        pnlRegisterCardLayout.setHorizontalGroup(
-            pnlRegisterCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlRegisterCardLayout.createSequentialGroup()
-                .addGap(15, 15, 15)
-                .addGroup(pnlRegisterCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(lblAddressCaption)
-                    .addComponent(txtAddress)
-                    .addComponent(lblPhoneCaption)
-                    .addComponent(txtPhone)
-                    .addComponent(lblRegisterHeader)
-                    .addComponent(lblNameCaption)
-                    .addComponent(txtName)
-                    .addComponent(btnSave, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE))
+        javax.swing.GroupLayout pnlHeaderLayout = new javax.swing.GroupLayout(pnlHeader);
+        pnlHeader.setLayout(pnlHeaderLayout);
+        pnlHeaderLayout.setHorizontalGroup(
+            pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlHeaderLayout.createSequentialGroup()
+                .addGap(22, 22, 22)
+                .addGroup(pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblTitle)
+                    .addComponent(lblSubtitle))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-        pnlRegisterCardLayout.setVerticalGroup(
-            pnlRegisterCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlRegisterCardLayout.createSequentialGroup()
-                .addContainerGap(21, Short.MAX_VALUE)
-                .addComponent(lblRegisterHeader)
-                .addGap(18, 18, 18)
-                .addComponent(lblNameCaption)
+        pnlHeaderLayout.setVerticalGroup(
+            pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlHeaderLayout.createSequentialGroup()
+                .addGap(22, 22, 22)
+                .addComponent(lblTitle)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(lblPhoneCaption)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtPhone, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(lblAddressCaption)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtAddress, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnSave, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(12, 12, 12))
+                .addComponent(lblSubtitle)
+                .addContainerGap(28, Short.MAX_VALUE))
         );
 
-        pnlSearchBar.setBackground(new java.awt.Color(255, 255, 255));
-
-        txtSearch.setBackground(new java.awt.Color(249, 249, 249));
-        txtSearch.setFont(new java.awt.Font("Inter 18pt", 0, 12)); // NOI18N
-        txtSearch.setForeground(new java.awt.Color(0, 0, 0));
-        txtSearch.setBorder(null);
-        txtSearch.addActionListener(this::txtSearchActionPerformed);
-
-        btnFilter.setFont(new java.awt.Font("Inter 18pt SemiBold", 0, 12)); // NOI18N
-        btnFilter.setText("Filter");
-        btnFilter.addActionListener(this::btnFilterActionPerformed);
-
-        javax.swing.GroupLayout pnlSearchBarLayout = new javax.swing.GroupLayout(pnlSearchBar);
-        pnlSearchBar.setLayout(pnlSearchBarLayout);
-        pnlSearchBarLayout.setHorizontalGroup(
-            pnlSearchBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlSearchBarLayout.createSequentialGroup()
-                .addGap(15, 15, 15)
-                .addComponent(txtSearch)
-                .addGap(18, 18, 18)
-                .addComponent(btnFilter, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(15, 15, 15))
-        );
-        pnlSearchBarLayout.setVerticalGroup(
-            pnlSearchBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlSearchBarLayout.createSequentialGroup()
-                .addGap(15, 15, 15)
-                .addGroup(pnlSearchBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(btnFilter, javax.swing.GroupLayout.DEFAULT_SIZE, 33, Short.MAX_VALUE)
-                    .addComponent(txtSearch))
-                .addContainerGap(15, Short.MAX_VALUE))
-        );
-
-        pnlTableCard.setBackground(new java.awt.Color(255, 255, 255));
-
-        tblCustomers.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
-            },
-            new String [] {
-                "ID", "Name", "Phone", "Address", "Active", "Created At"
-            }
-        ));
-        scrollCustomers.setViewportView(tblCustomers);
-
-        lblRecordCount.setFont(new java.awt.Font("Inter 18pt SemiBold", 0, 11)); // NOI18N
-        lblRecordCount.setText("Showing 5 of 1,284 customers");
-
-        javax.swing.GroupLayout pnlTableCardLayout = new javax.swing.GroupLayout(pnlTableCard);
-        pnlTableCard.setLayout(pnlTableCardLayout);
-        pnlTableCardLayout.setHorizontalGroup(
-            pnlTableCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlTableCardLayout.createSequentialGroup()
-                .addContainerGap(15, Short.MAX_VALUE)
-                .addGroup(pnlTableCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblRecordCount)
-                    .addComponent(scrollCustomers, javax.swing.GroupLayout.PREFERRED_SIZE, 931, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(15, Short.MAX_VALUE))
-        );
-        pnlTableCardLayout.setVerticalGroup(
-            pnlTableCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlTableCardLayout.createSequentialGroup()
-                .addGap(15, 15, 15)
-                .addComponent(scrollCustomers, javax.swing.GroupLayout.PREFERRED_SIZE, 382, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(lblRecordCount)
-                .addContainerGap(25, Short.MAX_VALUE))
-        );
-
-        btnUpdate.setBackground(new java.awt.Color(38, 85, 189));
-        btnUpdate.setFont(new java.awt.Font("Inter 18pt SemiBold", 0, 12)); // NOI18N
-        btnUpdate.setForeground(new java.awt.Color(255, 255, 255));
-        btnUpdate.setText("Update Details");
-        btnUpdate.addActionListener(this::btnUpdateActionPerformed);
-
-        btnDeactivate.setBackground(new java.awt.Color(186, 26, 26));
-        btnDeactivate.setFont(new java.awt.Font("Inter 18pt SemiBold", 0, 12)); // NOI18N
-        btnDeactivate.setForeground(new java.awt.Color(255, 255, 255));
-        btnDeactivate.setText("Deactivate");
-        btnDeactivate.addActionListener(this::btnDeactivateActionPerformed);
+        pnlBody.setBackground(new java.awt.Color(249, 249, 249));
 
         pnlStats.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -281,60 +159,226 @@ public class CustomerPanel extends javax.swing.JPanel {
                 .addContainerGap(18, Short.MAX_VALUE))
         );
 
-        btnDeactivate1.setBackground(new java.awt.Color(102, 102, 102));
-        btnDeactivate1.setFont(new java.awt.Font("Inter 18pt SemiBold", 0, 12)); // NOI18N
-        btnDeactivate1.setForeground(new java.awt.Color(255, 255, 255));
-        btnDeactivate1.setText("Delete");
-        btnDeactivate1.addActionListener(this::btnDeactivate1ActionPerformed);
+        pnlSearchBar.setBackground(new java.awt.Color(255, 255, 255));
+
+        txtSearch.setBackground(new java.awt.Color(249, 249, 249));
+        txtSearch.setFont(new java.awt.Font("Inter 18pt", 0, 12)); // NOI18N
+        txtSearch.setForeground(new java.awt.Color(0, 0, 0));
+        txtSearch.setBorder(null);
+        txtSearch.addActionListener(this::txtSearchActionPerformed);
+
+        btnFilter.setFont(new java.awt.Font("Inter 18pt SemiBold", 0, 12)); // NOI18N
+        btnFilter.setText("Filter");
+        btnFilter.addActionListener(this::btnFilterActionPerformed);
+
+        javax.swing.GroupLayout pnlSearchBarLayout = new javax.swing.GroupLayout(pnlSearchBar);
+        pnlSearchBar.setLayout(pnlSearchBarLayout);
+        pnlSearchBarLayout.setHorizontalGroup(
+            pnlSearchBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlSearchBarLayout.createSequentialGroup()
+                .addGap(15, 15, 15)
+                .addComponent(txtSearch, javax.swing.GroupLayout.DEFAULT_SIZE, 829, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(btnFilter, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(15, 15, 15))
+        );
+        pnlSearchBarLayout.setVerticalGroup(
+            pnlSearchBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlSearchBarLayout.createSequentialGroup()
+                .addGap(15, 15, 15)
+                .addGroup(pnlSearchBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnFilter, javax.swing.GroupLayout.DEFAULT_SIZE, 33, Short.MAX_VALUE)
+                    .addComponent(txtSearch))
+                .addContainerGap(15, Short.MAX_VALUE))
+        );
+
+        pnlRegisterCard.setBackground(new java.awt.Color(255, 255, 255));
+        pnlRegisterCard.setPreferredSize(new java.awt.Dimension(269, 351));
+
+        lblRegisterHeader.setFont(new java.awt.Font("Inter 28pt", 0, 18)); // NOI18N
+        lblRegisterHeader.setText("Register New Customer");
+
+        lblNameCaption.setFont(new java.awt.Font("Inter 18pt SemiBold", 0, 11)); // NOI18N
+        lblNameCaption.setText("Full Name");
+
+        txtName.setFont(new java.awt.Font("Inter 18pt", 0, 12)); // NOI18N
+        txtName.setForeground(new java.awt.Color(0, 0, 0));
+
+        lblPhoneCaption.setFont(new java.awt.Font("Inter 18pt SemiBold", 0, 11)); // NOI18N
+        lblPhoneCaption.setText("Phone Number");
+
+        txtPhone.setFont(new java.awt.Font("Inter 18pt", 0, 12)); // NOI18N
+        txtPhone.setForeground(new java.awt.Color(0, 0, 0));
+        txtPhone.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtPhoneKeyTyped(evt);
+            }
+        });
+
+        lblAddressCaption.setFont(new java.awt.Font("Inter 18pt SemiBold", 0, 11)); // NOI18N
+        lblAddressCaption.setText("Home Address");
+
+        txtAddress.setFont(new java.awt.Font("Inter 18pt", 0, 12)); // NOI18N
+        txtAddress.setForeground(new java.awt.Color(0, 0, 0));
+
+        btnSave.setBackground(new java.awt.Color(51, 204, 249));
+        btnSave.setFont(new java.awt.Font("Inter 18pt SemiBold", 0, 12)); // NOI18N
+        btnSave.setForeground(new java.awt.Color(26, 28, 28));
+        btnSave.setText("Save Customer");
+        btnSave.addActionListener(this::btnSaveActionPerformed);
+
+        lblRegisterHint.setFont(new java.awt.Font("Inter 18pt", 0, 9)); // NOI18N
+        lblRegisterHint.setForeground(new java.awt.Color(67, 70, 84));
+        lblRegisterHint.setText("Select a customer from the table to update their information.");
+
+        javax.swing.GroupLayout pnlRegisterCardLayout = new javax.swing.GroupLayout(pnlRegisterCard);
+        pnlRegisterCard.setLayout(pnlRegisterCardLayout);
+        pnlRegisterCardLayout.setHorizontalGroup(
+            pnlRegisterCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlRegisterCardLayout.createSequentialGroup()
+                .addGap(15, 15, 15)
+                .addGroup(pnlRegisterCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblRegisterHint)
+                    .addGroup(pnlRegisterCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(lblAddressCaption)
+                        .addComponent(txtAddress)
+                        .addComponent(lblPhoneCaption)
+                        .addComponent(txtPhone)
+                        .addComponent(lblRegisterHeader)
+                        .addComponent(lblNameCaption)
+                        .addComponent(txtName)
+                        .addComponent(btnSave, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        pnlRegisterCardLayout.setVerticalGroup(
+            pnlRegisterCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlRegisterCardLayout.createSequentialGroup()
+                .addContainerGap(19, Short.MAX_VALUE)
+                .addComponent(lblRegisterHeader)
+                .addGap(1, 1, 1)
+                .addComponent(lblRegisterHint)
+                .addGap(7, 7, 7)
+                .addComponent(lblNameCaption)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(lblPhoneCaption)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtPhone, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(lblAddressCaption)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtAddress, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnSave, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12))
+        );
+
+        pnlTableCard.setBackground(new java.awt.Color(255, 255, 255));
+
+        tblCustomers.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
+            },
+            new String [] {
+                "ID", "Name", "Phone", "Address", "Active", "Created At"
+            }
+        ));
+        scrollCustomers.setViewportView(tblCustomers);
+
+        lblRecordCount.setFont(new java.awt.Font("Inter 18pt SemiBold", 0, 11)); // NOI18N
+        lblRecordCount.setText("Showing 5 of 1,284 customers");
+
+        javax.swing.GroupLayout pnlTableCardLayout = new javax.swing.GroupLayout(pnlTableCard);
+        pnlTableCard.setLayout(pnlTableCardLayout);
+        pnlTableCardLayout.setHorizontalGroup(
+            pnlTableCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlTableCardLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(pnlTableCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblRecordCount)
+                    .addComponent(scrollCustomers, javax.swing.GroupLayout.PREFERRED_SIZE, 931, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        pnlTableCardLayout.setVerticalGroup(
+            pnlTableCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlTableCardLayout.createSequentialGroup()
+                .addGap(15, 15, 15)
+                .addComponent(scrollCustomers, javax.swing.GroupLayout.PREFERRED_SIZE, 382, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(lblRecordCount)
+                .addContainerGap(25, Short.MAX_VALUE))
+        );
+
+        btnUpdate.setBackground(new java.awt.Color(38, 85, 189));
+        btnUpdate.setFont(new java.awt.Font("Inter 18pt SemiBold", 0, 12)); // NOI18N
+        btnUpdate.setForeground(new java.awt.Color(255, 255, 255));
+        btnUpdate.setText("Update Details");
+        btnUpdate.addActionListener(this::btnUpdateActionPerformed);
+
+        btnDeactivate.setBackground(new java.awt.Color(186, 26, 26));
+        btnDeactivate.setFont(new java.awt.Font("Inter 18pt SemiBold", 0, 12)); // NOI18N
+        btnDeactivate.setForeground(new java.awt.Color(255, 255, 255));
+        btnDeactivate.setText("Deactivate");
+        btnDeactivate.addActionListener(this::btnDeactivateActionPerformed);
+
+        javax.swing.GroupLayout pnlBodyLayout = new javax.swing.GroupLayout(pnlBody);
+        pnlBody.setLayout(pnlBodyLayout);
+        pnlBodyLayout.setHorizontalGroup(
+            pnlBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlBodyLayout.createSequentialGroup()
+                .addGap(17, 17, 17)
+                .addGroup(pnlBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(pnlRegisterCard, javax.swing.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE)
+                    .addComponent(pnlStats, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(pnlBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(pnlBodyLayout.createSequentialGroup()
+                        .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnDeactivate, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(pnlTableCard, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(pnlSearchBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        pnlBodyLayout.setVerticalGroup(
+            pnlBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlBodyLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pnlBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlBodyLayout.createSequentialGroup()
+                        .addComponent(pnlSearchBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(pnlTableCard, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(23, 23, 23)
+                        .addGroup(pnlBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnDeactivate, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(pnlBodyLayout.createSequentialGroup()
+                        .addComponent(pnlRegisterCard, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(pnlStats, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(156, 156, 156)))
+                .addContainerGap(37, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(19, 19, 19)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblTitle)
-                    .addComponent(lblSubtitle)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(pnlRegisterCard, javax.swing.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE)
-                            .addComponent(pnlStats, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnDeactivate, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnDeactivate1))
-                            .addComponent(pnlTableCard, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(pnlSearchBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                .addContainerGap(27, Short.MAX_VALUE))
+            .addComponent(pnlHeader, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(pnlBody, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(16, 16, 16)
-                .addComponent(lblTitle)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lblSubtitle)
+                .addComponent(pnlHeader, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(pnlSearchBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(pnlTableCard, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(23, 23, 23)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnDeactivate, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnDeactivate1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(pnlRegisterCard, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(pnlStats, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(54, Short.MAX_VALUE))
+                .addComponent(pnlBody, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -346,6 +390,8 @@ public class CustomerPanel extends javax.swing.JPanel {
         if (row == -1) return;
 
         selectedCustomerId = (int) tblCustomers.getValueAt(row, 0);
+        lblRegisterHeader.setText("Update Customer");
+        btnSave.setText("Update Customer");
         txtName.setText(String.valueOf(tblCustomers.getValueAt(row, 1)));
         txtPhone.setText(String.valueOf(tblCustomers.getValueAt(row, 2)));
         Object addr = tblCustomers.getValueAt(row, 3);
@@ -353,7 +399,14 @@ public class CustomerPanel extends javax.swing.JPanel {
 
         btnUpdate.setEnabled(true);
         btnDeactivate.setEnabled(true);
-        btnDeactivate1.setEnabled(true);
+        
+        editMode = true;
+        lblRegisterHeader.setText("Update Information");
+        lblRegisterHint.setText(
+            "Update the selected customer's information."
+        );
+        btnSave.setText("Update Customer");
+        btnSave.setIcon(loadIcon("edit.svg", 18, 0x1A1C1C));
 
         String activeStatus = String.valueOf(tblCustomers.getValueAt(row, 4));
         selectedIsActive = "Active".equals(activeStatus);
@@ -386,6 +439,58 @@ public class CustomerPanel extends javax.swing.JPanel {
     
     pnlStats.setOpaque(false);
     pnlStats.setBorder(new RoundedCardBorder(16, Color.WHITE, cardStroke));
+    }  
+    
+
+    private void formatCustomerTable() {
+    tblCustomers.setShowVerticalLines(false);
+    tblCustomers.setShowHorizontalLines(true);
+    tblCustomers.setGridColor(new Color(0xC3, 0xC6, 0xD7));
+    tblCustomers.setRowHeight(48);
+
+    tblCustomers.getTableHeader().setFont(
+            new Font("Inter 18pt", Font.BOLD, 14));
+
+    tblCustomers.setFont(
+            new Font("Inter 18pt", Font.PLAIN, 14));
+
+    DefaultTableCellRenderer claimRenderer = new DefaultTableCellRenderer() {
+        @Override
+        public Component getTableCellRendererComponent(
+                JTable table,
+                Object value,
+                boolean isSelected,
+                boolean hasFocus,
+                int row,
+                int column) {
+
+            super.getTableCellRendererComponent(
+                    table, value, isSelected, hasFocus, row, column);
+
+            setFont(new Font("Inter 18pt", Font.BOLD, 14));
+
+            if (isSelected) {
+                setForeground(Color.WHITE);
+            } else {
+                setForeground(new Color(0x2655BD));
+            }
+
+            setHorizontalAlignment(SwingConstants.CENTER);
+
+            return this;
+        }
+    };
+
+    DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+    centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+
+    tblCustomers.getColumnModel().getColumn(0).setCellRenderer(claimRenderer);
+
+    for (int i = 1; i < tblCustomers.getColumnCount(); i++) {
+        tblCustomers.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+    }
+
+    tblCustomers.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 }
         private void loadCustomers(String searchTerm) {
             DefaultTableModel model = new DefaultTableModel(
@@ -395,7 +500,10 @@ public class CustomerPanel extends javax.swing.JPanel {
             };
 
             String sql = "SELECT customer_id, name, phone, address, is_active, created_at "
-                       + "FROM Customers WHERE name LIKE ? OR phone LIKE ? ORDER BY customer_id DESC";
+            + "FROM Customers "
+            + "WHERE is_active = 1 "
+            + "AND (name LIKE ? OR phone LIKE ?) "
+            + "ORDER BY customer_id DESC";
 
             try (Connection conn = com.mycompany.laundryservice.database.DBConnection.getConnection();
                  PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -414,8 +522,8 @@ public class CustomerPanel extends javax.swing.JPanel {
                     }
                 }
                 tblCustomers.setModel(model);
+                formatCustomerTable();
                 lblRecordCount.setText("Showing " + model.getRowCount() + " customers");
-                updateCustomerCount();
 
             } catch (SQLException e) {
                 setStatus("Unable to connect to the database.", false);
@@ -431,7 +539,7 @@ public class CustomerPanel extends javax.swing.JPanel {
             : message;
             lblStatus.setText(displayMessage);
             lblStatus.setToolTipText(message);
-}
+        }
         
 
         private void resetForm() {
@@ -442,10 +550,19 @@ public class CustomerPanel extends javax.swing.JPanel {
             tblCustomers.clearSelection();
             btnUpdate.setEnabled(false);
             btnDeactivate.setEnabled(false);
-            btnDeactivate1.setEnabled(false);
             selectedIsActive = true;
             btnDeactivate.setText("Deactivate");
             btnDeactivate.setBackground(new Color(0xBA, 0x1A, 0x1A));
+            
+            editMode = false;
+
+            lblRegisterHeader.setText("Register New Customer");
+            btnSave.setText("Save Customer");
+            btnSave.setIcon(loadIcon("save.svg", 18, 0x1A1C1C));
+            
+            lblRegisterHint.setText(
+                "Fill in the customer information below."
+            );
         }
 
 private static class RoundedCardBorder extends javax.swing.border.AbstractBorder {
@@ -532,6 +649,12 @@ private static class RoundedCardBorder extends javax.swing.border.AbstractBorder
     }//GEN-LAST:event_btnFilterActionPerformed
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
+        
+        if (editMode) {
+            btnUpdateActionPerformed(evt);
+            return;
+        }
+        
         String name = txtName.getText().trim();
         String phone = txtPhone.getText().trim();
         String address = txtAddress.getText().trim();
@@ -563,6 +686,7 @@ private static class RoundedCardBorder extends javax.swing.border.AbstractBorder
             }
             resetForm();
             loadCustomers(txtSearch.getText());
+            updateCustomerCount();
             setStatus("Customer saved successfully.", true);
         } catch (SQLException e) {
             setStatus("Unable to connect to the database.", false);
@@ -572,7 +696,7 @@ private static class RoundedCardBorder extends javax.swing.border.AbstractBorder
     private void btnDeactivateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeactivateActionPerformed
         if (selectedCustomerId == -1) return;
 
-        String action = selectedIsActive ? "deactivate" : "reactivate";
+        String action = "deactivate";
         int confirm = JOptionPane.showConfirmDialog(this,
                 "Are you sure you want to " + action + " this customer?",
                 "Confirm", JOptionPane.YES_NO_OPTION);
@@ -581,43 +705,18 @@ private static class RoundedCardBorder extends javax.swing.border.AbstractBorder
         String sql = "UPDATE Customers SET is_active = ? WHERE customer_id = ?";
         try (Connection conn = com.mycompany.laundryservice.database.DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, selectedIsActive ? 0 : 1);
+            ps.setInt(1, 0);
             ps.setInt(2, selectedCustomerId);
             ps.executeUpdate();
 
             resetForm();
             loadCustomers(txtSearch.getText());
-            setStatus("Customer " + (selectedIsActive ? "deactivated." : "reactivated."), true);
+            updateCustomerCount();
+            setStatus("Customer deactivated.", true);
         } catch (SQLException e) {
             setStatus("Unable to connect to the database.", false);
         }
     }//GEN-LAST:event_btnDeactivateActionPerformed
-
-    private void btnDeactivate1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeactivate1ActionPerformed
-         if (selectedCustomerId == -1) return;
-
-        String customerName = txtName.getText().trim();
-
-        int confirm = JOptionPane.showConfirmDialog(this,
-                "Permanently delete " + customerName + "?\n"
-                + "This cannot be undone. Any existing orders for this customer will be kept, "
-                + "but will no longer be linked to a customer record.",
-                "Confirm Deletion", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-        if (confirm != JOptionPane.YES_OPTION) return;
-
-        String sql = "DELETE FROM Customers WHERE customer_id = ?";
-        try (Connection conn = com.mycompany.laundryservice.database.DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, selectedCustomerId);
-            ps.executeUpdate();
-
-            resetForm();
-            loadCustomers(txtSearch.getText());
-            setStatus("Customer deleted successfully.", true);
-        } catch (SQLException e) {
-            setStatus("Unable to delete customer. It may still have related records.", false);
-        }
-    }//GEN-LAST:event_btnDeactivate1ActionPerformed
 
     private void txtPhoneKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPhoneKeyTyped
         char C = evt.getKeyChar();
@@ -626,7 +725,7 @@ private static class RoundedCardBorder extends javax.swing.border.AbstractBorder
         }
     }//GEN-LAST:event_txtPhoneKeyTyped
     private void updateCustomerCount() {
-        String sql = "SELECT COUNT(*) FROM Customers";
+        String sql = "SELECT COUNT(*) FROM Customers WHERE is_active = 1";
         try (Connection conn = com.mycompany.laundryservice.database.DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
@@ -640,7 +739,6 @@ private static class RoundedCardBorder extends javax.swing.border.AbstractBorder
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnDeactivate;
-    private javax.swing.JButton btnDeactivate1;
     private javax.swing.JButton btnFilter;
     private javax.swing.JButton btnSave;
     private javax.swing.JButton btnUpdate;
@@ -649,11 +747,14 @@ private static class RoundedCardBorder extends javax.swing.border.AbstractBorder
     private javax.swing.JLabel lblPhoneCaption;
     private javax.swing.JLabel lblRecordCount;
     private javax.swing.JLabel lblRegisterHeader;
+    private javax.swing.JLabel lblRegisterHint;
     private javax.swing.JLabel lblStatus;
     private javax.swing.JLabel lblSubtitle;
     private javax.swing.JLabel lblTitle;
     private javax.swing.JLabel lblTotalCustomersCaption;
     private javax.swing.JLabel lblTotalCustomersValue;
+    private javax.swing.JPanel pnlBody;
+    private javax.swing.JPanel pnlHeader;
     private javax.swing.JPanel pnlRegisterCard;
     private javax.swing.JPanel pnlSearchBar;
     private javax.swing.JPanel pnlStats;
