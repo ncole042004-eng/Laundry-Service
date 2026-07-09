@@ -236,6 +236,11 @@ public class ReportsPanel extends javax.swing.JPanel {
             table.getTableHeader().setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 13));
             table.getTableHeader().setBackground(new java.awt.Color(248, 250, 252));
             table.getTableHeader().setForeground(new java.awt.Color(51, 65, 85));
+            table.setRowSelectionAllowed(false);
+            table.setColumnSelectionAllowed(false);
+            table.setCellSelectionEnabled(false);
+            table.getTableHeader().setReorderingAllowed(false);
+            table.getTableHeader().setResizingAllowed(false);
     }
         private void centerTableText(javax.swing.JTable table) {
         javax.swing.table.DefaultTableCellRenderer centerRenderer = new javax.swing.table.DefaultTableCellRenderer();
