@@ -8,7 +8,6 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 public class LoginPanel extends javax.swing.JPanel {
@@ -46,28 +45,24 @@ pnlLogo.setOpaque(false);
     }
 
     private void initializeDesign() {
-
-    // Caption labels — color + correct weight
 lblLoginText.setForeground(new Color(0x1a, 0x1c, 0x1c));
 lblLoginText.setFont(new Font("Inter 18pt Medium", Font.PLAIN, 14));
 
 lblPassword.setForeground(new Color(0x1a, 0x1c, 0x1c));
 lblPassword.setFont(new Font("Inter 18pt Medium", Font.PLAIN, 14));
 
-// Subtitle
+
 employeelogin.setForeground(new Color(0x43, 0x46, 0x54));
 employeelogin.setFont(new Font("Inter 18pt", Font.PLAIN, 14));
 
-// Field borders — replace the old gray with the mockup's #c3c6d7
+
 txtUsername.setBorder(new javax.swing.border.LineBorder(new Color(0xc3, 0xc6, 0xd7), 1, true));
 txtPassword.setBorder(new javax.swing.border.LineBorder(new Color(0xc3, 0xc6, 0xd7), 1, true));
 LAUNDRYSERVICEPOS.setText("Laundry Service");
     
 
 
-    //-------------------------
-    // Fonts
-    //-------------------------
+    
 
     LAUNDRYSERVICEPOS.setFont(
             new Font("Playfair Display", Font.BOLD, 36));
@@ -91,17 +86,11 @@ LAUNDRYSERVICEPOS.setText("Laundry Service");
             new Font("Inter 18pt", Font.BOLD, 15));
 
 
-    //-------------------------
-    // Colors
-    //-------------------------
 
     LAUNDRYSERVICEPOS.setForeground(
             new Color(0, 24, 73));
 
 
-    //-------------------------
-    // FlatLaf Icons
-    //-------------------------
 
  txtUsername.putClientProperty(
         "JTextField.leadingIcon",
@@ -114,9 +103,6 @@ txtPassword.putClientProperty(
 lblLocation.setIcon(
         createDarkIcon("icons/location_on.svg", 16, 16));
 
-    //-------------------------
-    // Placeholders
-    //-------------------------
 
     txtUsername.putClientProperty(
             "JTextField.placeholderText",
@@ -127,9 +113,6 @@ lblLocation.setIcon(
             "Password");
 
 
-    //-------------------------
-    // Button
-    //-------------------------
 
     btnLogin.putClientProperty(
             "JButton.buttonType",
@@ -140,18 +123,11 @@ lblLocation.setIcon(
                     Cursor.HAND_CURSOR));
 
 
-    //-------------------------
-    // Location Icon
-    //-------------------------
-
     FlatSVGIcon locationIcon = new FlatSVGIcon("icons/location_on.svg", 16, 16);
     locationIcon.setColorFilter(new FlatSVGIcon.ColorFilter(c -> new Color(0x73, 0x76, 0x86)));
     lblLocation.setIcon(locationIcon);
 
 
-    //-------------------------
-    // Status
-    //-------------------------
 
     updateSystemStatus();
 }
@@ -460,12 +436,11 @@ background.setLayout(new BorderLayout());
     }// </editor-fold>//GEN-END:initComponents
 
     private void txtUsernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtUsernameActionPerformed
-	    // TODO add your handling code here:
+	   
     }//GEN-LAST:event_txtUsernameActionPerformed
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
-		 boolean systemOnline = false;   // Change to true when the system is online
-    
+		 boolean systemOnline = false;   
 	    String username = txtUsername.getText().trim();
 	    String password = new String(txtPassword.getPassword());
 
