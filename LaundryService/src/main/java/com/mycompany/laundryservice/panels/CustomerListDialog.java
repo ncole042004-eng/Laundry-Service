@@ -92,15 +92,10 @@ public class CustomerListDialog extends javax.swing.JDialog {
     tableModel = (DefaultTableModel) scrCustomer.getModel();
     sorter = new TableRowSorter<>(tableModel);
     scrCustomer.setRowSorter(sorter);
-    
-    // ====== SET BACKGROUND COLOR FOR ALL PANELS ======
     Color bgColor = new java.awt.Color(249, 249, 249);
     this.getContentPane().setBackground(bgColor);
     jPanel1.setBackground(bgColor);
     jPanel2.setBackground(bgColor);
-    // ====== END ======
-        
-                    // ====== CENTER CUSTOMER ID COLUMN ======
                 scrCustomer.getColumnModel().getColumn(0).setCellRenderer(new javax.swing.table.DefaultTableCellRenderer() {
                     @Override
                     public java.awt.Component getTableCellRendererComponent(javax.swing.JTable table, Object value,
@@ -110,13 +105,6 @@ public class CustomerListDialog extends javax.swing.JDialog {
                         return label;
                     }
                 });
-                // ====== END ======
-        
-      
-        
-        
-          //      ====== ROUNDED PANEL BORDERS (BLUE) ======
-         // ====== ROUNDED PANEL BORDERS (BLUE) ======
             int arc = 12;
             Color borderColor = new java.awt.Color(38, 85, 189);
 
@@ -125,23 +113,15 @@ public class CustomerListDialog extends javax.swing.JDialog {
 
             jPanel1.setBorder(javax.swing.BorderFactory.createCompoundBorder(roundedBorder, padding));
             jPanel2.setBorder(javax.swing.BorderFactory.createCompoundBorder(roundedBorder, padding));
-            // ====== END ======
-         // ====== END ======
-        
-         // ====== APPLY INTER FONTS (MATCHING HTML DESIGN) ======
-        // Title - Headline Medium (Inter 18pt SemiBold)
         jLabel1.setFont(new java.awt.Font("Inter 18pt", java.awt.Font.BOLD, 18));
         jLabel1.setForeground(new java.awt.Color(26, 28, 28));
         
-        // Search Label - Label Medium (Inter)
         jLabel2.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 14));
         jLabel2.setForeground(new java.awt.Color(44, 62, 80));
         
-        // Search Text Field - Body Medium (Inter)
         txtSearch.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 14));
         txtSearch.setForeground(new java.awt.Color(26, 28, 28));
         
-        // Buttons - Label Medium (Inter Bold)
         btnSearch.setFont(new java.awt.Font("Inter", java.awt.Font.BOLD, 14));
         btnSearch.setBackground(new java.awt.Color(52, 152, 219));
         btnSearch.setForeground(java.awt.Color.WHITE);
@@ -158,72 +138,48 @@ public class CustomerListDialog extends javax.swing.JDialog {
         btnCancel.setBackground(new java.awt.Color(52, 152, 219));
         btnCancel.setForeground(java.awt.Color.WHITE);
         
-        // Total Customers Label - Label Medium (Inter)
         jLabel3.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 14));
         jLabel3.setForeground(new java.awt.Color(44, 62, 80));
         
-        // Total Count - Label Medium Bold (Inter)
         lblCount.setFont(new java.awt.Font("Inter", java.awt.Font.BOLD, 14));
         lblCount.setForeground(new java.awt.Color(38, 85, 189));
         
-        // Table Header - Label Medium Bold (Inter)
         scrCustomer.getTableHeader().setFont(new java.awt.Font("Inter", java.awt.Font.BOLD, 12));
         scrCustomer.getTableHeader().setForeground(new java.awt.Color(26, 28, 28));
         scrCustomer.getTableHeader().setBackground(new java.awt.Color(238, 238, 238));
         
-        // Table Content - Body Medium (Inter)
         scrCustomer.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 14));
         scrCustomer.setRowHeight(35);
-        // ====== END FONT STYLING ======
-
-        // ====== ADD SVG ICONS ======
-        // Title Label - person_search.svg
-        jLabel1.setIcon(loadIcon("person_search.svg", 16, 0x2655bd));
         jLabel1.setIconTextGap(8);
         jLabel1.setText(" Select Customer");
 
-        // Search Button - search.svg
         btnSearch.setIcon(loadIcon("search.svg", 16, 0x2655bd));
         btnSearch.setIconTextGap(8);
         btnSearch.setText(" Search");
 
-        // Refresh Button - density_small.svg
         btnRefresh.setIcon(loadIcon("density_small.svg", 16, 0x2655bd));
         btnRefresh.setIconTextGap(8);
         btnRefresh.setText(" Refresh");
 
-        // Select Button - check_circle.svg
         btnSelect.setIcon(loadIcon("check_circle.svg", 16, 0xFFFFFF));
         btnSelect.setIconTextGap(8);
         btnSelect.setBackground(new java.awt.Color(52,152,219)); 
         btnSelect.setText(" Select");
 
-        // Cancel Button - logout.svg
         btnCancel.setIcon(loadIcon("logout.svg", 16, 0x666666));
         btnCancel.setIconTextGap(8);
         btnCancel.setText(" Cancel");
-        // ====== END ADD ICONS ======
-        
-        
-            // ====== DISABLE COLUMN REORDERING ======
             scrCustomer.getTableHeader().setReorderingAllowed(false);
-            // ====== END ======
-    
-    
 
-        // ====== SORT ONLY CUSTOMER ID IN ASCENDING ORDER ======
-        // Enable sorting only on Customer ID (Column 0)
-        sorter.setSortable(0, true);   // Enable Customer ID
-        sorter.setSortable(1, false);  // Disable Customer Name
-        sorter.setSortable(2, false);  // Disable Address
-        sorter.setSortable(3, false);  // Disable Phone Number
+        sorter.setSortable(0, true);
+        sorter.setSortable(1, false);
+        sorter.setSortable(2, false);
+        sorter.setSortable(3, false);
 
-        // Set Customer ID (Column 0) as the default sort in ascending order
         sorter.setSortKeys(java.util.Arrays.asList(
             new RowSorter.SortKey(0, SortOrder.ASCENDING)
         ));
 
-        // Fix: Sort Customer ID as numbers (not text)
         sorter.setComparator(0, (o1, o2) -> {
             try {
                 int id1 = Integer.parseInt(o1.toString());
@@ -233,18 +189,13 @@ public class CustomerListDialog extends javax.swing.JDialog {
                 return o1.toString().compareTo(o2.toString());
             }
         });
-        // ====== END ======
-
-        // Set dialog properties
         setTitle("Select Customer");
         setModal(true);
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(getParent());
 
-        // Load customers
         loadCustomers();
 
-        // Setup double-click selection
         scrCustomer.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -254,16 +205,13 @@ public class CustomerListDialog extends javax.swing.JDialog {
             }
         });
     }
-    /**
-     * Helper method to load SVG icons
-     */
     private javax.swing.Icon loadIcon(String iconName, int size, int colorHex) {
         try {
             FlatSVGIcon icon = new FlatSVGIcon("icons/" + iconName, size, size);
             icon.setColorFilter(new FlatSVGIcon.ColorFilter(c -> new java.awt.Color(colorHex)));
             return icon;
         } catch (Exception e) {
-            return null; // Icon not found
+            return null; 
         }
     }
 
@@ -356,8 +304,6 @@ public class CustomerListDialog extends javax.swing.JDialog {
     public boolean isCustomerSelected() {
         return customerSelected;
     }
-
-    // ==================== MAIN METHOD ====================
 
     public static void main(String[] args) {
         FlatLightLaf.setup();

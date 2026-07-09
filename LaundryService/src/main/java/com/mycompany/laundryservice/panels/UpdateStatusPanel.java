@@ -189,24 +189,18 @@ public class UpdateStatusPanel extends javax.swing.JPanel {
     tblOrders.getTableHeader().putClientProperty("FlatTableHeader.separatorColor", new Color(195, 198, 215));
     ((DefaultTableCellRenderer) tblOrders.getTableHeader().getDefaultRenderer()).setHorizontalAlignment(JLabel.CENTER);
 
-    // ====== TABLE BACKGROUND ======
     tblOrders.setBackground(new Color(249, 249, 249));
     filteredTable.getViewport().setBackground(new Color(249, 249, 249));
-    // ============================
 
-    // ====== REMOVE FLATLAF SCROLLPANE BORDER ======
     filteredTable.putClientProperty("JScrollPane.showBorder", false);
     filteredTable.setBorder(javax.swing.BorderFactory.createEmptyBorder());
     filteredTable.setViewportBorder(javax.swing.BorderFactory.createEmptyBorder());
     tblOrders.setBorder(javax.swing.BorderFactory.createEmptyBorder());
     
-    // Fix the 1px gap that shows the default gray panel background underneath!
     if (pnlContent != null) pnlContent.setBorder(javax.swing.BorderFactory.createEmptyBorder());
     if (cardTable != null) cardTable.setBackground(new Color(249, 249, 249));
     if (pnlContent != null) pnlContent.setBackground(new Color(249, 249, 249));
-    // ============================
   
-    // Center renderer with Inter font — matches HomePanel pattern
     DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer() {
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value,
@@ -1315,7 +1309,7 @@ lblWeight.setText(weight);
             e.printStackTrace();
             javax.swing.JOptionPane.showMessageDialog(this, "Error updating status: " + e.getMessage());
         }
-    }//GEN-LAST:event_btnUpdateActionPerformed
+    }                                         
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
         java.awt.CardLayout cl = (java.awt.CardLayout) updateSubContainer.getLayout();

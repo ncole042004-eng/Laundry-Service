@@ -53,7 +53,6 @@ public class NewOrderPanel extends javax.swing.JPanel {
         this.mainFrame = mainFrame;
         initComponents();
         
-        // ====== GET CURRENT EMPLOYEE ======
         try {
             currentEmployeeId = mainFrame.getCurrentEmployeeId();
             if (currentEmployeeId != -1) {
@@ -67,7 +66,6 @@ public class NewOrderPanel extends javax.swing.JPanel {
             currentEmployeeId = 1;
             currentEmployeeName = "System";
         }
-        // ====== END ======
         
         initializePanel();
     }
@@ -105,20 +103,14 @@ public class NewOrderPanel extends javax.swing.JPanel {
 
     private void initializePanel() {
         
-
-                // ====== SET FONT FOR ALL COMPONENTS ======
                 applyInterFont(this);
-                // ====== END ======
 
-                        // ====== SET BACKGROUND COLOR FOR ALL PANELS ======
                 Color bgColor = new java.awt.Color(249, 249, 249);
                 this.setBackground(bgColor);
                 jPanel2.setBackground(bgColor);
                 jPanel3.setBackground(bgColor);
                 jPanel4.setBackground(bgColor);
-                jPanel5.setBackground(bgColor);
-                // ====== END ======
-                
+                jPanel5.setBackground(bgColor);                
                 
         loadServices();
         clearForm();
@@ -127,23 +119,17 @@ public class NewOrderPanel extends javax.swing.JPanel {
         updateTotalAmount();
         btnSaveOrder.setEnabled(false);
         
-        // ====== SHOW EMPLOYEE INFO ======
         System.out.println("Current Employee: " + currentEmployeeName + " (ID: " + currentEmployeeId + ")");
-        // ====== END ======
         
-        // ====== CONFIGURE SPINNER MODELS ======
         spnWeightKg.setModel(new javax.swing.SpinnerNumberModel(0.0, 0.0, 7.0, 0.1));
         spnAdditionalCharges.setModel(new javax.swing.SpinnerNumberModel(0.0, 0.0, 9999.0, 0.1));
-        // ====== END ======
 
-        // ====== INPUT FIELD STYLING (match reference: white bg + gray border) ======
         java.awt.Color inputBg = java.awt.Color.WHITE;
         javax.swing.border.Border inputBorder = javax.swing.BorderFactory.createCompoundBorder(
             new RoundedBorder(8, new java.awt.Color(195, 198, 215), 1),
             javax.swing.BorderFactory.createEmptyBorder(4, 10, 4, 10)
         );
 
-        // Style spinners — white bg, gray border, Inter font
         spnWeightKg.setBackground(inputBg);
         JComponent editor1 = spnWeightKg.getEditor();
         if (editor1 instanceof javax.swing.JSpinner.DefaultEditor defaultEditor) {
@@ -164,17 +150,13 @@ public class NewOrderPanel extends javax.swing.JPanel {
             tf2.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 14));
         }
 
-        // Style Notes text field
         txtNotes.setBackground(inputBg);
         txtNotes.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 14));
         txtNotes.setBorder(inputBorder);
-        // ====== END ======
                 
-        // ====== ROUNDED PANEL BORDERS ======
         int arc = 16;
         Color borderColor = new java.awt.Color(195, 198, 215);
 
-        // Padding to prevent clipping
         javax.swing.border.Border padding = javax.swing.BorderFactory.createEmptyBorder(16, 16, 16, 16);
         javax.swing.border.Border roundedBorder = new RoundedBorder(arc, borderColor, 1);
         javax.swing.border.Border compound = javax.swing.BorderFactory.createCompoundBorder(roundedBorder, padding);
@@ -184,29 +166,20 @@ public class NewOrderPanel extends javax.swing.JPanel {
         jPanel5.setBorder(compound);
 
  
-        // ====== END ======
-
-        // ====== APPLY INTER FONTS (MATCHING HTML DESIGN) ======
-        // Title
         lblTitle.setFont(new java.awt.Font("Inter", java.awt.Font.BOLD, 28));
         lblTitle.setForeground(new java.awt.Color(26, 28, 28));
 
-        // Subtitle
         lblSubtitle.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 14));
         lblSubtitle.setForeground(new java.awt.Color(67, 70, 84));
 
-        // Section Headers (ORDER DETAILS, CUSTOMER INFO)
-        // Match reference: bold, Inter 14, uppercase, primary blue color
         java.awt.Font sectionHeaderFont = new java.awt.Font("Inter", java.awt.Font.BOLD, 14);
         java.awt.Color sectionHeaderColor = new java.awt.Color(38, 85, 189);
         
-        jLabel3.setFont(sectionHeaderFont); // CUSTOMER INFO
+        jLabel3.setFont(sectionHeaderFont);
         jLabel3.setForeground(sectionHeaderColor);
         
-        jLabel9.setFont(sectionHeaderFont); // ORDER DETAILS
+        jLabel9.setFont(sectionHeaderFont); 
         jLabel9.setForeground(sectionHeaderColor);
-        
-        // Hide the redundant "CUSTOMER DETAILS" sub-header (jLabel4) — not in reference design
         jLabel4.setVisible(false);
 
         jLabel15.setFont(new java.awt.Font("Inter 18pt", java.awt.Font.BOLD, 24));
@@ -215,23 +188,20 @@ public class NewOrderPanel extends javax.swing.JPanel {
         jLabel4.setFont(new java.awt.Font("Inter 18pt", java.awt.Font.BOLD, 18));
         jLabel4.setForeground(new java.awt.Color(26, 28, 28));
 
-        // Field Labels (Service, Weight, Notes, Customer Name, Phone, Address)
         java.awt.Font labelFont = new java.awt.Font("Inter", java.awt.Font.BOLD, 12);
-        java.awt.Color labelColor = new java.awt.Color(107, 114, 128); // Slate gray
+        java.awt.Color labelColor = new java.awt.Color(107, 114, 128);
         
-        jLabel5.setFont(labelFont); jLabel5.setForeground(labelColor); // CUSTOMER NAME
-        jLabel7.setFont(labelFont); jLabel7.setForeground(labelColor); // PHONE NUMBER
-        jLabel2.setFont(labelFont); jLabel2.setForeground(labelColor); // ADDRESS
-        jLabel10.setFont(labelFont); jLabel10.setForeground(labelColor); // SERVICE
-        jLabel11.setFont(labelFont); jLabel11.setForeground(labelColor); // WEIGHT
-        jLabel12.setFont(labelFont); jLabel12.setForeground(labelColor); // NOTES
-        jLabel14.setFont(labelFont); jLabel14.setForeground(labelColor); // ADDITIONAL CHARGES
+        jLabel5.setFont(labelFont); jLabel5.setForeground(labelColor);
+        jLabel7.setFont(labelFont); jLabel7.setForeground(labelColor);
+        jLabel2.setFont(labelFont); jLabel2.setForeground(labelColor);
+        jLabel10.setFont(labelFont); jLabel10.setForeground(labelColor); 
+        jLabel11.setFont(labelFont); jLabel11.setForeground(labelColor); 
+        jLabel12.setFont(labelFont); jLabel12.setForeground(labelColor);
+        jLabel14.setFont(labelFont); jLabel14.setForeground(labelColor); 
 
-        // Small Label - Max 7kg
         jLabel1.setFont(new java.awt.Font("Inter", java.awt.Font.BOLD, 12));
         jLabel1.setForeground(new java.awt.Color(116, 116, 116));
 
-        // Customer value display labels - styled like input fields
         java.awt.Font valueFont = new java.awt.Font("Inter", java.awt.Font.PLAIN, 14);
         java.awt.Color valueColor = new java.awt.Color(26, 28, 28);
         
@@ -243,39 +213,30 @@ public class NewOrderPanel extends javax.swing.JPanel {
 
         lblAddressValue.setFont(valueFont);
         lblAddressValue.setForeground(valueColor);
-
-        // Order Summary labels — Inter 14, muted color for row labels
+        
         java.awt.Color mutedColor = new java.awt.Color(67, 70, 84);
         lblService1.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 14));
-        lblService1.setForeground(mutedColor); // "Service" row label
+        lblService1.setForeground(mutedColor);
         lblServiceAmount.setFont(new java.awt.Font("Inter", java.awt.Font.BOLD, 14));
         lblServiceAmount.setForeground(new java.awt.Color(26, 28, 28)); // price value
         lblService.setFont(new java.awt.Font("Inter", java.awt.Font.PLAIN, 14));
-        lblService.setForeground(mutedColor); // "Additional Charges" row label
+        lblService.setForeground(mutedColor);
         lblAdditonalChargesAmount.setFont(new java.awt.Font("Inter", java.awt.Font.BOLD, 14));
         lblAdditonalChargesAmount.setForeground(new java.awt.Color(26, 28, 28)); // price value
         
-        // jLabel13 = "TOTAL" label in Order Summary
         jLabel13.setFont(new java.awt.Font("Inter", java.awt.Font.BOLD, 14));
         jLabel13.setForeground(new java.awt.Color(26, 28, 28));
         
-        // ====== FIX: SERVICE TYPE LABEL FONT STYLING ======
         lblServiceType.setFont(new java.awt.Font("Inter", java.awt.Font.BOLD, 14));
         lblServiceType.setForeground(new java.awt.Color(26, 28, 28));
-        // ===================================================
-
-        // Total Amount - Display Large
         lblTotalAmount.setFont(new java.awt.Font("Inter", java.awt.Font.BOLD, 36));
         lblTotalAmount.setForeground(new java.awt.Color(38, 85, 189));
 
-        // Buttons
         btnCustomerList.setFont(new java.awt.Font("Inter", java.awt.Font.BOLD, 14));
         btnManageCustomers.setFont(new java.awt.Font("Inter", java.awt.Font.BOLD, 14));
         btnSaveOrder.setFont(new java.awt.Font("Inter", java.awt.Font.BOLD, 14));
         btnCancel.setFont(new java.awt.Font("Inter", java.awt.Font.BOLD, 14));
-        // ====== END FONT STYLING ======
 
-        // ====== BUTTON ROUNDED CORNERS & COLORS ======
         int buttonArc = 12;
         Color primaryBlue = new java.awt.Color(38, 85, 189);
         
@@ -298,40 +259,27 @@ public class NewOrderPanel extends javax.swing.JPanel {
         btnCancel.putClientProperty("JButton.buttonType", "roundRect");
         btnCancel.setBackground(new java.awt.Color(226, 226, 226));
         btnCancel.setForeground(new java.awt.Color(67, 70, 84));
-        // ====== END ======
-
-        // ====== ADD SVG ICONS ======
-        // 1. Customer Info Label (jLabel3) - person_search.svg
         jLabel3.setIcon(loadIcon("person_search.svg", 18, 0x2655bd));
         jLabel3.setIconTextGap(8);
         jLabel3.setText(" CUSTOMER INFO");
 
-        // 2. Order Details Label (jLabel9) - density_small.svg
         jLabel9.setIcon(loadIcon("density_small.svg", 18, 0x2655bd));
         jLabel9.setIconTextGap(8);
         jLabel9.setText(" ORDER DETAILS");
 
-        // 3. Save Order Button - save.svg
         btnSaveOrder.setIcon(loadIcon("save.svg", 22, 0xFFFFFF));
         btnSaveOrder.setIconTextGap(8);
 
-        // 4. Manage Customers Button - add.svg
         btnManageCustomers.setIcon(loadIcon("add.svg", 22, 0xFFFFFF));
         btnManageCustomers.setIconTextGap(8);
         
-        // Customer List Button - list_alt.svg
         btnCustomerList.setIcon(loadIcon("list.svg", 22, 0xFFFFFF));
         btnCustomerList.setIconTextGap(8);
         
-        // Cancel Button - logout.svg
         btnCancel.setIcon(loadIcon("logout.svg", 22, 0x666666));
         btnCancel.setIconTextGap(8);
-        // ====== END ADD ICONS ======
-        
-        // ====== SETUP SPINNER LISTENERS ======
         spnWeightKg.addChangeListener(e -> validateForm());
         spnAdditionalCharges.addChangeListener(e -> calculateTotal());
-        // ====== END ======
     }
     
     /**
@@ -343,11 +291,10 @@ public class NewOrderPanel extends javax.swing.JPanel {
             icon.setColorFilter(new FlatSVGIcon.ColorFilter(c -> new java.awt.Color(colorHex)));
             return icon;
         } catch (Exception e) {
-            return null; // Icon not found
+            return null;
         }
     }
 
-    // ==================== SERVICE LOADING ====================
 
     private void loadServices() {
         String sql = "SELECT service_id, service_name, fixed_price FROM Services";
@@ -372,7 +319,6 @@ public class NewOrderPanel extends javax.swing.JPanel {
                 if (firstItem != null) {
                     lblServiceType.setText(firstItem.serviceName);
                 }
-                // ======================================================
                 updateTotalAmount();
             }
 
@@ -381,7 +327,6 @@ public class NewOrderPanel extends javax.swing.JPanel {
         }
     }
 
-    // Inner class to store service data in combo box
     private class ServiceItem {
         int serviceId;
         String serviceName;
@@ -399,7 +344,6 @@ public class NewOrderPanel extends javax.swing.JPanel {
         }
     }
 
-    // ==================== TOTAL AMOUNT CALCULATION ====================
 
     private void updateTotalAmount() {
         ServiceItem selected = (ServiceItem) cboService.getSelectedItem();
@@ -408,9 +352,7 @@ public class NewOrderPanel extends javax.swing.JPanel {
             selectedServiceId = selected.serviceId;
             lblServiceAmount.setText(String.format("₱ %.2f", servicePrice));
             
-            // ====== FIX: UPDATE SERVICE TYPE LABEL ======
             lblServiceType.setText(selected.serviceName);
-            // ============================================
             
             calculateTotal();
         }
@@ -428,7 +370,6 @@ public class NewOrderPanel extends javax.swing.JPanel {
         }
     }
 
-    // ==================== CUSTOMER SELECTION ====================
 
     private void openCustomerList() {
         CustomerListDialog dialog = new CustomerListDialog(null, true);
@@ -444,7 +385,6 @@ public class NewOrderPanel extends javax.swing.JPanel {
         }
     }
 
-    // ==================== LOAD CUSTOMER ADDRESS ====================
 
     private void loadCustomerAddress(int customerId) {
         String sql = "SELECT address FROM Customers WHERE customer_id = ?";
@@ -474,8 +414,6 @@ public class NewOrderPanel extends javax.swing.JPanel {
             e.printStackTrace();
         }
     }
-
-    // ==================== WEIGHT VALIDATION ====================
 
     private double getWeight() {
         Object value = spnWeightKg.getValue();
@@ -516,8 +454,6 @@ public class NewOrderPanel extends javax.swing.JPanel {
         return true;
     }
 
-    // ==================== CLAIM NUMBER GENERATION ====================
-
     private String generateClaimNumber() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMMdd");
         String datePrefix = formatter.format(LocalDate.now());
@@ -538,22 +474,18 @@ public class NewOrderPanel extends javax.swing.JPanel {
                 }
             }
         } catch (SQLException e) {
-            // If error occurs, default to 1
         }
 
         return String.format("LS-%s-%03d", datePrefix, nextNumber);
     }
 
-    // ==================== SAVE ORDER ====================
 
     private void saveOrder() {
-        // Validate weight
         double weight = getWeight();
         if (!validateWeight(weight)) {
             return;
         }
 
-        // Check if customer is selected
         if (selectedCustomerId == -1) {
             JOptionPane.showMessageDialog(this,
                 "Please select a customer first.",
@@ -562,7 +494,6 @@ public class NewOrderPanel extends javax.swing.JPanel {
             return;
         }
 
-        // Check service selection
         if (selectedServiceId == -1) {
             JOptionPane.showMessageDialog(this,
                 "Please select a service.",
@@ -571,16 +502,12 @@ public class NewOrderPanel extends javax.swing.JPanel {
             return;
         }
 
-        // Generate claim number
         String claimNumber = generateClaimNumber();
 
-        // Calculate total
         double total = servicePrice + getAdditionalCharges();
 
-        // Get notes
         String notes = txtNotes.getText().trim();
 
-        // FIXED: Include price_at_order in INSERT
         String sql = "INSERT INTO Orders (claim_number, customer_id, employee_id, service_id, " +
                      "weight_kg, price_at_order, total_amount, payment_status, order_status, notes) " +
                      "VALUES (?, ?, ?, ?, ?, ?, ?, 'Unpaid', 'Pending', ?)";
@@ -590,7 +517,7 @@ public class NewOrderPanel extends javax.swing.JPanel {
 
             pstmt.setString(1, claimNumber);
             pstmt.setInt(2, selectedCustomerId);
-            pstmt.setInt(3, currentEmployeeId);  // Use the captured employee ID
+            pstmt.setInt(3, currentEmployeeId); 
             pstmt.setInt(4, selectedServiceId);
             pstmt.setDouble(5, weight);
             pstmt.setDouble(6, servicePrice);
@@ -624,17 +551,14 @@ public class NewOrderPanel extends javax.swing.JPanel {
         return 0.0;
     }
 
-    // ==================== FORM VALIDATION ====================
 
     private void validateForm() {
         boolean isValid = true;
 
-        // Check if customer is selected
         if (selectedCustomerId == -1) {
             isValid = false;
         }
 
-        // Check weight
         double weight = getWeight();
         if (weight == -1 || weight <= 0 || weight > 7.0) {
             isValid = false;
@@ -643,7 +567,6 @@ public class NewOrderPanel extends javax.swing.JPanel {
         btnSaveOrder.setEnabled(isValid);
     }
 
-    // ==================== FORM CLEAR ====================
 
     private void clearForm() {
         selectedCustomerId = -1;
@@ -657,9 +580,7 @@ public class NewOrderPanel extends javax.swing.JPanel {
         lblServiceAmount.setText("₱ 0.00");
         lblAdditonalChargesAmount.setText("₱ 0.00");
         lblTotalAmount.setText("₱ 0.00");
-        // ====== FIX: CLEAR SERVICE TYPE LABEL ======
         lblServiceType.setText("");
-        // ===========================================
         btnSaveOrder.setEnabled(false);
 
         if (cboService.getItemCount() > 0) {
@@ -667,13 +588,11 @@ public class NewOrderPanel extends javax.swing.JPanel {
         }
     }
 
-    // ==================== ERROR HANDLING ====================
 
     private void showError(String message) {
         JOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE);
     }
 
-    // ==================== FONT UTILITY ====================
     
     private void applyInterFont(Component comp) {
         if (comp.getFont() != null) {
@@ -686,12 +605,9 @@ public class NewOrderPanel extends javax.swing.JPanel {
         }
     }
 
-    // ==================== REFRESH DATA (Required by MainJFrame) ====================
-
     public void refreshData() {
         loadServices();
         clearForm();
-        // ====== REFRESH EMPLOYEE INFO ======
         try {
             currentEmployeeId = mainFrame.getCurrentEmployeeId();
             if (currentEmployeeId != -1) {
@@ -705,24 +621,17 @@ public class NewOrderPanel extends javax.swing.JPanel {
             currentEmployeeId = 1;
             currentEmployeeName = "System";
         }
-        // ====== END ======
     }
 
-    // ==================== SETUP LISTENERS ====================
-
     private void setupListeners() {
-        // Weight spinner - validate on change
         spnWeightKg.addChangeListener(e -> validateForm());
         
-        // Additional charges spinner - update total on change
         spnAdditionalCharges.addChangeListener(e -> calculateTotal());
     }
 
     private void setupValidation() {
-        // Additional validation can be added here
     }
 
-    // ==================== MAIN METHOD ====================
 
     public static void main(String[] args) {
         FlatLightLaf.setup();

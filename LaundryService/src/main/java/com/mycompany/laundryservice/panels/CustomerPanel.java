@@ -442,7 +442,6 @@ public class CustomerPanel extends javax.swing.JPanel {
     private void applyDesignStyling() {
     Color cardStroke = new Color(0xC3, 0xC6, 0xD7);
 
-    // Rounded, bordered cards (real rounding via custom border)
     pnlRegisterCard.setOpaque(false);
     pnlRegisterCard.setBorder(new RoundedCardBorder(16, Color.WHITE, cardStroke));
 

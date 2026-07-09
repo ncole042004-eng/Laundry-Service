@@ -127,7 +127,7 @@ public class HomePanel extends javax.swing.JPanel {
 	}
 
 	public void refreshData() {
-		pnlMetrics.removeAll();   // clear old cards before adding new ones
+		pnlMetrics.removeAll();  
 
 		double earningsToday = getEarningsToday();
 		double earningsYesterday = getEarningsYesterday();
